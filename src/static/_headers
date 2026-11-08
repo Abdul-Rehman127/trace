@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'none'; script-src 'self' {{themeHash}} https://static.cloudflareinsights.com; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; manifest-src 'none'; worker-src 'none'; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'self' {{themeHash}} https://static.cloudflareinsights.com; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; manifest-src 'none'; worker-src 'none'; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types 'none'
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
