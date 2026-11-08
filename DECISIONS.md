@@ -53,3 +53,29 @@ Judgment calls the brief did not specify, one line of reasoning each. Newest at 
 
 - Light `--muted` changed from `#707B8A` to `#5F6976`: the original is 3.79:1 on `--bg` and 3.55:1 on `--sunk`, under AA; the new value is 4.91, 5.42 and 4.60:1 on bg, surface and sunk. The brief asks for exactly this adjustment.
 - Process colors and their text colors are unchanged (locked). Six of the sixteen bar-text pairs are between 3:1 and 4.5:1 (light c1, c8; dark c1, c2, c3, c5). A test pins this list so any change is deliberate. Open question for review, since bar labels are small text.
+
+## Checkpoint A answers applied
+
+- Bar label text colors set per fill as Chat specified; all 16 pairs now reach 4.5:1 (lowest 4.76:1). The test now pins the locked fill colors and requires 4.5:1 for every label.
+- `theme-init.js` is the one classic blocking script in `<head>` (167 bytes minified, content hashed, immutable cache). It also adds a `js` class to `<html>` so the simulator shell can be hidden without JavaScript, with no layout shift. The build allows exactly this one extra script tag.
+- The mistake-report address is assembled in `email.mjs` and filled into every `[data-email]` element, including inside `<template>` content. The HTML fallback is the plain text "Email: abdul at abmans dot com".
+
+## Phase 2: simulator UI
+
+- On the five algorithm pages, the algorithm selector is a set of links to the other pages (real pages for search). Once the visitor has changed the processes, or arrived from a share link, the links carry the scenario in the query string. On the overview page, the selector switches the algorithm in place.
+- A share link's `alg` is only honored on the overview page. On an algorithm page, the page's own algorithm wins and the rest of the link still applies.
+- The tool shell is static HTML, with space reserved by fixed row heights and `data-rows` / `data-n` attributes, so the script fills in content without moving anything (CLS 0).
+- Font swaps cannot move the layout: local fallback faces are scaled with `size-adjust` (ratios measured against the real fonts on the actual UI strings), both tables use fixed layout, and lines that mix fonts have pixel line heights. Plex Sans 500 (the weight used on every button and label) is preloaded in addition to the two fonts the brief lists, because without it the selector buttons shifted by about 0.005 when it arrived.
+- Bars are not tab stops; the brief asks for no long tab sequence inside the timeline. Keyboard users get the same information from the slider (`aria-valuetext` names who is running), the timeline's text summary and the results table. Bar tooltips appear on hover and tap.
+- The narration panel shows the decisions of the latest decision moment at or before the playhead, labelled "at time k" or "since time k".
+- The narration panel and ready queue have fixed heights and scroll internally if a long narration does not fit, so changing text never moves the page during playback.
+- While playing, the playhead and the growing bar are Web Animations on `transform` (run by the compositor). The single rAF loop is still the clock: it handles unit changes, the next bar, the end of playback and visibility. Paused, stepping, gliding and scrubbing render directly. This was needed to meet the frame-time budget at 4x CPU throttle.
+- Bars are two elements each (the bar is the ghost and carries a generated-content label, plus the fill with its label). They are grouped into `contain: strict` blocks of 24 time units, and only the bar under the playhead clips or animates. This brought the heavy case from about 9,500 to about 3,100 elements, and a state change repaints one block instead of a whole lane.
+- While playing, text panels (narration, queue, slider text, results highlight) update one frame after the clock and timeline, so a unit change never does all its work in one frame. Queue reordering uses FLIP when stepping, and plain replacement during continuous play; chips rise in at 1x and when stepping, and simply appear above 1x.
+- Minimum unit width is 14 px. Ruler labels step by 1, 2, 5, 10, 20, 25, 50 or 100 so labels stay at least 28 px apart. A 12 px lead keeps the "0" label from being cut by the sticky lane names.
+- New process defaults: arrival is the largest current arrival plus 1 (at most 99), burst 3, priority 1. Removing the last process is disabled.
+- The quantum keeps its typed value when switching presets unless the preset sets one (Classic example sets 4 for Round Robin, Tie trap sets 2).
+- A notice about an unreadable share link is shown as a toast (fixed position, 7 seconds) rather than an inline banner, so it never shifts the page.
+- `dev.mjs` now compresses responses with brotli or gzip, like Cloudflare, so local Lighthouse numbers are comparable to production.
+- The frame-time test runs alone (`--workers=1`) after the other browser tests, because parallel workers share the CPU and distort frame timings.
+- `window.__trace` exposes the player and timeline for the browser tests and the screenshot script. It holds no visitor data.

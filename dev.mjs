@@ -7,6 +7,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { extname, join, normalize, sep, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { brotliCompressSync, gzipSync, constants as zlib } from 'node:zlib';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, 'dist');
@@ -118,10 +119,25 @@ function start() {
         file = join(DIST, '404.html');
         status = 404;
       }
-      const body = await readFile(file);
+      let body = await readFile(file);
+      const type = TYPES[extname(file)] || 'application/octet-stream';
+      // Compress text like Cloudflare does, so local measurements are comparable.
+      const extra = {};
+      if (/^(text\/|application\/(json|xml)|image\/svg)/.test(type)) {
+        const accept = String(req.headers['accept-encoding'] || '');
+        if (/\bbr\b/.test(accept)) {
+          body = brotliCompressSync(body, { params: { [zlib.BROTLI_PARAM_QUALITY]: 11 } });
+          extra['content-encoding'] = 'br';
+        } else if (/\bgzip\b/.test(accept)) {
+          body = gzipSync(body, { level: 9 });
+          extra['content-encoding'] = 'gzip';
+        }
+        extra.vary = 'Accept-Encoding';
+      }
       res.writeHead(status, {
         ...headers,
-        'content-type': TYPES[extname(file)] || 'application/octet-stream',
+        ...extra,
+        'content-type': type,
         'content-length': body.length,
       });
       res.end(req.method === 'HEAD' ? undefined : body);

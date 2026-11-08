@@ -21,7 +21,8 @@ Browser tests live in `e2e/` with their own `package.json`, so the Cloudflare bu
 ```
 npm --prefix e2e i
 npx --prefix e2e playwright install --only-shell chromium
-npm run e2e
+npm run e2e      # all browser tests, then the frame-time test on its own
+npm run shots    # screenshots of the Round Robin page into shots/
 ```
 
 ## Architecture
