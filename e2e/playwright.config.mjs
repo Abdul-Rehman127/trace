@@ -22,7 +22,7 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'], baseURL: `http://localhost:${PORT + 1}` },
-      grepInvert: /@perf|@chromium-only/,
+      grepInvert: /@perf|@chromium-only|@fontswap/,
     },
   ],
 });

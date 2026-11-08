@@ -44,7 +44,8 @@
 @font-face { font-family: "Plex Sans Fallback"; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Helvetica"); font-weight: 500; size-adjust: 102.4%; }
 @font-face { font-family: "Plex Sans Fallback"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Helvetica Bold"); font-weight: 600 700; size-adjust: 96.1%; }
 @font-face { font-family: "Plex Mono Fallback"; src: local("Courier New"), local("CourierNewPSMT"), local("Liberation Mono"); size-adjust: 100%; }
-@font-face { font-family: "Display Fallback"; src: local("Arial Narrow Bold"), local("ArialNarrow-Bold"), local("Arial Bold"); font-weight: 700; size-adjust: 84.5%; }
+@font-face { font-family: "Display Fallback"; src: local("Arial Narrow Bold"), local("ArialNarrow-Bold"); font-weight: 700; size-adjust: 86.5%; }
+@font-face { font-family: "Display Fallback Wide"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Helvetica Bold"); font-weight: 700; size-adjust: 70.9%; }
 
 :root {
   color-scheme: light;
@@ -69,7 +70,7 @@
   --c7: #6250d6; --on-c7: #ffffff;
   --c8: #e34948; --on-c8: #0b0b0b;
 
-  --font-display: "Big Shoulders Display", "Display Fallback", "Arial Narrow", sans-serif;
+  --font-display: "Big Shoulders Display", "Display Fallback", "Display Fallback Wide", sans-serif;
   --font-sans: "IBM Plex Sans", "Plex Sans Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", "Plex Mono Fallback", ui-monospace, "SFMono-Regular", Consolas, monospace;
   --fs-display: clamp(2.4rem, 4.6vw, 3.6rem);
