@@ -79,3 +79,24 @@ Judgment calls the brief did not specify, one line of reasoning each. Newest at 
 - `dev.mjs` now compresses responses with brotli or gzip, like Cloudflare, so local Lighthouse numbers are comparable to production.
 - The frame-time test runs alone (`--workers=1`) after the other browser tests, because parallel workers share the CPU and distort frame timings.
 - `window.__trace` exposes the player and timeline for the browser tests and the screenshot script. It holds no visitor data.
+
+## Checkpoint B answers applied
+
+- Tie narration names the running process: "P1 and P2 both have 4 left. P1 is already running, so it keeps the CPU." (SRTF and preemptive Priority).
+- Round Robin opens on arrivals 0, 1, 2, 3 with bursts 5, 3, 1, 4 and q=2; the golden case stays as "Classic example". Browser tests that rely on the golden numbers load it through a share link.
+- Frame-time tests run each scenario three times on a fresh page and use the median. Typical load (5 processes, bursts up to 20) must pass p95 under 20 ms and max under 50 ms; the heavy case checks p95 only.
+- The narration box stacks the six longest narrations of the scenario (by text length) as invisible copies under the current one, so its height fits the longest and never changes or scrolls during playback. The build renders the same sizers for each page's default scenario, so the first load does not shift. Six is a heuristic; a browser test steps through every moment of three scenarios and checks the height never changes.
+- The decision log under the stage is planned for Phase 4, as asked.
+
+## Phase 3: pages and content
+
+- Mini timelines (home hero, worked examples, compare strips) are static HTML positioned by generated utility classes (`.s-N` start, `.l-N` length, `.b-N` slice boundary, `.T-N` length, `.cN` color), about 4 KB of CSS before compression. This keeps them complete without JavaScript and within the CSP, which forbids style attributes.
+- The hero animates with Web Animations on transform and opacity only, loops with a short fade, and pauses when the tab is hidden or the hero is off screen. With reduced motion it stays on the final frame.
+- Worked examples are computed at build time by the engine from the "Classic example" preset, so the numbers on each page always match the simulator. The example lists the order of execution in words as well, for screen readers and for students copying the answer.
+- The compare page reuses the process editor with every option visible (quantum, tie rule, preemptive, priority direction). It always shows five rows and five timelines, so its space is fixed before the script runs. Its share link has no `alg` and carries priorities plus every option. Its default "Mixed example" (arrivals 0 to 3, bursts 8, 4, 9, 5, priorities 2, 3, 1, 4, q=3) is chosen so the five algorithms give five different results.
+- The compare page marks the lowest value in each column with the word "lowest", not with color, plus a screen reader label.
+- The About page does not name the analytics provider, following the brief's rule for legal and disclaimer text. The claim itself is listed under "needs verification".
+- Each mistake-report line has an email subject naming the page, for example "Mistake on the SRTF page".
+- `content-review.md` is generated from the built HTML by `scripts/content-review.mjs`, so it shows exactly what ships.
+- The OG image and the 180 px touch icon are generated once by `scripts/og.mjs` with Playwright from small HTML pages (inline styles there are fine: those pages are never served) and committed.
+- Scroll wrappers are `position: relative`, so visually hidden text inside a scrolling table cannot escape and widen the page on phones. This was found by the new 390 px overflow test.

@@ -96,7 +96,7 @@
   white-space: nowrap;
 }
 .mb::after { content: attr(data-label); color: var(--ink-2); }
-.mf { position: absolute; inset: 0; z-index: 1; background: var(--c); }
+.mf { position: absolute; inset: 0; z-index: 1; overflow: hidden; background: var(--c); }
 .mfl { color: var(--on); }
 .mb.narrow::after, .mb.narrow .mfl { display: none; }
 .mt { position: absolute; top: 0; bottom: 0; z-index: 2; left: calc(var(--b) / var(--len) * 100%); width: 1px; background: color-mix(in srgb, var(--surface) 85%, transparent); }
@@ -185,3 +185,5 @@
 
 /* Scroll wrappers are positioned so visually hidden text inside them cannot escape and widen the page. */
 .cmp-table-wrap, .cmp-strips, .mini-scroll, .table-scroll { position: relative; }
+.mb::after, .mfl { justify-content: center; padding: 0 2px; }
+.data td, .data th { white-space: nowrap; }
