@@ -97,10 +97,10 @@ test('jumping mid-play pauses and leaves a consistent frame', async ({ page }) =
   const box = await page.locator('[data-ticks]').boundingBox();
   await page.mouse.click(box.x + 12 + box.width * 0.1, box.y + box.height / 2);
   await expect.poll(async () => (await snapshot(page)).playing).toBe(false);
-  await page.waitForTimeout(300);
+  // Releasing a scrub glides to the nearest whole unit (220 ms); wait for it to land.
+  await expect.poll(async () => Number.isInteger((await snapshot(page)).time)).toBe(true);
   s = await snapshot(page);
   expect(s.running).toBe(0);
-  expect(Number.isInteger(s.time)).toBe(true);
   // Every bar that started before the playhead is on, the rest are not.
   const consistent = await page.evaluate((t) => {
     const bars = [...document.querySelectorAll('.bar-seg')];
@@ -113,10 +113,9 @@ test('jumping mid-play pauses and leaves a consistent frame', async ({ page }) =
   // Step forward while playing
   await playToMidSegment(page);
   await page.locator('[data-act="fwd"]').click();
-  await page.waitForTimeout(400);
+  await expect.poll(async () => Number.isInteger((await snapshot(page)).time)).toBe(true);
   s = await snapshot(page);
   expect(s.playing).toBe(false);
-  expect(Number.isInteger(s.time)).toBe(true);
   expect(s.running).toBe(0);
   expect(problems).toEqual([]);
 });

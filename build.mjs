@@ -125,16 +125,17 @@ async function buildJs() {
   return name;
 }
 
-// The one classic blocking script: applies the saved theme before first paint.
+// The one inline script: applies the saved theme before first paint. It is allowed by its
+// sha256 hash in the CSP (script-src), so it costs no extra request and nothing else inline can run.
 async function buildThemeInit() {
   const src = await readFile(join(SRC, 'static', 'theme-init.js'), 'utf8');
   const result = await esbuild.transform(src, { minify: true, target: 'es2015', legalComments: 'none' });
   const code = result.code.trim();
   const bytes = Buffer.byteLength(code);
   if (bytes > THEME_BUDGET) throw new Error(`theme-init.js is ${bytes} bytes; the budget is ${THEME_BUDGET}`);
-  const name = `theme.${hash(code)}.js`;
-  await writeFile(join(DIST, name), code);
-  return name;
+  if (/<\/script|<!--/i.test(code)) throw new Error('theme-init.js must not contain </script or <!--');
+  const digest = createHash('sha256').update(code, 'utf8').digest('base64');
+  return { code, source: `'sha256-${digest}'` };
 }
 
 async function copyDir(from, to, filter = () => true) {
@@ -145,15 +146,21 @@ async function copyDir(from, to, filter = () => true) {
 }
 
 /** Guard: no markup the CSP would block may ship. */
-function checkCsp(html, slug, themeJs) {
+function checkCsp(html, slug, theme) {
   if (/\sstyle\s*=|<style[\s>]/i.test(html)) throw new Error(`Inline style in ${slug}`);
-  for (const [tag] of html.matchAll(/<script\b[^>]*>/gi)) {
-    const ok =
-      /^<script type="module" src="\/app\.[0-9a-f]{10}\.js" defer>$/.test(tag) ||
-      tag === '<script type="application/ld+json">' ||
-      tag === `<script src="/${themeJs}">`;
-    if (!ok) throw new Error(`Script tag not allowed in ${slug}: ${tag}`);
+  let inline = 0;
+  for (const m of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)) {
+    const tag = /^<script\b[^>]*>/i.exec(m[0])[0];
+    if (/^<script type="module" src="\/app\.[0-9a-f]{10}\.js" defer>$/.test(tag) && m[1] === '') continue;
+    if (tag === '<script type="application/ld+json">') continue;
+    // The only executable inline script, and only with exactly the hashed content.
+    if (tag === '<script>' && m[1] === theme.code) {
+      inline++;
+      continue;
+    }
+    throw new Error(`Script not allowed in ${slug}: ${m[0].slice(0, 80)}`);
   }
+  if (inline !== 1) throw new Error(`Expected exactly one theme script in ${slug}, found ${inline}`);
   if (/\son[a-z]+\s*=/i.test(html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g, ''))) {
     throw new Error(`Inline event handler in ${slug}`);
   }
@@ -164,7 +171,7 @@ async function main() {
   await rm(DIST, { recursive: true, force: true });
   await mkdir(DIST, { recursive: true });
 
-  const [css, js, themeJs] = await Promise.all([buildCss(), buildJs(), buildThemeInit()]);
+  const [css, js, theme] = await Promise.all([buildCss(), buildJs(), buildThemeInit()]);
   await copyDir(join(SRC, 'fonts'), join(DIST, 'fonts'), (n) => n.endsWith('.woff2') || n.endsWith('.txt'));
   for (const f of ['favicon.svg', 'og.png', 'apple-touch-icon.png']) {
     const p = join(SRC, 'static', f);
@@ -205,12 +212,12 @@ async function main() {
       ogImage: absolute('/og.png'),
       css,
       js,
-      themeJs,
+      themeInline: theme.code,
       jsonld: jsonLd(page),
       crumbs: crumbsHtml(page),
       body,
     });
-    checkCsp(html, page.slug, themeJs);
+    checkCsp(html, page.slug, theme);
     const file = outFile(page.slug);
     await mkdir(dirname(file), { recursive: true });
     await writeFile(file, html);
@@ -226,9 +233,12 @@ async function main() {
   );
   const robots = await readFile(join(SRC, 'static', 'robots.txt'), 'utf8');
   await writeFile(join(DIST, 'robots.txt'), robots.replace('{{origin}}', SITE.origin));
-  await copyFile(join(SRC, 'static', '_headers'), join(DIST, '_headers'));
+  // The CSP names the theme script by its hash; the placeholder must be present exactly once.
+  const headerText = await readFile(join(SRC, 'static', '_headers'), 'utf8');
+  if (headerText.split('{{themeHash}}').length !== 2) throw new Error('_headers must contain {{themeHash}} exactly once');
+  await writeFile(join(DIST, '_headers'), headerText.replace('{{themeHash}}', theme.source));
 
-  console.log(`Built ${PAGES.length} pages, ${css}, ${js}, ${themeJs} in ${Math.round(performance.now() - started)} ms`);
+  console.log(`Built ${PAGES.length} pages, ${css}, ${js}, theme ${theme.source} in ${Math.round(performance.now() - started)} ms`);
 }
 
 main().catch((err) => {

@@ -160,14 +160,24 @@ export function createTimeline(stage, { onScrubStart, onScrub, onScrubEnd }) {
   }
 
   /** Read geometry once (on resize or new model) and derive the unit width. */
+  // Geometry comes from the ResizeObserver, which runs after the browser's own layout, so
+  // building a schedule never forces a synchronous layout. Until the first observation,
+  // the defaults below are used and the observer corrects them before the first paint.
+  let observed = false;
+  function observe(width) {
+    const nw = parseFloat(getComputedStyle(scroller).getPropertyValue('--name-w')) || 96;
+    const changed = !observed || width !== viewW || nw !== nameW;
+    observed = true;
+    viewW = width;
+    nameW = nw;
+    if (changed) measure(true);
+  }
+
   function measure(force = false) {
     if (!model) return;
-    const w = scroller.clientWidth;
-    const nw = parseFloat(getComputedStyle(scroller).getPropertyValue('--name-w')) || 96;
-    if (!force && w === viewW && nw === nameW) return;
-    viewW = w;
-    nameW = nw;
-    const avail = Math.max(0, w - nameW - LEAD - 24);
+    if (!observed) viewW = viewW || 800;
+    if (!force) return;
+    const avail = Math.max(0, viewW - nameW - LEAD - 24);
     const nextU = Math.max(MIN_U, Math.min(MAX_U, Math.floor(avail / Math.max(1, model.T))));
     const nextStep = STEPS.find((s) => s * nextU >= 28) || 100;
     const changed = force || nextU !== u || nextStep !== step;
@@ -418,7 +428,7 @@ export function createTimeline(stage, { onScrubStart, onScrub, onScrubEnd }) {
     if (tipBar) hideTip();
   }, { passive: true });
 
-  new ResizeObserver(() => measure()).observe(scroller);
+  new ResizeObserver((entries) => observe(entries[entries.length - 1].contentRect.width)).observe(scroller);
 
   return {
     setModel,

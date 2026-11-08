@@ -100,3 +100,11 @@ Judgment calls the brief did not specify, one line of reasoning each. Newest at 
 - `content-review.md` is generated from the built HTML by `scripts/content-review.mjs`, so it shows exactly what ships.
 - The OG image and the 180 px touch icon are generated once by `scripts/og.mjs` with Playwright from small HTML pages (inline styles there are fine: those pages are never served) and committed.
 - Scroll wrappers are `position: relative`, so visually hidden text inside a scrolling table cannot escape and widen the page on phones. This was found by the new 390 px overflow test.
+
+## Checkpoint D
+
+- **CSP change, approved by Abdul at Checkpoint D (a STOP item):** the theme script is now inline in `<head>` and allowed by its `sha256` hash in `script-src`, instead of being a separate blocking file. On the live site the separate file cost about 0.5 s of render-blocking on simulated slow 4G. A hash allows exactly that one script, so nothing is relaxed: there is still no `'unsafe-inline'`, and Trusted Types are unaffected. The build computes the hash, writes it into `dist/_headers` (the source has a `{{themeHash}}` placeholder), and refuses to build if any other inline script appears or if the script's text differs from the hashed text. The `theme.[hash].js` file and its cache rule are gone.
+- Startup no longer forces a synchronous layout. The timeline width and the selector's scroll position are read in ResizeObserver callbacks, which run after the browser's own layout.
+- The display font fallback was split in two: Arial Narrow Bold at 86.5% (it was 84.5%) and Arial Bold at 70.9% (it previously shared the Narrow value).
+- The late-font layout-shift test (`npm --prefix e2e run fontswap`) delays fonts by 1.5 s. It is excluded from the default run until Chat decides between `font-display: swap` and `optional` for body text; with swap, body paragraphs can re-wrap by a line.
+- `scripts/live-*.mjs` check a deployed site: headers, console and CSP in two engines, the analytics payloads, and copy-link round trips.

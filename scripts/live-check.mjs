@@ -1,4 +1,4 @@
-// Checks a deployed Trace site against src/static/_headers and basic serving rules.
+// Checks a deployed Trace site against dist/_headers (run node build.mjs first) and basic serving rules.
 // Usage: node scripts/live-check.mjs [https://trace.abmans.com]
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -9,7 +9,7 @@ const ORIGIN = process.argv[2] || 'https://trace.abmans.com';
 
 const rules = [];
 let cur = null;
-for (const raw of readFileSync(join(ROOT, 'src', 'static', '_headers'), 'utf8').split(/\r?\n/)) {
+for (const raw of readFileSync(join(ROOT, 'dist', '_headers'), 'utf8').split(/\r?\n/)) {
   if (!raw.trim()) continue;
   if (!/^\s/.test(raw)) {
     const pattern = raw.trim().replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
@@ -29,9 +29,8 @@ const expected = (path) => {
 const home = await (await fetch(`${ORIGIN}/`)).text();
 const css = /href="\/(app\.[0-9a-f]{10}\.css)"/.exec(home)[1];
 const js = /src="\/(app\.[0-9a-f]{10}\.js)"/.exec(home)[1];
-const theme = /src="\/(theme\.[0-9a-f]{10}\.js)"/.exec(home)[1];
 const paths = [
-  '/', '/operating-systems/cpu-scheduling/round-robin/', `/${css}`, `/${js}`, `/${theme}`,
+  '/', '/operating-systems/cpu-scheduling/round-robin/', `/${css}`, `/${js}`,
   '/fonts/ibm-plex-sans-latin-400-normal.woff2', '/fonts/big-shoulders-display.woff2',
   '/sitemap.xml', '/robots.txt', '/og.png', '/favicon.svg', '/apple-touch-icon.png', '/no-such-page/',
 ];

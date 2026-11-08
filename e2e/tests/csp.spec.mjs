@@ -106,3 +106,20 @@ test('the violation listener really catches CSP and Trusted Types violations @ch
   expect(result).toBe(true);
   await expect.poll(() => page.evaluate(() => window.__csp.length)).toBeGreaterThan(0);
 });
+
+test('the inline theme script runs under its CSP hash, before any other script', async ({ page }) => {
+  const problems = await watch(page);
+  // Block the module bundle: only the inline, hash-allowed script can set the theme.
+  await page.route('**/app.*.js', (route) => route.abort());
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem('trace-theme', 'dark');
+    } catch {}
+  });
+  const res = await page.goto('/operating-systems/cpu-scheduling/round-robin/');
+  expect(res.headers()['content-security-policy']).toMatch(/script-src 'self' 'sha256-[A-Za-z0-9+/]+=*' https:\/\/static\.cloudflareinsights\.com;/);
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('html')).toHaveClass(/\bjs\b/);
+  expect(await page.evaluate(() => window.__csp)).toEqual([]);
+  expect(problems.filter((p) => !p.includes('net::ERR_FAILED') && !p.includes('Failed to load resource'))).toEqual([]);
+});
