@@ -122,7 +122,7 @@ function arriveSentence(d, ctx) {
       if (fresh) {
         return [P(holder), ' and ', P(id), ` both have ${what}. `, P(holder), ' has the lower process number, so it runs first.'];
       }
-      return [P(holder), ' and ', P(id), ` both have ${what}. The running process keeps the CPU on a tie.`];
+      return [P(holder), ' and ', P(id), ` both have ${what}. `, P(holder), ' is already running, so it keeps the CPU.'];
     }
     default:
       if (ctx.algorithm === 'rr') return [P(id), ' arrives and joins the back of the queue.'];
@@ -212,4 +212,18 @@ export function narrateMoment(ctx, t) {
   }
   flush();
   return out;
+}
+
+/**
+ * The n longest moments of a schedule (by text length). The panel stacks them
+ * invisibly under the current sentence so its height fits the longest narration
+ * of this scenario and never changes during playback.
+ */
+export function longestMoments(ctx, n = 6) {
+  return [...ctx.byTime.keys()]
+    .map((t) => narrateMoment(ctx, t))
+    .map((sentences) => ({ sentences, len: sentences.map(sentenceText).join(' ').length }))
+    .sort((a, b) => b.len - a.len)
+    .slice(0, n)
+    .map((x) => x.sentences);
 }

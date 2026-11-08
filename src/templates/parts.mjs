@@ -1,5 +1,8 @@
 // Build-time HTML fragments for tool pages. Trusted, generated from page metadata only.
 import { presetsFor, defaultScenario } from '../js/engine/presets.mjs';
+import { simulate } from '../js/engine/scheduling.mjs';
+import { validateScenario } from '../js/engine/validate.mjs';
+import { narrationContext, narrateMoment, longestMoments } from '../js/engine/narrate.mjs';
 
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ESC[c]);
@@ -97,6 +100,23 @@ function presets(page) {
   return chips.join('\n            ');
 }
 
+/** A narration sentence list as trusted HTML (process names in <strong>). */
+function sentencesHtml(sentences) {
+  return sentences
+    .map((parts) => parts.map((p) => (typeof p === 'string' ? esc(p) : `<strong>${esc(p.pid)}</strong>`)).join(''))
+    .join(' ');
+}
+
+/** The narration at t = 0 and the invisible sizers, rendered at build time so loading never shifts the panel. */
+function narrationParts(algorithm) {
+  const v = validateScenario(defaultScenario(algorithm)).value;
+  const ctx = narrationContext(v, simulate(v));
+  return {
+    whyText: sentencesHtml(narrateMoment(ctx, 0)),
+    whySizers: longestMoments(ctx).map((s) => `<p>${sentencesHtml(s)}</p>`).join(''),
+  };
+}
+
 /** Values for src/templates/tool.html. */
 export function toolData(page) {
   const s = defaultScenario(page.algorithm);
@@ -109,5 +129,6 @@ export function toolData(page) {
     options: options(page),
     presets: presets(page),
     rows: String(s.processes.length),
+    ...narrationParts(page.algorithm),
   };
 }

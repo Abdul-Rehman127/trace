@@ -37,7 +37,7 @@ describe('narration matches the brief examples', () => {
   });
   test('SRTF tie', () => {
     assert.deepEqual(momentText({ algorithm: 'srtf', processes: P([0, 5], [1, 4]) }, 1), [
-      'P1 and P2 both have 4 left. The running process keeps the CPU on a tie.',
+      'P1 and P2 both have 4 left. P1 is already running, so it keeps the CPU.',
     ]);
   });
   test('Priority', () => {
@@ -87,7 +87,7 @@ describe('narration for every reason code', () => {
     assert.deepEqual(momentText(s, 2), ["P2 arrives with priority 1, better than P1's 3, so P2 takes over."]);
     assert.deepEqual(momentText(s, 3), ['P3 arrives with priority 2. P2 has a better priority (1), so P2 keeps the CPU.']);
     const tie = { algorithm: 'priority', processes: P([0, 7, 2], [2, 4, 2]), options: { preemptive: true } };
-    assert.deepEqual(momentText(tie, 2), ['P1 and P2 both have priority 2. The running process keeps the CPU on a tie.']);
+    assert.deepEqual(momentText(tie, 2), ['P1 and P2 both have priority 2. P1 is already running, so it keeps the CPU.']);
   });
 
   test('ties on the main rule name the tie-break', () => {

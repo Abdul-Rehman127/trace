@@ -27,9 +27,15 @@ export function presetsFor(algorithm) {
   return list.map((p) => ({ ...p, processes: p.processes.map((x) => ({ ...x })) }));
 }
 
+// What a page shows on first load. Round Robin opens on a busier example that shows
+// slices rotating; its golden case stays available as "Classic example".
+const DEFAULTS = {
+  rr: { processes: P([0, 5], [1, 3], [2, 1], [3, 4]), options: { quantum: 2, rrTie: 'new' } },
+};
+
 /** The scenario a page shows before anyone changes anything. */
 export function defaultScenario(algorithm) {
-  const c = CLASSIC[algorithm];
+  const c = DEFAULTS[algorithm] || CLASSIC[algorithm];
   return {
     algorithm,
     processes: c.processes.map((x) => ({ ...x })),

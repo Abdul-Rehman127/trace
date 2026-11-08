@@ -1,11 +1,12 @@
 // "Why this happened" narration and the ready queue, updated once per time unit.
 import { h, sentenceNodes, prefersReducedMotion } from './dom.mjs';
-import { narrationContext, narrateMoment, sentenceText } from '../engine/narrate.mjs';
+import { narrationContext, narrateMoment, sentenceText, longestMoments } from '../engine/narrate.mjs';
 
 const slotOf = (id) => Number(id.slice(1));
 
 export function createPanel(stage) {
-  const why = stage.querySelector('[data-why]');
+  const why = stage.querySelector('[data-why-text]');
+  const sizers = stage.querySelector('[data-why-sizers]');
   const whyTime = stage.querySelector('[data-why-time]');
   const queueEl = stage.querySelector('[data-queue]');
   let ctx = null;
@@ -20,8 +21,19 @@ export function createPanel(stage) {
     decisions = result.decisions;
     times = [...ctx.byTime.keys()].sort((a, b) => a - b);
     shownMoment = null;
+    // Invisible copies of the longest narrations set the panel height for this scenario.
+    sizers.replaceChildren(...longestMoments(ctx).map((s) => h('p', {}, joinNodes(s))));
     queueEl.replaceChildren();
     chips = new Map();
+  }
+
+  function joinNodes(sentences) {
+    const nodes = [];
+    sentences.forEach((s, j) => {
+      if (j) nodes.push(' ');
+      nodes.push(...sentenceNodes(s));
+    });
+    return nodes;
   }
 
   /** Largest value in a sorted list that is <= k, or -1. */
@@ -91,12 +103,7 @@ export function createPanel(stage) {
     if (moment !== shownMoment) {
       shownMoment = moment;
       const sentences = moment === null ? [] : narrateMoment(ctx, moment);
-      const nodes = [];
-      sentences.forEach((s, j) => {
-        if (j) nodes.push(' ');
-        nodes.push(...sentenceNodes(s));
-      });
-      why.replaceChildren(...nodes);
+      why.replaceChildren(...joinNodes(sentences));
       lastText = sentences.map(sentenceText).join(' ');
       const d = floorIndex(decisions, k, (x) => x.t);
       renderQueue(d >= 0 ? decisions[d].queue : [], playing, speed);

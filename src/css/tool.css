@@ -425,7 +425,10 @@ html:not(.js) .tool { display: none; }
 .decide > div { padding: 16px; }
 .decide > div + div { border-left: 1px solid var(--line); }
 .why-time { margin-left: 6px; font-family: var(--font-mono); font-weight: 500; color: var(--ink-2); }
-.why { height: 6.2em; margin: 0; overflow-y: auto; font-size: 1.02rem; line-height: 1.55; }
+.why { display: grid; min-height: 3.1em; font-size: 1.02rem; line-height: 1.55; }
+.why > *, .why-sizers > * { grid-area: 1 / 1; margin: 0; }
+.why-sizers { display: grid; grid-area: 1 / 1; visibility: hidden; pointer-events: none; }
+.why-sizers p, .why-text { margin: 0; }
 .why strong { font-weight: 600; }
 .queue { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px; height: 70px; margin: 0; padding: 0; list-style: none; }
 .qchip {
@@ -442,7 +445,6 @@ html:not(.js) .tool { display: none; }
 @media (max-width: 760px) {
   .decide { grid-template-columns: minmax(0, 1fr); }
   .decide > div + div { border-left: 0; border-top: 1px solid var(--line); }
-  .why { height: 6.2em; }
 }
 
 .keys { margin-top: 12px; color: var(--ink-2); font-size: .88rem; }
