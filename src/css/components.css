@@ -1,0 +1,225 @@
+/* Shared controls: labels, buttons, chips, segmented controls, inputs, switch, toast. */
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.label {
+  margin: 0 0 12px;
+  font: 600 .8rem/1 var(--font-sans);
+  letter-spacing: .02em;
+  color: var(--muted);
+}
+
+/* Press feedback shared by every control. */
+.tbtn, .chip, .btn-quiet, .seg button, .seg a, .icon-btn, .speed button {
+  -webkit-tap-highlight-color: transparent;
+}
+.tbtn:active, .chip:active, .btn-quiet:active, .seg button:active, .seg a:active, .speed button:active {
+  transform: scale(.94);
+}
+
+/* Segmented control (algorithm selector, tie rule, priority order) */
+.seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-control-lg);
+  background: var(--surface);
+}
+.seg button, .seg a {
+  flex: none;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink-2);
+  font-weight: 500;
+  font-size: .9rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--t-ui) var(--ease-out), color var(--t-ui) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+.seg button:hover, .seg a:hover { color: var(--ink); background: var(--sunk); }
+.seg [aria-pressed="true"], .seg [aria-current="page"] {
+  background: var(--ink);
+  color: var(--bg);
+}
+.seg [aria-pressed="true"]:hover, .seg [aria-current="page"]:hover { background: var(--ink); color: var(--bg); }
+.seg-sm button { padding: 6px 10px; font-size: .84rem; }
+@media (pointer: coarse) {
+  .seg button, .seg a { min-height: 44px; }
+}
+
+/* Chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: .84rem;
+  cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.chip:hover { background: var(--sunk); color: var(--ink); }
+.chip[aria-pressed="true"] { border-color: var(--ink-2); color: var(--ink); }
+@media (pointer: coarse) {
+  .chip { height: 44px; padding: 0 16px; }
+}
+
+.btn-quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 10px 0 6px;
+  border: 0;
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--ink-2);
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.btn-quiet:hover:not(:disabled) { background: var(--sunk); color: var(--ink); }
+.btn-quiet:disabled { color: var(--muted); cursor: not-allowed; }
+@media (pointer: coarse) {
+  .btn-quiet { height: 44px; }
+}
+
+/* Number inputs */
+.num {
+  width: 56px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  background: var(--surface);
+  font: 500 .95rem var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  transition: border-color var(--t-ui) var(--ease-out);
+}
+.num:hover { border-color: var(--muted); }
+.num:focus-visible { outline-offset: 1px; border-radius: 7px; }
+.num[aria-invalid="true"] {
+  border-color: var(--c8);
+  box-shadow: inset 0 0 0 1px var(--c8);
+}
+@media (pointer: coarse) {
+  .num { height: 44px; width: 60px; font-size: 1rem; }
+}
+
+.err {
+  display: flex;
+  gap: 6px;
+  margin: 4px 0 0;
+  color: var(--ink);
+  font-size: .82rem;
+  line-height: 1.4;
+}
+.err::before {
+  content: "!";
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--c8);
+  color: var(--on-c8);
+  font: 600 .7rem/1 var(--font-sans);
+}
+
+/* Switch: a real checkbox */
+.switch {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 24px;
+  margin: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--sunk);
+  cursor: pointer;
+  transition: background-color var(--t-ui) var(--ease-out), border-color var(--t-ui) var(--ease-out);
+}
+.switch::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform var(--t-ui) var(--ease-out), background-color var(--t-ui) var(--ease-out);
+}
+.switch:checked { background: var(--ink); border-color: var(--ink); }
+.switch:checked::before { background: var(--bg); transform: translateX(16px); }
+.switch:focus-visible { border-radius: 999px; }
+@media (pointer: coarse) {
+  .switch { width: 48px; height: 28px; }
+  .switch::before { width: 20px; height: 20px; }
+  .switch:checked::before { transform: translateX(20px); }
+}
+
+/* Toast and notices, fixed so they never move the page */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  z-index: 60;
+  max-width: min(92vw, 520px);
+  padding: 10px 16px;
+  border-radius: var(--r-control-lg);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: .9rem;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition: opacity var(--t-ui) var(--ease-out), transform var(--t-ui) var(--ease-out);
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast:empty { visibility: hidden; }
+
+kbd {
+  display: inline-block;
+  min-width: 24px;
+  padding: 1px 6px;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--surface);
+  font: 500 .78rem/1.5 var(--font-mono);
+  text-align: center;
+}
+
+.noscript {
+  margin: 0 0 24px;
+  padding: 12px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-control-lg);
+  color: var(--ink-2);
+}

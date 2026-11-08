@@ -27,6 +27,8 @@ export const PAGES = [
     description:
       'Step-by-step simulators that show how computers decide what runs next. Press play, watch every decision, and read why it happened. Free, no signup.',
     h1: 'Watch computers decide',
+    key: 'home',
+    lede: '',
     breadcrumb: [],
   },
   {
@@ -36,6 +38,8 @@ export const PAGES = [
     description:
       'Enter your processes, pick FCFS, SJF, SRTF, Priority or Round Robin, press play, and see why each process runs when it does. Free, no signup.',
     h1: 'CPU scheduling simulator',
+    key: 'overview',
+    lede: 'Pick an algorithm, enter your processes and press play. Every scheduling decision comes with the reason for it.',
     breadcrumb: cpuCrumbs(null),
     algorithm: 'fcfs',
     selectable: true,
@@ -47,6 +51,8 @@ export const PAGES = [
     description:
       'Enter your processes, press play, and watch First Come First Served run them in arrival order, with waiting and turnaround times. Free, no signup.',
     h1: 'First Come First Served scheduling',
+    key: 'fcfs',
+    lede: 'The CPU runs processes in the order they arrive, each one to the end. Press play and watch every decision.',
     breadcrumb: cpuCrumbs({ name: 'FCFS', path: `${CPU}fcfs/` }),
     algorithm: 'fcfs',
   },
@@ -57,6 +63,8 @@ export const PAGES = [
     description:
       'Enter your processes, press play, and see Shortest Job First pick the smallest burst each time the CPU frees up, with every step explained. Free.',
     h1: 'Shortest Job First scheduling',
+    key: 'sjf',
+    lede: 'Whenever the CPU frees up, the shortest waiting job goes next and runs to the end. Press play and watch every decision.',
     breadcrumb: cpuCrumbs({ name: 'SJF', path: `${CPU}sjf/` }),
     algorithm: 'sjf',
   },
@@ -67,6 +75,8 @@ export const PAGES = [
     description:
       'Enter your processes, press play, and see Shortest Remaining Time First preempt when a shorter job arrives, with each decision explained. Free.',
     h1: 'Shortest Remaining Time First scheduling',
+    key: 'srtf',
+    lede: 'At every moment the process with the least time left runs, even if that means interrupting another. Press play and watch every decision.',
     breadcrumb: cpuCrumbs({ name: 'SRTF', path: `${CPU}srtf/` }),
     algorithm: 'srtf',
   },
@@ -77,6 +87,8 @@ export const PAGES = [
     description:
       'Enter processes with priorities, choose preemptive or not, press play, and see why each one gets the CPU when it does. Free, no signup needed.',
     h1: 'Priority scheduling',
+    key: 'priority',
+    lede: 'The most important ready process runs first. You choose whether a new arrival can interrupt. Press play and watch every decision.',
     breadcrumb: cpuCrumbs({ name: 'Priority', path: `${CPU}priority/` }),
     algorithm: 'priority',
   },
@@ -87,16 +99,20 @@ export const PAGES = [
     description:
       'Set a time quantum, enter your processes, press play, and watch Round Robin rotate the ready queue, with every slice explained. Free, no signup.',
     h1: 'Round Robin scheduling',
+    key: 'rr',
+    lede: 'Each process gets the CPU for a fixed slice, then goes to the back of the line. Press play and watch every decision.',
     breadcrumb: cpuCrumbs({ name: 'Round Robin', path: `${CPU}round-robin/` }),
     algorithm: 'rr',
   },
   {
     slug: `${CPU}compare/`,
-    template: 'tool',
+    template: 'compare',
     title: 'Compare CPU Scheduling Algorithms | Trace',
     description:
       'Run FCFS, SJF, SRTF, Priority and Round Robin on the same processes and compare average waiting, turnaround and response times. Free, no signup.',
     h1: 'Compare scheduling algorithms',
+    key: 'compare',
+    lede: 'Run all five algorithms on the same processes and compare their averages side by side.',
     breadcrumb: cpuCrumbs({ name: 'Compare', path: `${CPU}compare/` }),
     algorithm: 'compare',
   },
@@ -107,6 +123,8 @@ export const PAGES = [
     description:
       'What Trace is, how every simulator is checked for accuracy, what happens to the data you type (nothing leaves your browser), and how to report a mistake.',
     h1: 'About Trace',
+    key: 'about',
+    lede: '',
     breadcrumb: [{ name: 'About', path: '/about/' }],
   },
   {
@@ -115,6 +133,8 @@ export const PAGES = [
     title: 'Page not found | Trace',
     description: 'This page does not exist on Trace.',
     h1: 'Page not found',
+    key: 'notfound',
+    lede: 'This page does not exist. The simulators are listed on the home page.',
     breadcrumb: [],
     noindex: true,
   },

@@ -49,15 +49,16 @@
   --line-strong: #B9C3D0;
   --focus: #2A6FDB;
 
-  /* Process colors by slot. Pre-validated set; do not change. */
-  --c1: #2a78d6; --on-c1: #fff;
+  /* Process colors by slot. Fills are a pre-validated set; do not change them.
+     Text colors on bars were chosen at Checkpoint A so every pair reaches 4.5:1. */
+  --c1: #2a78d6; --on-c1: #000000;
   --c2: #eb6834; --on-c2: #0b0b0b;
   --c3: #1baf7a; --on-c3: #0b0b0b;
   --c4: #eda100; --on-c4: #0b0b0b;
   --c5: #e87ba4; --on-c5: #0b0b0b;
-  --c6: #008300; --on-c6: #fff;
-  --c7: #6250d6; --on-c7: #fff;
-  --c8: #e34948; --on-c8: #fff;
+  --c6: #008300; --on-c6: #ffffff;
+  --c7: #6250d6; --on-c7: #ffffff;
+  --c8: #e34948; --on-c8: #0b0b0b;
 
   --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
   --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -90,12 +91,12 @@
     --line: #263140;
     --line-strong: #38465A;
     --focus: #6EA2F5;
-    --c1: #3987e5; --on-c1: #fff;
-    --c2: #d95926; --on-c2: #fff;
-    --c3: #199e70; --on-c3: #fff;
+    --c1: #3987e5; --on-c1: #0b0b0b;
+    --c2: #d95926; --on-c2: #0b0b0b;
+    --c3: #199e70; --on-c3: #0b0b0b;
     --c4: #c98500; --on-c4: #0b0b0b;
-    --c5: #d55181; --on-c5: #fff;
-    --c6: #008300; --on-c6: #fff;
+    --c5: #d55181; --on-c5: #0b0b0b;
+    --c6: #008300; --on-c6: #ffffff;
     --c7: #9085e9; --on-c7: #0b0b0b;
     --c8: #e66767; --on-c8: #0b0b0b;
   }
@@ -112,12 +113,12 @@
   --line: #263140;
   --line-strong: #38465A;
   --focus: #6EA2F5;
-  --c1: #3987e5; --on-c1: #fff;
-  --c2: #d95926; --on-c2: #fff;
-  --c3: #199e70; --on-c3: #fff;
+  --c1: #3987e5; --on-c1: #0b0b0b;
+  --c2: #d95926; --on-c2: #0b0b0b;
+  --c3: #199e70; --on-c3: #0b0b0b;
   --c4: #c98500; --on-c4: #0b0b0b;
-  --c5: #d55181; --on-c5: #fff;
-  --c6: #008300; --on-c6: #fff;
+  --c5: #d55181; --on-c5: #0b0b0b;
+  --c6: #008300; --on-c6: #ffffff;
   --c7: #9085e9; --on-c7: #0b0b0b;
   --c8: #e66767; --on-c8: #0b0b0b;
 }

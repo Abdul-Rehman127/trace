@@ -1,0 +1,151 @@
+    <section class="intro intro-tool">
+      <div class="intro-text">
+        <h1>{{h1}}</h1>
+        <p class="lede">{{lede}}</p>
+      </div>
+      {{{selector}}}
+    </section>
+
+    <noscript><p class="noscript">The simulator needs JavaScript. The written explanation and the worked example below work without it.</p></noscript>
+
+    <div class="tool" data-tool data-alg="{{alg}}" data-selectable="{{selectable}}">
+      <div class="tool-grid">
+        <section class="inputs" aria-labelledby="h-processes">
+          <h2 id="h-processes" class="label">Processes</h2>
+          <div class="ptable-wrap" data-ptable data-rows="{{rows}}">
+          <table class="ptable">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col" class="num-col">Arrival</th>
+                <th scope="col" class="num-col">Burst</th>
+                <th scope="col" class="num-col col-prio">Priority</th>
+                <th scope="col"><span class="sr-only">Remove</span></th>
+              </tr>
+            </thead>
+            <tbody data-proc-rows></tbody>
+          </table>
+          </div>
+          <div class="add-row">
+            <button type="button" class="btn-quiet" data-add aria-describedby="add-note">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
+              <span>Add process</span>
+            </button>
+            <span class="add-note" id="add-note" data-add-note></span>
+          </div>
+          {{{options}}}
+          <div class="presets" role="group" aria-label="Presets">
+            {{{presets}}}
+            <button type="button" class="chip chip-link" data-copy>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+              <span>Copy link</span>
+            </button>
+          </div>
+          <div class="copy-fallback" data-copy-fallback hidden>
+            <label for="share-url">Copy this link</label>
+            <input id="share-url" type="text" readonly data-copy-field>
+          </div>
+        </section>
+
+        <section class="stage-col" aria-label="Simulation">
+          <div class="stage" data-stage>
+            <div class="bar" data-transport>
+              <div class="transport" role="group" aria-label="Playback">
+                <button type="button" class="tbtn" data-act="back" aria-label="Step back">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg>
+                </button>
+                <button type="button" class="tbtn play" data-act="play" aria-label="Play">
+                  <svg class="i-play" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M7 4.5v15l13-7.5z"/></svg>
+                  <svg class="i-pause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+                </button>
+                <button type="button" class="tbtn" data-act="fwd" aria-label="Step forward">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg>
+                </button>
+                <button type="button" class="tbtn" data-act="reset" aria-label="Reset">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>
+                </button>
+              </div>
+              <div class="speed" role="group" aria-label="Speed" data-speed>
+                <button type="button" data-value="0.5" aria-pressed="false">0.5x</button>
+                <button type="button" data-value="1" aria-pressed="true">1x</button>
+                <button type="button" data-value="2" aria-pressed="false">2x</button>
+                <button type="button" data-value="4" aria-pressed="false">4x</button>
+              </div>
+              <button type="button" class="tbtn speed-cycle" data-speed-cycle aria-label="Speed 1x, change speed"><span data-speed-cycle-label>1x</span></button>
+              <div class="clock" aria-hidden="true"><span>time</span><b data-clock>0</b><span class="clock-total">of <span data-clock-total>0</span></span></div>
+            </div>
+
+            <div class="scroller" data-scroller data-n="{{rows}}">
+              <div class="lanes" data-lanes>
+                <div class="ruler" data-ruler role="slider" tabindex="0" aria-label="Timeline position" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-valuetext="Time 0">
+                  <div class="ruler-name" aria-hidden="true"></div>
+                  <div class="ticks" data-ticks aria-hidden="true"></div>
+                </div>
+                <div class="graphic" data-graphic role="img" aria-label="Timeline"></div>
+                <div class="head" data-head aria-hidden="true"><em data-head-label>0</em></div>
+                <div class="tip" data-tip role="tooltip" hidden></div>
+              </div>
+            </div>
+
+            <div class="decide">
+              <div class="why-box">
+                <div class="label">Why this happened <span class="why-time" data-why-time></span></div>
+                <p class="why" data-why></p>
+              </div>
+              <div class="queue-box">
+                <div class="label" id="queue-label">Ready queue, next in line first</div>
+                <ol class="queue" data-queue aria-labelledby="queue-label"></ol>
+              </div>
+            </div>
+          </div>
+          <div class="sr-only" aria-live="polite" data-live></div>
+          <details class="keys">
+            <summary>Keyboard shortcuts</summary>
+            <dl>
+              <div><dt><kbd>Space</kbd></dt><dd>Play or pause</dd></div>
+              <div><dt><kbd>Left</kbd> <kbd>Right</kbd></dt><dd>Step back or forward one unit</dd></div>
+              <div><dt><kbd>Home</kbd> <kbd>End</kbd></dt><dd>Jump to the start or the end</dd></div>
+              <div><dt><kbd>R</kbd></dt><dd>Reset</dd></div>
+              <div><dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>Slower or faster</dd></div>
+              <div><dt><kbd>T</kbd></dt><dd>Switch light or dark theme</dd></div>
+            </dl>
+            <p>Shortcuts are off while you type in a field.</p>
+          </details>
+        </section>
+      </div>
+
+      <section class="results" aria-labelledby="h-results">
+        <h2 id="h-results" class="label">Results</h2>
+        <div class="table-scroll" data-rtable data-rows="{{rows}}">
+          <table class="rtable">
+            <thead>
+              <tr>
+                <th scope="col">Process</th>
+                <th scope="col">Arrival</th>
+                <th scope="col">Burst</th>
+                <th scope="col">Finished</th>
+                <th scope="col">Turnaround</th>
+                <th scope="col">Waiting</th>
+                <th scope="col">Response</th>
+              </tr>
+            </thead>
+            <tbody data-result-rows></tbody>
+            <tfoot>
+              <tr class="avg">
+                <th scope="row">Average</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td data-avg="turnaround"></td>
+                <td data-avg="waiting"></td>
+                <td data-avg="response"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <p class="summary" data-summary>&nbsp;</p>
+        <p class="formula">Turnaround is <code>finished - arrival</code>. Waiting is <code>turnaround - burst</code>. Response is <code>first run - arrival</code>. CPU utilization is <code>total burst / last finish</code>.</p>
+      </section>
+      <div class="toast" data-toast role="status" aria-live="polite"></div>
+    </div>
+{{{content}}}

@@ -4,8 +4,9 @@
   "type": "module",
   "description": "Browser tests for Trace. Kept in its own package so Cloudflare Pages never installs Playwright.",
   "scripts": {
-    "test": "playwright test",
-    "shots": "node ../scripts/shots.mjs"
+    "test": "playwright test --grep-invert @perf && playwright test --grep @perf --workers=1",
+    "shots": "node ../scripts/shots.mjs",
+    "perf": "playwright test --grep @perf --workers=1"
   },
   "devDependencies": {
     "@playwright/test": "1.65.0"

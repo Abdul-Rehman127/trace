@@ -9,11 +9,13 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 import { PAGES, SITE } from './src/pages.mjs';
+import { toolData } from './src/templates/parts.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const SRC = join(ROOT, 'src');
 const DIST = join(ROOT, 'dist');
 const CSS_ORDER = ['tokens.css', 'base.css', 'components.css', 'tool.css'];
+const THEME_BUDGET = 300;
 
 const hash = (buf) => createHash('sha256').update(buf).digest('hex').slice(0, 10);
 
@@ -41,7 +43,7 @@ const absolute = (path) => SITE.origin + path;
 
 function jsonLd(page) {
   const blocks = [];
-  if (page.template === 'tool') {
+  if (page.template === 'tool' || page.template === 'compare') {
     blocks.push({
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
@@ -120,10 +122,37 @@ async function buildJs() {
   return name;
 }
 
+// The one classic blocking script: applies the saved theme before first paint.
+async function buildThemeInit() {
+  const src = await readFile(join(SRC, 'static', 'theme-init.js'), 'utf8');
+  const result = await esbuild.transform(src, { minify: true, target: 'es2015', legalComments: 'none' });
+  const code = result.code.trim();
+  const bytes = Buffer.byteLength(code);
+  if (bytes > THEME_BUDGET) throw new Error(`theme-init.js is ${bytes} bytes; the budget is ${THEME_BUDGET}`);
+  const name = `theme.${hash(code)}.js`;
+  await writeFile(join(DIST, name), code);
+  return name;
+}
+
 async function copyDir(from, to, filter = () => true) {
   await mkdir(to, { recursive: true });
   for (const entry of await readdir(from, { withFileTypes: true })) {
     if (entry.isFile() && filter(entry.name)) await copyFile(join(from, entry.name), join(to, entry.name));
+  }
+}
+
+/** Guard: no markup the CSP would block may ship. */
+function checkCsp(html, slug, themeJs) {
+  if (/\sstyle\s*=|<style[\s>]/i.test(html)) throw new Error(`Inline style in ${slug}`);
+  for (const [tag] of html.matchAll(/<script\b[^>]*>/gi)) {
+    const ok =
+      /^<script type="module" src="\/app\.[0-9a-f]{10}\.js" defer>$/.test(tag) ||
+      tag === '<script type="application/ld+json">' ||
+      tag === `<script src="/${themeJs}">`;
+    if (!ok) throw new Error(`Script tag not allowed in ${slug}: ${tag}`);
+  }
+  if (/\son[a-z]+\s*=/i.test(html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g, ''))) {
+    throw new Error(`Inline event handler in ${slug}`);
   }
 }
 
@@ -132,7 +161,7 @@ async function main() {
   await rm(DIST, { recursive: true, force: true });
   await mkdir(DIST, { recursive: true });
 
-  const [css, js] = await Promise.all([buildCss(), buildJs()]);
+  const [css, js, themeJs] = await Promise.all([buildCss(), buildJs(), buildThemeInit()]);
   await copyDir(join(SRC, 'fonts'), join(DIST, 'fonts'), (n) => n.endsWith('.woff2') || n.endsWith('.txt'));
   for (const f of ['favicon.svg', 'og.png', 'apple-touch-icon.png']) {
     const p = join(SRC, 'static', f);
@@ -144,17 +173,23 @@ async function main() {
   const loadTemplate = async (name) => {
     if (!templates.has(name)) {
       const p = join(SRC, 'templates', `${name}.html`);
-      // Templates not written yet fall back to the stub (Phase 0 scaffold).
+      // Templates not written yet fall back to the stub.
       templates.set(name, await readFile(existsSync(p) ? p : join(SRC, 'templates', 'stub.html'), 'utf8'));
     }
     return templates.get(name);
+  };
+  const loadContent = async (key) => {
+    const p = join(SRC, 'content', `${key}.html`);
+    return existsSync(p) ? readFile(p, 'utf8') : '';
   };
 
   const titles = new Set();
   for (const page of PAGES) {
     if (titles.has(page.title)) throw new Error(`Duplicate title: ${page.title}`);
     titles.add(page.title);
-    const body = render(await loadTemplate(page.template), { ...page });
+    const data = { ...page, content: await loadContent(page.key) };
+    if (page.template === 'tool') Object.assign(data, toolData(page));
+    const body = render(await loadTemplate(page.template), data);
     const html = render(layout, {
       title: page.title,
       description: page.description,
@@ -166,13 +201,12 @@ async function main() {
       ogImage: absolute('/og.png'),
       css,
       js,
+      themeJs,
       jsonld: jsonLd(page),
       crumbs: crumbsHtml(page),
       body,
     });
-    if (/\sstyle\s*=|<style[\s>]|<script(?![^>]*\b(type="module" src=|type="application\/ld\+json"))/i.test(html)) {
-      throw new Error(`CSP-forbidden markup in ${page.slug}`);
-    }
+    checkCsp(html, page.slug, themeJs);
     const file = outFile(page.slug);
     await mkdir(dirname(file), { recursive: true });
     await writeFile(file, html);
@@ -190,7 +224,7 @@ async function main() {
   await writeFile(join(DIST, 'robots.txt'), robots.replace('{{origin}}', SITE.origin));
   await copyFile(join(SRC, 'static', '_headers'), join(DIST, '_headers'));
 
-  console.log(`Built ${PAGES.length} pages, ${css}, ${js} in ${Math.round(performance.now() - started)} ms`);
+  console.log(`Built ${PAGES.length} pages, ${css}, ${js}, ${themeJs} in ${Math.round(performance.now() - started)} ms`);
 }
 
 main().catch((err) => {

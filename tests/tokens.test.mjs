@@ -55,16 +55,16 @@ for (const [name, t] of [['light', light], ['dark', darkMedia]]) {
   test(`${name}: focus ring reaches 3:1 against backgrounds`, () => {
     for (const bg of ['bg', 'surface']) assert.ok(contrast(t.focus, t[bg]) >= 3, `focus on ${bg}`);
   });
-  // The process colors and their text colors are locked by the brief. All reach 3:1;
-  // the ones below 4.5:1 are listed so any change to them is deliberate (open question
-  // for review: bar labels are small text).
-  test(`${name}: text on every process bar reaches 3:1, known exceptions below 4.5:1`, () => {
-    const under = [];
+  test(`${name}: text on every process bar reaches 4.5:1`, () => {
     for (let i = 1; i <= 8; i++) {
       const c = contrast(t[`c${i}`], t[`on-c${i}`]);
-      assert.ok(c >= 3, `on-c${i} over c${i} is ${c.toFixed(2)}:1`);
-      if (c < 4.5) under.push(`c${i}`);
+      assert.ok(c >= 4.5, `on-c${i} over c${i} is ${c.toFixed(2)}:1`);
     }
-    assert.deepEqual(under, name === 'light' ? ['c1', 'c8'] : ['c1', 'c2', 'c3', 'c5']);
+  });
+  test(`${name}: process fills are the locked set`, () => {
+    const fills = Array.from({ length: 8 }, (_, i) => t[`c${i + 1}`].toLowerCase());
+    assert.deepEqual(fills, name === 'light'
+      ? ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#6250d6', '#e34948']
+      : ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181', '#008300', '#9085e9', '#e66767']);
   });
 }
