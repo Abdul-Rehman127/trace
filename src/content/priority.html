@@ -1,0 +1,64 @@
+    <article class="prose">
+      <h2 id="how">How Priority scheduling works</h2>
+      <p>In Priority scheduling every process carries a priority number, and the scheduler runs the ready process with the best one. What counts as best is a convention, and it differs between textbooks and systems. Trace uses lower number means higher priority by default, so priority 1 beats priority 3. The "Highest priority" switch flips this when your question uses the opposite convention.</p>
+      <p>The algorithm comes in two forms. Non-preemptive Priority decides only when the CPU becomes free, and the chosen process then runs to the end. Preemptive Priority also checks every arrival: a newcomer with a strictly better priority takes the CPU at once, and the interrupted process goes back to wait. A newcomer with the same priority does not interrupt. In both forms, ties between waiting processes go to the earlier arrival and then to the lower process number.</p>
+      <p>The weakness of strict priority is starvation. A low-priority process can wait indefinitely while higher-priority work keeps arriving. The usual remedy is aging, which slowly improves the priority of a process the longer it waits. Trace does not apply aging, so the schedules here show plain priority exactly as defined.</p>
+      <p>Priority scheduling is also a general frame for other algorithms. If you use the burst length as the priority, non-preemptive Priority becomes Shortest Job First, which is a useful way to check your understanding of both.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>Five processes arrive at time 0 with bursts 10, 1, 2, 1 and 5 and priorities 3, 1, 4, 5 and 2. With everyone ready together, non-preemptive Priority simply runs them from best to worst: P2 (1), P5 (2), P1 (3), P3 (4), P4 (5).</p>
+      {{{example}}}
+      <p>The average waiting time is (6 + 0 + 16 + 18 + 1) / 5 = 8.2. Priority does not try to minimize waiting time: the same processes under SJF would average 3.2. It optimizes for importance, not speed, and that trade-off is the point of the algorithm.</p>
+      <h3>With preemption turned on</h3>
+      <p>Try a case where arrivals happen while something runs: P1 (burst 7, priority 3) at time 0, P2 (4, priority 1) at 2, P3 (2, priority 2) at 3 and P4 (3, priority 1) at 5. At time 2, P2 preempts P1. At time 5, P4 arrives with the same priority as P2, so P2 keeps the CPU and finishes at 6. Then P4, P3 and finally the rest of P1 run, for an average waiting time of 4. <a href="/operating-systems/cpu-scheduling/priority/?alg=priority&amp;pre=1&amp;p=0:7:3,2:4:1,3:2:2,5:3:1">Open this case in the simulator</a>.</p>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Turnaround time <code>= finished - arrival</code></li>
+        <li>Waiting time <code>= turnaround - burst</code></li>
+        <li>Response time <code>= first run - arrival</code></li>
+      </ul>
+      <p>The priority number never appears in these formulas; it only decides the order. P4 in the first example has the worst priority, so it runs last: it finishes at 19, its turnaround is 19 and it waits 19 - 1 = 18 units for a job that needs just 1.</p>
+
+      <h2 id="pros-cons">Strengths and weaknesses</h2>
+      <div class="pros-cons">
+        <div>
+          <h3>Strengths</h3>
+          <ul>
+            <li>Lets important work go first, which arrival order and burst length cannot express.</li>
+            <li>The preemptive form reacts at once to urgent arrivals.</li>
+            <li>A general scheme: other policies, like SJF, are special cases of it.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Weaknesses</h3>
+          <ul>
+            <li>Low-priority processes can starve without aging.</li>
+            <li>Average waiting time can be poor, since importance and length are unrelated.</li>
+            <li>The meaning of the numbers is a convention that must be agreed first.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Assuming the bigger number wins.</strong> Read the question for the convention. Many exercises use 1 as the highest priority, but not all of them do.</li>
+        <li><strong>Ignoring arrival times.</strong> A priority 1 process that arrives at time 6 cannot run at time 2, no matter how important it is.</li>
+        <li><strong>Forgetting to check arrivals in the preemptive form.</strong> Every arrival is a possible preemption point, not only the moments when a process finishes.</li>
+        <li><strong>Preempting on equal priority.</strong> An arrival with the same priority as the running process waits. Trace follows this rule; check that your course does too.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/operating-systems/cpu-scheduling/sjf/">Shortest Job First</a>, Priority with burst length as the priority</li>
+        <li><a href="/operating-systems/cpu-scheduling/srtf/">Shortest Remaining Time First</a>, the preemptive counterpart of SJF</li>
+        <li><a href="/operating-systems/cpu-scheduling/round-robin/">Round Robin</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/fcfs/">First Come First Served</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/compare/">Compare all five algorithms</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/">How to choose a scheduling algorithm</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If the order or a number looks wrong, mention which priority convention and which form (preemptive or not) you expected, plus the link from "Copy link".</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

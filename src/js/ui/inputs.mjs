@@ -125,7 +125,7 @@ export function createInputs(root, { algorithm, initial, onChange }) {
   }
 
   function fieldsFor() {
-    return alg === 'priority' ? FIELDS : ['arrival', 'burst'];
+    return alg === 'priority' || alg === 'compare' ? FIELDS : ['arrival', 'burst'];
   }
 
   function validateRow(slot) {
@@ -191,7 +191,7 @@ export function createInputs(root, { algorithm, initial, onChange }) {
 
   function validateQuantum() {
     if (!quantum) return true;
-    const err = alg === 'rr' ? checkField('quantum', options.quantum).error : null;
+    const err = alg === 'rr' || alg === 'compare' ? checkField('quantum', options.quantum).error : null;
     if (err) {
       quantum.setAttribute('aria-invalid', 'true');
       quantum.setAttribute('aria-describedby', 'opt-quantum-hint opt-quantum-err');
@@ -273,8 +273,19 @@ export function createInputs(root, { algorithm, initial, onChange }) {
 
   // ---------- output ----------
 
-  /** The current scenario if every field is valid, else null. */
+  /** The current scenario if every field is valid, else null. On the compare page it
+   * carries every option, valid for all five algorithms at once. */
   function scenario() {
+    if (alg === 'compare') {
+      const p = scenarioFor('priority');
+      const r = scenarioFor('rr');
+      if (!p || !r) return null;
+      return {
+        algorithm: 'compare',
+        processes: p.processes,
+        options: { ...r.options, preemptive: p.options.preemptive, lowerNumberIsHigherPriority: p.options.lowerNumberIsHigherPriority },
+      };
+    }
     const processes = [];
     slots.forEach((raw, i) => {
       if (raw) processes.push({ id: `P${i + 1}`, arrival: raw.arrival, burst: raw.burst, priority: raw.priority });

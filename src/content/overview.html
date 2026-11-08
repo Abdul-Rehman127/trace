@@ -1,0 +1,50 @@
+    <article class="prose">
+      <h2 id="what">What CPU scheduling decides</h2>
+      <p>A computer usually has more processes ready to run than it has processors. CPU scheduling is the rule that decides which ready process gets the CPU next, and for how long. The five algorithms on this page all answer that question differently: by arrival order, by job length, by remaining work, by importance, or by taking turns. The simulator above runs any of them on the same processes, so you can switch and watch the timeline change.</p>
+      <p>Every schedule here is shown as a timeline, which textbooks call a Gantt chart: time runs left to right, the top lane shows who has the CPU, and each process has its own lane with its runs and its waiting stretches.</p>
+
+      <h2 id="measures">How schedules are measured</h2>
+      <p>Three numbers per process describe how a schedule treated it. <strong>Turnaround time</strong> is how long the process spent in the system, from arrival to finish. <strong>Waiting time</strong> is the part of that it spent ready but not running. <strong>Response time</strong> is how long it waited before it ran for the first time. Averages over all processes let you compare algorithms; CPU utilization and throughput describe the schedule as a whole.</p>
+      <ul class="formula-list">
+        <li>Turnaround time <code>= finished - arrival</code></li>
+        <li>Waiting time <code>= turnaround - burst</code></li>
+        <li>Response time <code>= first run - arrival</code></li>
+        <li>CPU utilization <code>= total burst / last finish</code>, and throughput <code>= processes / last finish</code></li>
+      </ul>
+
+      <h2 id="choose">Which one should I use?</h2>
+      <p>There is no single best algorithm; each one wins on a different measure. Use this table as a starting point, then try your own processes in the <a href="/operating-systems/cpu-scheduling/compare/">compare view</a>.</p>
+      <div class="table-scroll">
+        <table class="data text">
+          <caption class="sr-only">How the five scheduling algorithms compare</caption>
+          <thead>
+            <tr><th scope="col">Algorithm</th><th scope="col">Preemptive</th><th scope="col">Can starve</th><th scope="col">Best for</th><th scope="col">Main weakness</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row"><a href="/operating-systems/cpu-scheduling/fcfs/">FCFS</a></th><td>No</td><td>No</td><td>Simple batches where arrival order is fair</td><td>Short jobs wait behind long ones</td></tr>
+            <tr><th scope="row"><a href="/operating-systems/cpu-scheduling/sjf/">SJF</a></th><td>No</td><td>Yes, long jobs</td><td>Low average waiting time when job lengths are known</td><td>Needs burst lengths in advance</td></tr>
+            <tr><th scope="row"><a href="/operating-systems/cpu-scheduling/srtf/">SRTF</a></th><td>Yes</td><td>Yes, long jobs</td><td>The lowest average waiting time, if switching is cheap</td><td>Many switches, needs remaining times</td></tr>
+            <tr><th scope="row"><a href="/operating-systems/cpu-scheduling/priority/">Priority</a></th><td>Either</td><td>Yes, low priority, unless aging is used</td><td>Work where some processes matter more</td><td>Importance can leave long waits</td></tr>
+            <tr><th scope="row"><a href="/operating-systems/cpu-scheduling/round-robin/">Round Robin</a></th><td>Yes</td><td>No</td><td>Interactive use and fair response times</td><td>Higher average turnaround; depends on the quantum</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A few rules of thumb follow from the table. If you care about average waiting time and know how long jobs take, the shortest-first family (SJF, SRTF) is hard to beat. If you care about every process getting a turn quickly, Round Robin is the usual answer. If processes differ in importance, Priority expresses that directly, and FCFS remains the baseline the others are measured against.</p>
+
+      <h2 id="assumptions">What Trace assumes</h2>
+      <p>The simulator follows the classic textbook model: one CPU, time in whole units, each process needing one CPU burst with no input or output in between, and switching between processes taking no time. Real schedulers deal with all of these, but exam questions usually do not, and the simple model makes every decision visible. The tie-break rules are stated on each algorithm's page and, where textbooks differ, you can switch them.</p>
+
+      <h2 id="pages">The five algorithms</h2>
+      <ul class="related">
+        <li><a href="/operating-systems/cpu-scheduling/fcfs/">First Come First Served</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/sjf/">Shortest Job First</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/srtf/">Shortest Remaining Time First</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/priority/">Priority scheduling</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/round-robin/">Round Robin</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/compare/">Compare all five</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If something on this page looks wrong, please tell me what and why.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

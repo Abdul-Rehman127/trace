@@ -1,0 +1,63 @@
+    <article class="prose">
+      <h2 id="how">How Round Robin works</h2>
+      <p>Round Robin (RR) gives every process a turn of fixed length, called the time quantum or time slice. The ready queue is first in, first out. The process at the front runs for up to one quantum; if it still has work left when the slice ends, it goes to the back of the queue and the next process gets its turn.</p>
+      <p>Three situations decide most schedules. If a process finishes before its slice ends, it gives up the CPU at that moment, and the next process starts straight away with a full slice. If a slice ends and nobody else is waiting, the same process simply continues with a new slice; the timeline marks that boundary with a thin tick inside the bar. And a process that arrives in the middle of a slice joins the back of the queue at its arrival time, ahead of the process whose slice is still running.</p>
+      <p>The one moment textbooks disagree on is a new arrival at the exact instant a slice ends. Trace puts the new arrival in the queue first by default, then the process whose slice just ended. The "Ties at the same moment" switch reverses that, so you can match the convention your course uses. The Tie trap preset shows a case where the choice changes the answer.</p>
+      <p>The quantum shapes everything. A very large quantum means no process is ever cut off, and Round Robin turns into First Come First Served. A very small one gives every process a quick first turn, but in a real system each switch costs time, which Trace does not model. Do not expect average waiting time to move steadily as you change the quantum: for the example below it is 5.67 with a quantum of 4, 5.00 with 3, 6.33 with 2 and 17 with 24.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>Three processes arrive at time 0 with bursts 24, 3 and 3, and the quantum is 4. P1 runs first, uses its full slice and goes to the back. P2 and P3 each finish within their first slice, at 7 and 10.</p>
+      {{{example}}}
+      <p>From time 10, P1 is alone, so it keeps the CPU slice after slice until it finishes at 30. The average waiting time is (6 + 4 + 7) / 3 = 17/3, about 5.67, compared with 17 under FCFS for the same processes. Round Robin cuts the waiting time of the short jobs at the cost of finishing the long one later than it would otherwise.</p>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Turnaround time <code>= finished - arrival</code></li>
+        <li>Waiting time <code>= turnaround - burst</code></li>
+        <li>Response time <code>= first run - arrival</code></li>
+      </ul>
+      <p>Round Robin splits processes into many pieces, so add up waiting with the formula rather than by hand. P1 finishes at 30 with a burst of 24, so it waited 30 - 24 = 6 units, all of them between 4 and 10. Its response time is 0, because it started at once. Response time is where Round Robin usually shines, since every process gets the CPU within a bounded time after arriving.</p>
+
+      <h2 id="pros-cons">Strengths and weaknesses</h2>
+      <div class="pros-cons">
+        <div>
+          <h3>Strengths</h3>
+          <ul>
+            <li>Fair: every ready process gets a turn, and nothing starves.</li>
+            <li>Good response time, which suits interactive and time-sharing use.</li>
+            <li>Needs no burst lengths or priorities, only the quantum.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Weaknesses</h3>
+          <ul>
+            <li>Average turnaround is often higher than with SJF, because long and short jobs share the CPU.</li>
+            <li>Performance depends heavily on choosing the quantum well.</li>
+            <li>Frequent switches cost time in a real system.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Getting the queue order wrong on a tie.</strong> When an arrival and a slice end happen together, check which one your course puts first. Trace shows the rule in use and explains it in one line.</li>
+        <li><strong>Letting a finished process keep its slice.</strong> A process that needs only 1 unit of a 4-unit slice leaves after 1 unit; the next process starts immediately.</li>
+        <li><strong>Putting the preempted process back at the front.</strong> It goes to the back, behind everyone already waiting.</li>
+        <li><strong>Forgetting arrivals during a slice.</strong> They join the queue when they arrive, so they are ahead of the process whose slice is running when that slice ends.</li>
+        <li><strong>Counting slices instead of time.</strong> Waiting time is measured in time units, from arrival to completion, minus the burst.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/operating-systems/cpu-scheduling/fcfs/">First Come First Served</a>, what Round Robin becomes with a huge quantum</li>
+        <li><a href="/operating-systems/cpu-scheduling/srtf/">Shortest Remaining Time First</a>, another preemptive algorithm</li>
+        <li><a href="/operating-systems/cpu-scheduling/sjf/">Shortest Job First</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/priority/">Priority scheduling</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/compare/">Compare all five algorithms</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/">How to choose a scheduling algorithm</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>Round Robin answers depend on small rules, so please include the quantum, the tie setting and the processes, or simply the link from "Copy link".</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

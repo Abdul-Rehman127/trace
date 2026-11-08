@@ -64,7 +64,7 @@ html:not(.js) .tool { display: none; }
 .ptable td.num-cell { text-align: right; width: 1%; }
 .ptable tr.row-err td { height: auto; padding: 0 6px 10px; border-top: 0; }
 .ptable .remove-cell { width: 1%; padding-right: 0; text-align: right; }
-.tool:not([data-alg="priority"]) .col-prio { display: none; }
+.tool:not([data-alg="priority"]):not([data-alg="compare"]) .col-prio { display: none; }
 @media (pointer: coarse) {
   .ptable td { height: 56px; }
   .ptable-wrap { min-height: calc(28px + var(--rows, 3) * 56px); }

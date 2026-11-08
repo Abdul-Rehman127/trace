@@ -1,4 +1,5 @@
 // Build-time HTML fragments for tool pages. Trusted, generated from page metadata only.
+import { readFileSync } from 'node:fs';
 import { presetsFor, defaultScenario } from '../js/engine/presets.mjs';
 import { simulate } from '../js/engine/scheduling.mjs';
 import { validateScenario } from '../js/engine/validate.mjs';
@@ -55,7 +56,7 @@ function segmented(name, labelId, choices, current) {
 function options(page) {
   const s = defaultScenario(page.algorithm === 'compare' ? 'fcfs' : page.algorithm);
   const o = s.options;
-  const show = (alg) => page.selectable || page.algorithm === alg;
+  const show = (alg) => page.selectable || page.algorithm === 'compare' || page.algorithm === alg;
   const out = [];
   if (show('rr')) {
     out.push(`<div class="opts opt-rr">
@@ -117,10 +118,22 @@ function narrationParts(algorithm) {
   };
 }
 
-/** Values for src/templates/tool.html. */
+const INPUTS = readFileSync(new URL('./inputs.html', import.meta.url), 'utf8');
+const fill = (tpl, data) => tpl.replace(/\{\{\{\s*(\w+)\s*\}\}\}|\{\{\s*(\w+)\s*\}\}/g, (_, raw, safe) => (raw ? String(data[raw]) : esc(data[safe])));
+
+/** Values for src/templates/tool.html and compare.html. */
 export function toolData(page) {
   const s = defaultScenario(page.algorithm);
+  const base = {
+    options: options(page),
+    presets: presets(page),
+    rows: String(s.processes.length),
+  };
+  if (page.algorithm === 'compare') {
+    return { ...base, alg: 'compare', inputs: fill(INPUTS, base) };
+  }
   return {
+    inputs: fill(INPUTS, base),
     h1: page.h1,
     lede: page.lede,
     alg: page.algorithm,

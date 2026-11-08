@@ -1,0 +1,22 @@
+    <article class="prose">
+      <h2 id="what">What Trace is</h2>
+      <p>Trace is a free website of step-by-step simulators that show how computers make decisions. You enter your own inputs, press play, and watch each decision happen with a plain-English reason attached to the exact moment it was made. Every simulator page also explains the idea in writing, with a worked example you can open in the simulator.</p>
+      <p>The first section covers CPU scheduling in operating systems: First Come First Served, Shortest Job First, Shortest Remaining Time First, Priority and Round Robin, plus a page that compares them. More sections are planned: page replacement, AI search and networking.</p>
+
+      <h2 id="accuracy">Accuracy</h2>
+      <p>Every algorithm is tested against textbook answers and an independent reference implementation; tie-break rules are stated on each page.</p>
+      <p>Three kinds of automated checks back this up. A set of hand-verified examples must match exactly, including the classic textbook cases and the tricky ones. Thousands of random inputs are run through both the simulator and a separate, deliberately different reference scheduler, and the two must agree on every schedule. And general rules are checked on every schedule, such as never running a process before it arrives and never leaving the CPU idle while something is ready.</p>
+      <p>Where textbooks disagree, for example on who joins the Round Robin queue first when an arrival and the end of a slice happen together, the page says which rule is in use and lets you switch it.</p>
+
+      <h2 id="privacy">Privacy</h2>
+      <p>Trace has no accounts, no ads and no cookies. Everything you type stays in your browser: the simulations run on your device and nothing you enter is sent anywhere. A share link puts your inputs in the address itself, so anyone you send it to can see them; it contains nothing else.</p>
+      <p>To know which pages are useful, Trace counts page views with a privacy-friendly analytics service that sets no cookies and does not follow you across sites. The only thing Trace stores on your device is your light or dark theme choice, if you change it.</p>
+
+      <h2 id="report">Report a mistake</h2>
+      <p>If you find an answer or an explanation you believe is wrong, please write. A link from "Copy link" is the quickest way to show exactly what you saw, and a note on what you expected and where that comes from helps a lot. Corrections are welcome and will be fixed.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+
+      <h2 id="disclaimer">Disclaimer</h2>
+      <p>Trace is an independent educational project. It is not affiliated with or endorsed by any school, company or publisher.</p>
+      <p>Trace is built by <a href="https://abmans.com">Abdul Rehman</a>. The <a href="https://github.com/Abdul-Rehman127/trace">source code</a> is open under the MIT license.</p>
+    </article>

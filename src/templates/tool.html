@@ -10,43 +10,7 @@
 
     <div class="tool" data-tool data-alg="{{alg}}" data-selectable="{{selectable}}">
       <div class="tool-grid">
-        <section class="inputs" aria-labelledby="h-processes">
-          <h2 id="h-processes" class="label">Processes</h2>
-          <div class="ptable-wrap" data-ptable data-rows="{{rows}}">
-          <table class="ptable">
-            <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col" class="num-col">Arrival</th>
-                <th scope="col" class="num-col">Burst</th>
-                <th scope="col" class="num-col col-prio">Priority</th>
-                <th scope="col"><span class="sr-only">Remove</span></th>
-              </tr>
-            </thead>
-            <tbody data-proc-rows></tbody>
-          </table>
-          </div>
-          <div class="add-row">
-            <button type="button" class="btn-quiet" data-add aria-describedby="add-note">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
-              <span>Add process</span>
-            </button>
-            <span class="add-note" id="add-note" data-add-note></span>
-          </div>
-          {{{options}}}
-          <div class="presets" role="group" aria-label="Presets">
-            {{{presets}}}
-            <button type="button" class="chip chip-link" data-copy>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
-              <span>Copy link</span>
-            </button>
-          </div>
-          <div class="copy-fallback" data-copy-fallback hidden>
-            <label for="share-url">Copy this link</label>
-            <input id="share-url" type="text" readonly data-copy-field>
-          </div>
-        </section>
-
+{{{inputs}}}
         <section class="stage-col" aria-label="Simulation">
           <div class="stage" data-stage>
             <div class="bar" data-transport>

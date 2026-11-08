@@ -1,0 +1,63 @@
+    <article class="prose">
+      <h2 id="how">How Shortest Remaining Time First works</h2>
+      <p>Shortest Remaining Time First (SRTF) is the preemptive version of Shortest Job First. At every moment the CPU belongs to the process with the least work left. Since remaining times only change for the running process, the decision can only change at two kinds of moments: when the running process finishes, and when a new process arrives.</p>
+      <p>The arrival check is where most of the action happens. The newcomer's burst is compared with the time the running process has <strong>left</strong>, not with its original burst. If the newcomer needs strictly less, it takes over and the interrupted process goes back to the ready queue with its remaining time intact, to resume later from where it stopped.</p>
+      <p>Ties need a rule, and textbooks do not all state one. In Trace, if a newcomer needs exactly as much time as the running process has left, the running process keeps the CPU, because switching would gain nothing. Other ties, between waiting processes, go to the earlier arrival and then to the lower process number.</p>
+      <p>With known burst lengths and free switching, SRTF gives the lowest average waiting time of any schedule for the same processes. Real systems pay for each switch and cannot know remaining times exactly, and long jobs can starve when short ones keep arriving. Trace treats a switch as taking no time, so the numbers here are the textbook ideal.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>P1 arrives at 0 needing 8. At time 1, P2 arrives needing 4, less than the 7 that P1 has left, so P2 takes over. At times 2 and 3, P3 (9) and P4 (5) arrive, but neither needs less than P2's remaining time, so P2 keeps running until it finishes at 5.</p>
+      {{{example}}}
+      <p>From time 5 on, the shortest remaining job is P4 (5), then P1 (7 left), then P3 (9). The average waiting time is (9 + 0 + 15 + 2) / 4 = 6.5. Look at P1: its response time is 0 because it started immediately, but it waited 9 units in total, from 1 to 10. Non-preemptive SJF on the same processes averages 7.75, because it cannot let P2 in early.</p>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Turnaround time <code>= finished - arrival</code></li>
+        <li>Waiting time <code>= turnaround - burst</code></li>
+        <li>Response time <code>= first run - arrival</code></li>
+      </ul>
+      <p>The waiting formula already counts every gap, which matters once processes are split. P1 finishes at 17 after arriving at 0, so its turnaround is 17, and 17 - 8 = 9 units of waiting: the stretch from 1 to 10 when it was ready but not running. Response time only measures the first wait, so for preempted processes it is often much smaller than the waiting time.</p>
+
+      <h2 id="pros-cons">Strengths and weaknesses</h2>
+      <div class="pros-cons">
+        <div>
+          <h3>Strengths</h3>
+          <ul>
+            <li>The lowest average waiting time when bursts are known and switching is free.</li>
+            <li>Short jobs that arrive late still get through quickly.</li>
+            <li>Reacts to every arrival instead of waiting for the CPU to free up.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Weaknesses</h3>
+          <ul>
+            <li>Needs to know how much work each process has left.</li>
+            <li>Long jobs can be preempted again and again and may starve.</li>
+            <li>More context switches than SJF, each of which costs time in a real system.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Comparing against the original burst.</strong> At time 1 in the example, P2's 4 is compared with P1's remaining 7, not with P1's burst of 8.</li>
+        <li><strong>Preempting on a tie.</strong> When the newcomer needs exactly what the running process has left, check the rule your course uses. Trace keeps the running process, and the page states it so you can match your textbook.</li>
+        <li><strong>Losing the waiting time after a preemption.</strong> A process that is interrupted keeps accumulating waiting time until it gets the CPU back. Use turnaround minus burst rather than adding gaps by hand.</li>
+        <li><strong>Mixing up response and waiting time.</strong> They are equal in FCFS and SJF, but not here: P1 above has a response time of 0 and a waiting time of 9.</li>
+        <li><strong>Checking only when a process finishes.</strong> That is non-preemptive SJF. SRTF must re-check at every arrival.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/operating-systems/cpu-scheduling/sjf/">Shortest Job First</a>, the non-preemptive form</li>
+        <li><a href="/operating-systems/cpu-scheduling/priority/">Priority scheduling</a> with preemption turned on</li>
+        <li><a href="/operating-systems/cpu-scheduling/round-robin/">Round Robin</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/fcfs/">First Come First Served</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/compare/">Compare all five algorithms</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/">How to choose a scheduling algorithm</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>Preemptive schedules are easy to get subtly wrong, in textbooks and in tools. If you think this one is, send the processes or the copied link and the answer you expected.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

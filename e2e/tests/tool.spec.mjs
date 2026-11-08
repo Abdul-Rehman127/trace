@@ -263,6 +263,8 @@ test.describe('mobile 390 px', () => {
     const done = await open(page, `${RR}?alg=rr&q=1&p=0:99,1:99,2:99,3:99,4:99,5:99,6:99,7:99`);
     const widths = await page.evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]);
     expect(widths[0]).toBeLessThanOrEqual(widths[1]);
+    // A mobile browser widens the layout viewport when anything overflows; it must stay 390.
+    expect(widths[1]).toBe(390);
     const bar = page.locator('[data-transport]');
     expect(await bar.evaluate((el) => getComputedStyle(el).position)).toBe('fixed');
     const box = await bar.boundingBox();

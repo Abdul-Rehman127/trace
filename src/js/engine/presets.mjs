@@ -15,8 +15,20 @@ const IDLE_GAP = P([0, 3, 2], [1, 2, 1], [9, 4, 3], [10, 2, 1]);
 const HEAVY = P([0, 7, 3], [1, 4, 1], [2, 9, 4], [3, 2, 2], [5, 6, 5], [6, 3, 1], [8, 5, 3], [9, 1, 2]);
 const TIE_TRAP = P([0, 5], [2, 3], [4, 2]);
 
-/** Preset list for an algorithm: [{ key, label, processes, options }]. */
+// The compare page runs all five algorithms, so it needs arrivals, bursts and
+// priorities that make them disagree.
+const MIXED = P([0, 8, 2], [1, 4, 3], [2, 9, 1], [3, 5, 4]);
+const MIXED_OPTIONS = { quantum: 3, rrTie: 'new', preemptive: false };
+
+/** Preset list for an algorithm (or 'compare'): [{ key, label, processes, options }]. */
 export function presetsFor(algorithm) {
+  if (algorithm === 'compare') {
+    return [
+      { key: 'mixed', label: 'Mixed example', processes: MIXED, options: MIXED_OPTIONS },
+      { key: 'idle', label: 'Idle gap', processes: IDLE_GAP, options: {} },
+      { key: 'heavy', label: 'Heavy load', processes: HEAVY, options: {} },
+    ].map((p) => ({ ...p, processes: p.processes.map((x) => ({ ...x })) }));
+  }
   const base = CLASSIC[algorithm];
   const list = [
     { key: 'classic', label: 'Classic example', processes: base.processes, options: base.options },
@@ -30,6 +42,7 @@ export function presetsFor(algorithm) {
 // What a page shows on first load. Round Robin opens on a busier example that shows
 // slices rotating; its golden case stays available as "Classic example".
 const DEFAULTS = {
+  compare: { processes: MIXED, options: MIXED_OPTIONS },
   rr: { processes: P([0, 5], [1, 3], [2, 1], [3, 4]), options: { quantum: 2, rrTie: 'new' } },
 };
 

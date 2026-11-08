@@ -1,0 +1,30 @@
+    <article class="prose">
+      <h2 id="read">How to read the comparison</h2>
+      <p>Each row runs one algorithm on exactly the processes on the left, with the same quantum for Round Robin and the same priority settings for Priority. The lowest value in each column is marked. Click an algorithm's name to open that schedule in its own simulator, where you can play it step by step and read the reason for every decision.</p>
+      <p>You will usually notice that the last finish time is the same in every row. None of these algorithms leaves the CPU idle while a process is ready, so they all complete the same total work at the same moment. What changes is who waits along the way, and that is what the averages measure.</p>
+
+      <h2 id="patterns">Patterns worth looking for</h2>
+      <ul>
+        <li>SRTF usually has the lowest average waiting time, because it always runs whatever can finish soonest. SJF is close behind when few processes arrive while another is running.</li>
+        <li>Round Robin often has the best response time but a higher average turnaround, because it shares the CPU instead of finishing jobs one at a time.</li>
+        <li>FCFS is the baseline. When a long job arrives first, its waiting times jump; when jobs arrive shortest first, it can match SJF exactly.</li>
+        <li>Priority answers a different question, importance rather than speed, so it can rank last on every average and still be the right choice.</li>
+      </ul>
+
+      <h2 id="caution">A word of caution</h2>
+      <p>Averages depend heavily on the workload. One set of processes can make any algorithm look good or bad, so try several: the presets, a mix of long and short jobs, and jobs that arrive while others run. The written pages for each algorithm explain why the numbers come out as they do.</p>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/operating-systems/cpu-scheduling/">How to choose a scheduling algorithm</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/fcfs/">First Come First Served</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/sjf/">Shortest Job First</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/srtf/">Shortest Remaining Time First</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/priority/">Priority scheduling</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/round-robin/">Round Robin</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>Send the link from "Copy link" with the row that looks wrong.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

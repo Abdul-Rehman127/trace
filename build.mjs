@@ -10,11 +10,13 @@ import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 import { PAGES, SITE } from './src/pages.mjs';
 import { toolData } from './src/templates/parts.mjs';
+import { miniUtilityCss } from './src/templates/mini.mjs';
+import { pageData } from './src/templates/pagedata.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const SRC = join(ROOT, 'src');
 const DIST = join(ROOT, 'dist');
-const CSS_ORDER = ['tokens.css', 'base.css', 'components.css', 'tool.css'];
+const CSS_ORDER = ['tokens.css', 'base.css', 'components.css', 'tool.css', 'content.css'];
 const THEME_BUDGET = 300;
 
 const hash = (buf) => createHash('sha256').update(buf).digest('hex').slice(0, 10);
@@ -96,6 +98,7 @@ async function buildCss() {
     const p = join(SRC, 'css', f);
     if (existsSync(p)) parts.push(await readFile(p, 'utf8'));
   }
+  parts.push(miniUtilityCss());
   const result = await esbuild.transform(parts.join('\n'), {
     loader: 'css',
     minify: true,
@@ -178,17 +181,18 @@ async function main() {
     }
     return templates.get(name);
   };
-  const loadContent = async (key) => {
+  const loadContent = async (key, data) => {
     const p = join(SRC, 'content', `${key}.html`);
-    return existsSync(p) ? readFile(p, 'utf8') : '';
+    return existsSync(p) ? render(await readFile(p, 'utf8'), data) : '';
   };
 
   const titles = new Set();
   for (const page of PAGES) {
     if (titles.has(page.title)) throw new Error(`Duplicate title: ${page.title}`);
     titles.add(page.title);
-    const data = { ...page, content: await loadContent(page.key) };
-    if (page.template === 'tool') Object.assign(data, toolData(page));
+    const data = { ...page, ...pageData(page) };
+    data.content = await loadContent(page.key, data);
+    if (page.template === 'tool' || page.template === 'compare') Object.assign(data, toolData(page));
     const body = render(await loadTemplate(page.template), data);
     const html = render(layout, {
       title: page.title,

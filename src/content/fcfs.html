@@ -1,0 +1,62 @@
+    <article class="prose">
+      <h2 id="how">How First Come First Served works</h2>
+      <p>First Come First Served (FCFS) is the simplest CPU scheduling algorithm: processes get the CPU in the order they arrive. When the CPU becomes free, the scheduler takes the process that has been in the ready queue the longest, and that process keeps the CPU until its whole burst is done. Nothing can interrupt it, so FCFS is non-preemptive.</p>
+      <p>Two details decide every schedule. If two processes arrive at the same time, Trace gives the CPU to the lower process number first, so P1 goes before P2. If nothing is ready when the CPU frees up, the CPU sits idle until the next arrival, and the timeline shows that gap as idle time.</p>
+      <p>The behavior to remember is the convoy effect. One long process at the front of the queue makes every short process behind it wait for its entire burst, much like cars stuck behind a slow truck on a single-lane road. FCFS looks only at arrival order, never at how long a job is, so the same work can produce very different waiting times depending on who shows up first.</p>
+      <p>Because each process runs exactly once, from start to finish, its response time and its waiting time are always the same number under FCFS. That stops being true for the preemptive algorithms, where a process can start, stop and wait again.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>Three processes arrive at time 0 with bursts of 24, 3 and 3 units. They all arrive together, so the tie rule puts P1 first, and the two short jobs wait behind the long one.</p>
+      {{{example}}}
+      <p>The average waiting time is (0 + 24 + 27) / 3 = 17. Now imagine the two short jobs had arrived a moment before P1. The order becomes P2, P3, P1 and the average wait drops to (0 + 3 + 6) / 3 = 3, with exactly the same amount of work. That gap is the convoy effect in numbers.</p>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Turnaround time <code>= finished - arrival</code></li>
+        <li>Waiting time <code>= turnaround - burst</code></li>
+        <li>Response time <code>= first run - arrival</code></li>
+      </ul>
+      <p>Take P3 from the example: it finishes at 30 and arrived at 0, so its turnaround time is 30. Its burst is 3, so it spent 30 - 3 = 27 units waiting. It started at 27, which makes its response time 27 as well, as expected for FCFS. Averages are the sum over all processes divided by the number of processes. The simulator shows them to two decimals and gives the exact fraction when you hover or focus the number.</p>
+
+      <h2 id="pros-cons">Strengths and weaknesses</h2>
+      <div class="pros-cons">
+        <div>
+          <h3>Strengths</h3>
+          <ul>
+            <li>Easy to understand and to implement with a single queue.</li>
+            <li>No starvation: every process that arrives eventually runs.</li>
+            <li>Very little scheduling work, since a decision is needed only when a process finishes.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Weaknesses</h3>
+          <ul>
+            <li>The convoy effect: short jobs stuck behind a long one inflate the average waiting time.</li>
+            <li>A poor fit for interactive use, because one long job delays everything behind it.</li>
+            <li>No way for an urgent process to get ahead, since nothing is ever preempted.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Ordering by process number instead of arrival time.</strong> If P3 arrives at time 1 and P2 at time 2, P3 runs first. Process numbers only break ties between equal arrival times.</li>
+        <li><strong>Forgetting idle time.</strong> If the first process arrives at time 2, the CPU is idle from 0 to 2. The timeline starts at 0, and the idle stretch lowers CPU utilization.</li>
+        <li><strong>Using the start time as the waiting time.</strong> That only works when the process arrived at 0. In general waiting time is start time minus arrival time for FCFS.</li>
+        <li><strong>Measuring turnaround from time 0.</strong> Turnaround runs from the moment the process arrives, not from the start of the timeline.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/operating-systems/cpu-scheduling/sjf/">Shortest Job First</a>, the same one-shot runs ordered by burst length</li>
+        <li><a href="/operating-systems/cpu-scheduling/round-robin/">Round Robin</a>, which adds time slices to arrival order</li>
+        <li><a href="/operating-systems/cpu-scheduling/srtf/">Shortest Remaining Time First</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/priority/">Priority scheduling</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/compare/">Compare all five algorithms</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/">How to choose a scheduling algorithm</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a number or a sentence on this page looks wrong, please say so. Include the processes you entered, or paste the link from "Copy link".</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

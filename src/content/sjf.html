@@ -1,0 +1,62 @@
+    <article class="prose">
+      <h2 id="how">How Shortest Job First works</h2>
+      <p>Shortest Job First (SJF) makes one decision each time the CPU becomes free: out of the processes that are already waiting, it runs the one with the smallest burst. Once a process starts, it runs to the end, even if a shorter one arrives a moment later. This page covers that non-preemptive form. The version that interrupts for a shorter newcomer has its own page, <a href="/operating-systems/cpu-scheduling/srtf/">Shortest Remaining Time First</a>.</p>
+      <p>Only processes that have arrived are candidates. A 1-unit job arriving at time 5 cannot be chosen at time 4, however short it is. When two waiting processes have the same burst, Trace picks the one that arrived earlier, and if they also arrived together, the lower process number.</p>
+      <p>The idea behind SJF is that a short job finishing early shortens the wait of everyone queued behind it, while a long job finishing early helps nobody much. When all the processes are ready at the same moment, running them shortest first gives the lowest possible average waiting time of any order.</p>
+      <p>The catch is that the scheduler has to know each burst before it runs. Exercises give you the numbers, but a real system can only guess. Textbook treatments usually predict the next burst of a process from the lengths of its previous bursts, for example with an exponential average. SJF also risks starvation: if short jobs keep arriving, a long job can be passed over again and again.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>Four processes arrive at time 0 with bursts of 6, 8, 7 and 3. With everything ready at once, SJF simply sorts by burst: P4 (3), then P1 (6), P3 (7) and P2 (8).</p>
+      {{{example}}}
+      <p>The average waiting time is (3 + 16 + 9 + 0) / 4 = 7. Running the same four processes in arrival order, as FCFS would, gives waits of 0, 6, 14 and 21, an average of 10.25. The difference comes entirely from letting P4 go first instead of last.</p>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Turnaround time <code>= finished - arrival</code></li>
+        <li>Waiting time <code>= turnaround - burst</code></li>
+        <li>Response time <code>= first run - arrival</code></li>
+      </ul>
+      <p>In the example, P2 is the longest job and runs last: it finishes at 24, so its turnaround is 24 and its waiting time is 24 - 8 = 16. As in every non-preemptive algorithm, each process runs in one piece, so its response time equals its waiting time.</p>
+
+      <h2 id="pros-cons">Strengths and weaknesses</h2>
+      <div class="pros-cons">
+        <div>
+          <h3>Strengths</h3>
+          <ul>
+            <li>The lowest average waiting time of any order when all jobs are ready together and their bursts are known.</li>
+            <li>Short jobs finish quickly, which makes the system feel faster for them.</li>
+            <li>No preemption, so each process runs in one piece with no switching cost.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Weaknesses</h3>
+          <ul>
+            <li>Needs burst lengths in advance, which real systems can only estimate.</li>
+            <li>Long jobs can starve if shorter ones keep arriving.</li>
+            <li>A short job that arrives just after a long one has started must wait for all of it.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Interrupting the running job.</strong> In non-preemptive SJF a shorter arrival waits until the current job finishes. Switching on arrival is SRTF, a different algorithm with different answers.</li>
+        <li><strong>Choosing a job that has not arrived yet.</strong> At each decision, look only at processes whose arrival time is at or before the current time.</li>
+        <li><strong>Breaking ties by process number first.</strong> Between equal bursts, the earlier arrival goes first; the process number only decides when arrival times match too. Some textbooks use FCFS order for ties, which is the same thing.</li>
+        <li><strong>Calling SJF optimal in every case.</strong> Its guarantee holds for average waiting time with known bursts. It says nothing about fairness, and long jobs can be delayed without limit.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/operating-systems/cpu-scheduling/srtf/">Shortest Remaining Time First</a>, the preemptive form</li>
+        <li><a href="/operating-systems/cpu-scheduling/fcfs/">First Come First Served</a>, the same structure ordered by arrival</li>
+        <li><a href="/operating-systems/cpu-scheduling/priority/">Priority scheduling</a>, where burst length can act as the priority</li>
+        <li><a href="/operating-systems/cpu-scheduling/round-robin/">Round Robin</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/compare/">Compare all five algorithms</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/">How to choose a scheduling algorithm</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>Tell me which number or sentence looks wrong, and include the link from "Copy link" if you changed the processes, so I can reproduce exactly what you saw.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

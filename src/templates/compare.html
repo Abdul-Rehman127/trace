@@ -1,0 +1,33 @@
+    <section class="intro">
+      <h1>{{h1}}</h1>
+      <p class="lede">{{lede}} Change the processes on the left and every row updates at once.</p>
+    </section>
+
+    <noscript><p class="noscript">The comparison needs JavaScript. The explanation below works without it.</p></noscript>
+
+    <div class="tool" data-tool data-alg="compare" data-selectable="0">
+      <div class="tool-grid">
+{{{inputs}}}
+        <section class="compare-out" aria-labelledby="h-compare">
+          <h2 id="h-compare" class="label">Averages for the same processes</h2>
+          <div class="cmp-table-wrap">
+            <table class="cmp-table">
+              <thead>
+                <tr>
+                  <th scope="col">Algorithm</th>
+                  <th scope="col">Waiting</th>
+                  <th scope="col">Turnaround</th>
+                  <th scope="col">Response</th>
+                  <th scope="col">Last finish</th>
+                </tr>
+              </thead>
+              <tbody data-cmp-rows></tbody>
+            </table>
+          </div>
+          <div class="cmp-strips" data-cmp-strips aria-label="Timelines for each algorithm"></div>
+          <p class="cmp-note" data-cmp-note>&nbsp;</p>
+          <div class="toast" data-toast role="status" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+{{{content}}}
