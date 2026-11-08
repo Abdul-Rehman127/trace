@@ -9,7 +9,14 @@ export const SPEEDS = [0.5, 1, 2, 4];
 const ease = (p) => 1 - Math.pow(1 - p, 3);
 const near = (a, b) => Math.abs(a - b) < 1e-6;
 
+const now = () => document.timeline.currentTime ?? performance.now();
+
 /**
+ * The playback clock. While playing, time is computed from an anchor on the document
+ * timeline: time = anchor.time + (frameTime - anchor.ts) / UNIT_MS * speed. The
+ * timeline's compositor animations use the same anchor as their start time, so the
+ * clock and what is drawn cannot drift apart. Hidden tabs freeze playback; it resumes
+ * from the same moment.
  * @param {{ onFrame(time:number), onUnit(k:number, info:{prev:number, playing:boolean}), onState(state) }} hooks
  */
 export function createPlayer({ onFrame, onUnit, onState }) {
@@ -18,12 +25,15 @@ export function createPlayer({ onFrame, onUnit, onState }) {
   let playing = false;
   let speed = 1;
   let raf = 0;
-  let last = 0;
+  let anchor = null; // { ts, time } while playing
   let glide = null;
   let unit = -1;
+  let suspended = false;
 
   const reduced = () => prefersReducedMotion();
   const unitOf = (t) => (t >= T ? T : Math.floor(t + 1e-9));
+  const clockAt = (ts) => Math.min(T, anchor.time + ((ts - anchor.ts) / UNIT_MS) * speed);
+  const state = () => ({ playing: playing && !suspended, speed, time, anchor, length: T });
 
   function emit() {
     const shown = reduced() && playing ? Math.floor(time + 1e-9) : time;
@@ -50,10 +60,8 @@ export function createPlayer({ onFrame, onUnit, onState }) {
         time = glide.to;
         glide = null;
       }
-    } else if (playing) {
-      const dt = last ? Math.min(100, ts - last) : 0;
-      last = ts;
-      time = Math.min(T, time + (dt / UNIT_MS) * speed);
+    } else if (playing && anchor) {
+      time = clockAt(ts);
       if (time >= T) {
         time = T;
         setPlaying(false);
@@ -63,12 +71,16 @@ export function createPlayer({ onFrame, onUnit, onState }) {
     if (playing || glide) schedule();
   }
 
+  function reanchor() {
+    anchor = playing ? { ts: now(), time } : null;
+  }
+
   function setPlaying(on) {
     if (on === playing) return;
     playing = on;
-    last = 0;
     if (on) glide = null;
-    onState({ playing, speed, time });
+    reanchor();
+    onState(state());
     if (on) schedule();
   }
 
@@ -102,9 +114,20 @@ export function createPlayer({ onFrame, onUnit, onState }) {
     if (document.hidden) {
       if (raf) cancelAnimationFrame(raf);
       raf = 0;
-    } else if (playing || glide) {
-      last = 0;
-      schedule();
+      if (playing) {
+        // Freeze at the moment the tab was hidden and stop the compositor animations.
+        if (anchor) time = clockAt(now());
+        suspended = true;
+        anchor = null;
+        onState(state());
+      }
+    } else {
+      if (playing) {
+        suspended = false;
+        reanchor();
+        onState(state());
+      }
+      if (playing || glide) schedule();
     }
   });
 
@@ -118,7 +141,9 @@ export function createPlayer({ onFrame, onUnit, onState }) {
       setPlaying(true);
     },
     pause() {
+      if (playing && anchor) time = clockAt(now());
       setPlaying(false);
+      emit();
     },
     toggle() {
       if (playing) this.pause();
@@ -137,8 +162,14 @@ export function createPlayer({ onFrame, onUnit, onState }) {
       emit();
     },
     setSpeed(s) {
+      if (playing && anchor) time = clockAt(now());
       speed = s;
-      onState({ playing, speed, time });
+      reanchor();
+      onState(state());
+    },
+    /** Clock value at the current frame time (for tests and sync checks). */
+    clockNow() {
+      return playing && anchor ? clockAt(now()) : time;
     },
     get time() {
       return time;

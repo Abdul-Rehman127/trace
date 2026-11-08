@@ -267,7 +267,7 @@ export function createInputs(root, { algorithm, initial, onChange }) {
       });
       activePreset = preset.key;
       syncPresets();
-      emit();
+      emit('preset');
     });
   }
 
@@ -313,15 +313,16 @@ export function createInputs(root, { algorithm, initial, onChange }) {
     return s;
   }
 
-  function emit() {
-    onChange(scenario());
+  /** reason: 'edit' (typing, options, add/remove), 'preset' or 'algorithm'. */
+  function emit(reason = 'edit') {
+    onChange(scenario(), reason);
   }
 
   function setAlgorithm(next) {
     alg = next;
     for (const slot of rowEls.keys()) validateRow(slot);
     validateQuantum();
-    emit();
+    emit('algorithm');
   }
 
   load(initial);

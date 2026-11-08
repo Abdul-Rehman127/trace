@@ -13,8 +13,14 @@ Everything runs in the visitor's browser and nothing they type is sent anywhere.
 ```
 npm i            # installs esbuild, the only dependency
 npm run dev      # builds dist/ and serves it on http://localhost:8788 with the production headers
-npm test         # engine, validation, share link, narration and color contrast tests
+npm test         # fast Node tests: golden, differential, property, validation, share links, narration, contrast
 ```
+
+## Deploy (Cloudflare Pages)
+
+Build command: `node tests/run.mjs && node build.mjs` (also `npm run build:ci`). Output directory: `dist`. Environment variable: `NODE_VERSION=20`.
+
+`tests/run.mjs` runs the fast Node tests (about 2 seconds) before every build, so a failing golden, differential, property, validation or share-link test stops the deploy. It needs only Node and the `esbuild` dev dependency that Pages installs from `package.json`; the browser tests in `e2e/` are not part of the deploy.
 
 Browser tests live in `e2e/` with their own `package.json`, so the Cloudflare build never installs Playwright:
 
@@ -36,7 +42,7 @@ npm run shots    # screenshots of the Round Robin page into shots/
 7. Colors, type and spacing are CSS custom properties in `src/css/tokens.css`; dark mode follows the system and can be toggled.
 8. Fonts are self-hosted woff2 files (Big Shoulders Display, IBM Plex Sans, IBM Plex Mono) under the SIL Open Font License.
 9. Later sections (page replacement, disk scheduling, ...) add entries to `pages.mjs` and folders under `engine/`.
-10. Hosting is Cloudflare Pages: build command `node build.mjs`, output `dist`, `NODE_VERSION=20`.
+10. Hosting is Cloudflare Pages: build command `node tests/run.mjs && node build.mjs`, output `dist`, `NODE_VERSION=20`.
 
 ## Tie-break rules
 

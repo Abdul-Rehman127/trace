@@ -6,13 +6,11 @@
 import { h } from './dom.mjs';
 import { iconCheck } from './icons.mjs';
 import { UNIT_MS } from './controls.mjs';
+import { prefersReducedMotion } from './dom.mjs';
 
 const MIN_U = 14;
 const MAX_U = 72;
 const STEPS = [1, 2, 5, 10, 20, 25, 50, 100];
-const RULER_H = 48;
-const CPU_H = 56;
-const LANE_H = 36;
 const LEAD = 12; // matches --lead in tool.css
 // Bars are grouped into blocks of time so a change repaints one block, not a whole lane.
 const BLOCK = 24;
@@ -63,6 +61,13 @@ export function createTimeline(stage, { onScrubStart, onScrub, onScrubEnd }) {
 
   /** Build all lane DOM for a new schedule. Called on every valid input change. */
   function setModel(scenario, result) {
+    // Drop everything that belonged to the previous schedule.
+    if (headAnim) headAnim.cancel();
+    headAnim = null;
+    cancelBarAnims();
+    motion = null;
+    hideTip();
+    head.style.transform = '';
     const T = result.summary.makespan;
     const procs = scenario.processes;
     const segs = [];
@@ -213,13 +218,16 @@ export function createTimeline(stage, { onScrubStart, onScrub, onScrubEnd }) {
 
   // ---------- compositor-driven motion while playing ----------
   // While playing, the playhead and the growing bar are Web Animations on transform,
-  // which the compositor runs without main-thread work. The rAF clock in controls.mjs
-  // only handles discrete changes (a new unit, the next bar).
-  let motion = null; // { speed } while playing
+  // run by the compositor. Their start times come from the player's anchor on the
+  // document timeline, the same anchor the clock uses, so they cannot drift from it.
+  // The rAF clock in controls.mjs only handles discrete changes (a new unit, the next bar).
+  let motion = null; // { speed, anchor: { ts, time } } while playing
   let headAnim = null;
   let barAnims = [];
   let animSeg = -1;
-  const EASE = 'linear';
+  const msPerUnit = () => UNIT_MS / motion.speed;
+  /** Document-timeline time at which the clock reaches time t. */
+  const tsAt = (t) => motion.anchor.ts + (t - motion.anchor.time) * msPerUnit();
 
   function cancelBarAnims() {
     for (const a of barAnims) a.cancel();
@@ -227,40 +235,41 @@ export function createTimeline(stage, { onScrubStart, onScrub, onScrubEnd }) {
     animSeg = -1;
   }
 
-  function startBarAnim(i, time) {
+  function startBarAnim(i) {
     cancelBarAnims();
     const s = model.segs[i];
-    const p0 = Math.max(0, Math.min(1, (time - s.start) / (s.end - s.start)));
-    const duration = ((s.end - time) * UNIT_MS) / motion.speed;
-    if (duration <= 0) return;
-    const opts = { duration, easing: EASE, fill: 'forwards' };
+    const opts = { duration: (s.end - s.start) * msPerUnit(), easing: 'linear', fill: 'forwards' };
     for (const v of s.views) {
-      barAnims.push(v.fill.animate([{ transform: `translateX(${(p0 - 1) * 100}%)` }, { transform: 'translateX(0%)' }], opts));
-      barAnims.push(v.lbl.animate([{ transform: `translateX(${(1 - p0) * 100}%)` }, { transform: 'translateX(0%)' }], opts));
+      const a = v.fill.animate([{ transform: 'translateX(-100%)' }, { transform: 'translateX(0%)' }], opts);
+      const b = v.lbl.animate([{ transform: 'translateX(100%)' }, { transform: 'translateX(0%)' }], opts);
+      a.startTime = b.startTime = tsAt(s.start);
+      barAnims.push(a, b);
     }
     animSeg = i;
   }
 
-  function startHeadAnim(time) {
-    if (headAnim) headAnim.cancel();
-    const duration = ((model.T - time) * UNIT_MS) / motion.speed;
-    if (duration <= 0) return;
+  function startHeadAnim() {
     headAnim = head.animate(
-      [{ transform: `translateX(${(time * u).toFixed(2)}px)` }, { transform: `translateX(${(model.T * u).toFixed(2)}px)` }],
-      { duration, easing: EASE, fill: 'forwards' },
+      [{ transform: 'translateX(0px)' }, { transform: `translateX(${(model.T * u).toFixed(2)}px)` }],
+      { duration: model.T * msPerUnit(), easing: 'linear', fill: 'forwards' },
     );
+    headAnim.startTime = tsAt(0);
   }
 
   /** Switch between compositor motion (playing) and direct rendering (paused, scrubbing). */
   function setMotion(next, time) {
+    if (model && active >= 0) {
+      setLive(active, false);
+      setP(active, 0);
+    }
+    active = -1;
     if (headAnim) headAnim.cancel();
     headAnim = null;
     cancelBarAnims();
-    motion = next;
+    motion = next && next.anchor ? next : null;
     if (!model) return;
-    if (motion) startHeadAnim(time);
+    if (motion) startHeadAnim();
     // Re-render statically; when playing, render() starts the bar animation.
-    active = -2;
     render(time, true);
   }
 
@@ -306,7 +315,7 @@ export function createTimeline(stage, { onScrubStart, onScrub, onScrubEnd }) {
       if (!motion) setP(nextActive, (time - s.start) / (s.end - s.start));
       else if (animSeg !== nextActive) {
         setP(nextActive, Math.max(1e-6, (time - s.start) / (s.end - s.start)));
-        startBarAnim(nextActive, time);
+        startBarAnim(nextActive);
       }
     }
     full = nextFull;
@@ -328,14 +337,14 @@ export function createTimeline(stage, { onScrubStart, onScrub, onScrubEnd }) {
     const visible = viewW - nameW - LEAD;
     if (x > scrollLeft + visible * 0.85 || x < scrollLeft) {
       const left = Math.max(0, x - visible * (follow ? 0.25 : 0.5));
-      scroller.scrollTo({ left, behavior: follow ? 'smooth' : 'auto' });
+      scroller.scrollTo({ left, behavior: follow && !prefersReducedMotion() ? 'smooth' : 'auto' });
       scrollLeft = left;
     }
   }
 
-  function setPlaying(on, { time, speed, reduced }) {
+  function setPlaying(on, { time, speed, anchor, reduced }) {
     head.classList.toggle('live', on);
-    setMotion(on && !reduced ? { speed } : null, time);
+    setMotion(on && !reduced ? { speed, anchor } : null, time);
   }
 
   function refresh(animate) {
@@ -369,25 +378,44 @@ export function createTimeline(stage, { onScrubStart, onScrub, onScrubEnd }) {
   ruler.addEventListener('pointerup', endScrub);
   ruler.addEventListener('pointercancel', endScrub);
 
-  // Tooltip for bars (hover; touch taps also raise pointerover).
+  // Tooltip for bars. Mouse: shows on hover, hides on leave. Touch: a tap shows it
+  // and the next tap anywhere hides it (touch fires pointerout as soon as the finger lifts).
+  let tipBar = null;
+  let tipJustShown = false;
+  function hideTip() {
+    tip.hidden = true;
+    tipBar = null;
+  }
   graphic.addEventListener('pointerover', (e) => {
     const bar = e.target.closest('.bar-seg');
     if (!bar || !model) return;
     const s = model.segs[Number(bar.dataset.i)];
-    const inCpu = !!bar.closest('.cpu');
     const len = s.end - s.start;
     tip.replaceChildren(h('b', { text: s.pid }), ` ${s.start} to ${s.end}`, h('br'), `${len} ${len === 1 ? 'unit' : 'units'}`);
-    const laneTop = inCpu ? RULER_H : RULER_H + CPU_H + s.lane * LANE_H;
-    const barTop = inCpu ? laneTop + (CPU_H - 36) / 2 : laneTop + (LANE_H - 22) / 2;
-    const x = Math.max(nameW + 48, nameW + LEAD + (s.start + len / 2) * u);
-    tip.style.transform = `translate(${x.toFixed(1)}px, ${barTop - 6}px) translate(-50%, -100%)`;
     tip.hidden = false;
+    // Geometry measured on hover, relative to the lanes (which scroll with the content).
+    const base = lanes.getBoundingClientRect();
+    const r = bar.getBoundingClientRect();
+    const half = tip.offsetWidth / 2;
+    const minX = scroller.scrollLeft + nameW + half + 4;
+    const maxX = scroller.scrollLeft + scroller.clientWidth - half - 4;
+    const x = Math.max(minX, Math.min(maxX, r.left - base.left + r.width / 2));
+    tip.style.transform = `translate(${x.toFixed(1)}px, ${(r.top - base.top - 6).toFixed(1)}px) translate(-50%, -100%)`;
+    tipBar = bar;
+    tipJustShown = e.pointerType !== 'mouse';
   });
   graphic.addEventListener('pointerout', (e) => {
-    if (!e.relatedTarget || !e.relatedTarget.closest || !e.relatedTarget.closest('.bar-seg')) tip.hidden = true;
+    if (e.pointerType !== 'mouse') return;
+    if (!e.relatedTarget || !e.relatedTarget.closest || !e.relatedTarget.closest('.bar-seg')) hideTip();
   });
+  document.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' || !tipBar) return;
+    if (tipJustShown) tipJustShown = false;
+    else hideTip();
+  }, { passive: true });
   scroller.addEventListener('scroll', () => {
     scrollLeft = scroller.scrollLeft;
+    if (tipBar) hideTip();
   }, { passive: true });
 
   new ResizeObserver(() => measure()).observe(scroller);

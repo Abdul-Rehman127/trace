@@ -91,7 +91,7 @@ export function mountTool(root) {
     },
     onState: (s) => {
       showState(s);
-      timeline.setPlaying(s.playing, { time: s.time, speed: s.speed, reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches });
+      timeline.setPlaying(s.playing, { time: s.time, speed: s.speed, anchor: s.anchor, reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches });
     },
   });
   const showState = bindTransport(stage, player, { onUserStep: announce });
@@ -154,10 +154,11 @@ export function mountTool(root) {
   const inputs = createInputs(root, {
     algorithm,
     initial: decoded.scenario,
-    onChange: (s) => {
+    onChange: (s, reason) => {
       if (!s) return; // keep showing the last valid timeline
       changedByUser = true;
-      apply(s, { animate: true });
+      // A short fade marks a new scenario (preset or algorithm), never each keystroke.
+      apply(s, { animate: reason === 'preset' || reason === 'algorithm' });
       scheduleUrl();
     },
   });
