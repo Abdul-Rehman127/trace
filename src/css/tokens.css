@@ -1,0 +1,123 @@
+/* Design tokens. Every color used by components comes from here. */
+
+@font-face {
+  font-family: "Big Shoulders Display";
+  src: url(/fonts/big-shoulders-display.woff2) format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url(/fonts/ibm-plex-sans-latin-400-normal.woff2) format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url(/fonts/ibm-plex-sans-latin-500-normal.woff2) format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url(/fonts/ibm-plex-sans-latin-600-normal.woff2) format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url(/fonts/ibm-plex-mono-latin-400-normal.woff2) format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url(/fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+  --bg: #EDF1F6;
+  --surface: #FBFCFD;
+  --sunk: #E4EAF1;
+  --ink: #111826;
+  --ink-2: #4C5767;
+  --muted: #5F6976; /* brief value #707B8A was 3.79:1 on --bg; darkened to pass AA on bg, surface and sunk */
+  --line: #D8DFE8;
+  --line-strong: #B9C3D0;
+  --focus: #2A6FDB;
+
+  /* Process colors by slot. Pre-validated set; do not change. */
+  --c1: #2a78d6; --on-c1: #fff;
+  --c2: #eb6834; --on-c2: #0b0b0b;
+  --c3: #1baf7a; --on-c3: #0b0b0b;
+  --c4: #eda100; --on-c4: #0b0b0b;
+  --c5: #e87ba4; --on-c5: #0b0b0b;
+  --c6: #008300; --on-c6: #fff;
+  --c7: #6250d6; --on-c7: #fff;
+  --c8: #e34948; --on-c8: #fff;
+
+  --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --fs-display: clamp(2.4rem, 4.6vw, 3.6rem);
+
+  --ease-out: cubic-bezier(.2, .8, .2, 1);
+  --t-fast: 120ms;
+  --t-ui: 160ms;
+  --t-chip: 280ms;
+
+  --r-bar: 6px;
+  --r-control: 8px;
+  --r-control-lg: 10px;
+  --r-stage: 14px;
+
+  --content-max: 1360px;
+  --gutter: clamp(16px, 3.2vw, 48px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0E131A;
+    --surface: #151C26;
+    --sunk: #0B1016;
+    --ink: #E9EEF4;
+    --ink-2: #B4BFCC;
+    --muted: #8793A2;
+    --line: #263140;
+    --line-strong: #38465A;
+    --focus: #6EA2F5;
+    --c1: #3987e5; --on-c1: #fff;
+    --c2: #d95926; --on-c2: #fff;
+    --c3: #199e70; --on-c3: #fff;
+    --c4: #c98500; --on-c4: #0b0b0b;
+    --c5: #d55181; --on-c5: #fff;
+    --c6: #008300; --on-c6: #fff;
+    --c7: #9085e9; --on-c7: #0b0b0b;
+    --c8: #e66767; --on-c8: #0b0b0b;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0E131A;
+  --surface: #151C26;
+  --sunk: #0B1016;
+  --ink: #E9EEF4;
+  --ink-2: #B4BFCC;
+  --muted: #8793A2;
+  --line: #263140;
+  --line-strong: #38465A;
+  --focus: #6EA2F5;
+  --c1: #3987e5; --on-c1: #fff;
+  --c2: #d95926; --on-c2: #fff;
+  --c3: #199e70; --on-c3: #fff;
+  --c4: #c98500; --on-c4: #0b0b0b;
+  --c5: #d55181; --on-c5: #fff;
+  --c6: #008300; --on-c6: #fff;
+  --c7: #9085e9; --on-c7: #0b0b0b;
+  --c8: #e66767; --on-c8: #0b0b0b;
+}

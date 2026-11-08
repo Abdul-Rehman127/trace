@@ -1,0 +1,21 @@
+{
+  "name": "trace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Free step-by-step simulators that show how computers make decisions.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs && node dev.mjs",
+    "test": "node --test tests/engine.test.mjs tests/validate.test.mjs tests/share.test.mjs tests/narrate.test.mjs tests/tokens.test.mjs",
+    "e2e": "node build.mjs && npm --prefix e2e test",
+    "shots": "node build.mjs && npm --prefix e2e run shots"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

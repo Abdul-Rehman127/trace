@@ -1,0 +1,13 @@
+{
+  "name": "trace-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Browser tests for Trace. Kept in its own package so Cloudflare Pages never installs Playwright.",
+  "scripts": {
+    "test": "playwright test",
+    "shots": "node ../scripts/shots.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0"
+  }
+}

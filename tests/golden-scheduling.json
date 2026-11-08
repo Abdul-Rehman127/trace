@@ -1,0 +1,879 @@
+{
+ "note": "Produced by reference/ref_sched.py (tick based oracle). Times are integers. segments merge contiguous runs of the same process. Averages are exact fractions as strings.",
+ "cases": [
+  {
+   "name": "fcfs_classic",
+   "algorithm": "fcfs",
+   "options": {
+    "quantum": null,
+    "preemptive": false,
+    "rrTie": null,
+    "lowerNumberIsHigherPriority": true
+   },
+   "processes": [
+    {
+     "id": "P1",
+     "arrival": 0,
+     "burst": 24,
+     "priority": 0
+    },
+    {
+     "id": "P2",
+     "arrival": 0,
+     "burst": 3,
+     "priority": 0
+    },
+    {
+     "id": "P3",
+     "arrival": 0,
+     "burst": 3,
+     "priority": 0
+    }
+   ],
+   "expected": {
+    "segments": [
+     {
+      "pid": "P1",
+      "start": 0,
+      "end": 24
+     },
+     {
+      "pid": "P2",
+      "start": 24,
+      "end": 27
+     },
+     {
+      "pid": "P3",
+      "start": 27,
+      "end": 30
+     }
+    ],
+    "rows": [
+     {
+      "id": "P1",
+      "completion": 24,
+      "turnaround": 24,
+      "waiting": 0,
+      "response": 0
+     },
+     {
+      "id": "P2",
+      "completion": 27,
+      "turnaround": 27,
+      "waiting": 24,
+      "response": 24
+     },
+     {
+      "id": "P3",
+      "completion": 30,
+      "turnaround": 30,
+      "waiting": 27,
+      "response": 27
+     }
+    ],
+    "averages": {
+     "waiting": "17",
+     "turnaround": "27",
+     "response": "17"
+    }
+   }
+  },
+  {
+   "name": "sjf_classic",
+   "algorithm": "sjf",
+   "options": {
+    "quantum": null,
+    "preemptive": false,
+    "rrTie": null,
+    "lowerNumberIsHigherPriority": true
+   },
+   "processes": [
+    {
+     "id": "P1",
+     "arrival": 0,
+     "burst": 6,
+     "priority": 0
+    },
+    {
+     "id": "P2",
+     "arrival": 0,
+     "burst": 8,
+     "priority": 0
+    },
+    {
+     "id": "P3",
+     "arrival": 0,
+     "burst": 7,
+     "priority": 0
+    },
+    {
+     "id": "P4",
+     "arrival": 0,
+     "burst": 3,
+     "priority": 0
+    }
+   ],
+   "expected": {
+    "segments": [
+     {
+      "pid": "P4",
+      "start": 0,
+      "end": 3
+     },
+     {
+      "pid": "P1",
+      "start": 3,
+      "end": 9
+     },
+     {
+      "pid": "P3",
+      "start": 9,
+      "end": 16
+     },
+     {
+      "pid": "P2",
+      "start": 16,
+      "end": 24
+     }
+    ],
+    "rows": [
+     {
+      "id": "P1",
+      "completion": 9,
+      "turnaround": 9,
+      "waiting": 3,
+      "response": 3
+     },
+     {
+      "id": "P2",
+      "completion": 24,
+      "turnaround": 24,
+      "waiting": 16,
+      "response": 16
+     },
+     {
+      "id": "P3",
+      "completion": 16,
+      "turnaround": 16,
+      "waiting": 9,
+      "response": 9
+     },
+     {
+      "id": "P4",
+      "completion": 3,
+      "turnaround": 3,
+      "waiting": 0,
+      "response": 0
+     }
+    ],
+    "averages": {
+     "waiting": "7",
+     "turnaround": "13",
+     "response": "7"
+    }
+   }
+  },
+  {
+   "name": "srtf_classic",
+   "algorithm": "srtf",
+   "options": {
+    "quantum": null,
+    "preemptive": false,
+    "rrTie": null,
+    "lowerNumberIsHigherPriority": true
+   },
+   "processes": [
+    {
+     "id": "P1",
+     "arrival": 0,
+     "burst": 8,
+     "priority": 0
+    },
+    {
+     "id": "P2",
+     "arrival": 1,
+     "burst": 4,
+     "priority": 0
+    },
+    {
+     "id": "P3",
+     "arrival": 2,
+     "burst": 9,
+     "priority": 0
+    },
+    {
+     "id": "P4",
+     "arrival": 3,
+     "burst": 5,
+     "priority": 0
+    }
+   ],
+   "expected": {
+    "segments": [
+     {
+      "pid": "P1",
+      "start": 0,
+      "end": 1
+     },
+     {
+      "pid": "P2",
+      "start": 1,
+      "end": 5
+     },
+     {
+      "pid": "P4",
+      "start": 5,
+      "end": 10
+     },
+     {
+      "pid": "P1",
+      "start": 10,
+      "end": 17
+     },
+     {
+      "pid": "P3",
+      "start": 17,
+      "end": 26
+     }
+    ],
+    "rows": [
+     {
+      "id": "P1",
+      "completion": 17,
+      "turnaround": 17,
+      "waiting": 9,
+      "response": 0
+     },
+     {
+      "id": "P2",
+      "completion": 5,
+      "turnaround": 4,
+      "waiting": 0,
+      "response": 0
+     },
+     {
+      "id": "P3",
+      "completion": 26,
+      "turnaround": 24,
+      "waiting": 15,
+      "response": 15
+     },
+     {
+      "id": "P4",
+      "completion": 10,
+      "turnaround": 7,
+      "waiting": 2,
+      "response": 2
+     }
+    ],
+    "averages": {
+     "waiting": "13/2",
+     "turnaround": "13",
+     "response": "17/4"
+    }
+   }
+  },
+  {
+   "name": "rr_classic_q4",
+   "algorithm": "rr",
+   "options": {
+    "quantum": 4,
+    "preemptive": false,
+    "rrTie": "new",
+    "lowerNumberIsHigherPriority": true
+   },
+   "processes": [
+    {
+     "id": "P1",
+     "arrival": 0,
+     "burst": 24,
+     "priority": 0
+    },
+    {
+     "id": "P2",
+     "arrival": 0,
+     "burst": 3,
+     "priority": 0
+    },
+    {
+     "id": "P3",
+     "arrival": 0,
+     "burst": 3,
+     "priority": 0
+    }
+   ],
+   "expected": {
+    "segments": [
+     {
+      "pid": "P1",
+      "start": 0,
+      "end": 4
+     },
+     {
+      "pid": "P2",
+      "start": 4,
+      "end": 7
+     },
+     {
+      "pid": "P3",
+      "start": 7,
+      "end": 10
+     },
+     {
+      "pid": "P1",
+      "start": 10,
+      "end": 30
+     }
+    ],
+    "rows": [
+     {
+      "id": "P1",
+      "completion": 30,
+      "turnaround": 30,
+      "waiting": 6,
+      "response": 0
+     },
+     {
+      "id": "P2",
+      "completion": 7,
+      "turnaround": 7,
+      "waiting": 4,
+      "response": 4
+     },
+     {
+      "id": "P3",
+      "completion": 10,
+      "turnaround": 10,
+      "waiting": 7,
+      "response": 7
+     }
+    ],
+    "averages": {
+     "waiting": "17/3",
+     "turnaround": "47/3",
+     "response": "11/3"
+    }
+   }
+  },
+  {
+   "name": "priority_classic_nonpreemptive",
+   "algorithm": "priority",
+   "options": {
+    "quantum": null,
+    "preemptive": false,
+    "rrTie": null,
+    "lowerNumberIsHigherPriority": true
+   },
+   "processes": [
+    {
+     "id": "P1",
+     "arrival": 0,
+     "burst": 10,
+     "priority": 3
+    },
+    {
+     "id": "P2",
+     "arrival": 0,
+     "burst": 1,
+     "priority": 1
+    },
+    {
+     "id": "P3",
+     "arrival": 0,
+     "burst": 2,
+     "priority": 4
+    },
+    {
+     "id": "P4",
+     "arrival": 0,
+     "burst": 1,
+     "priority": 5
+    },
+    {
+     "id": "P5",
+     "arrival": 0,
+     "burst": 5,
+     "priority": 2
+    }
+   ],
+   "expected": {
+    "segments": [
+     {
+      "pid": "P2",
+      "start": 0,
+      "end": 1
+     },
+     {
+      "pid": "P5",
+      "start": 1,
+      "end": 6
+     },
+     {
+      "pid": "P1",
+      "start": 6,
+      "end": 16
+     },
+     {
+      "pid": "P3",
+      "start": 16,
+      "end": 18
+     },
+     {
+      "pid": "P4",
+      "start": 18,
+      "end": 19
+     }
+    ],
+    "rows": [
+     {
+      "id": "P1",
+      "completion": 16,
+      "turnaround": 16,
+      "waiting": 6,
+      "response": 6
+     },
+     {
+      "id": "P2",
+      "completion": 1,
+      "turnaround": 1,
+      "waiting": 0,
+      "response": 0
+     },
+     {
+      "id": "P3",
+      "completion": 18,
+      "turnaround": 18,
+      "waiting": 16,
+      "response": 16
+     },
+     {
+      "id": "P4",
+      "completion": 19,
+      "turnaround": 19,
+      "waiting": 18,
+      "response": 18
+     },
+     {
+      "id": "P5",
+      "completion": 6,
+      "turnaround": 6,
+      "waiting": 1,
+      "response": 1
+     }
+    ],
+    "averages": {
+     "waiting": "41/5",
+     "turnaround": "12",
+     "response": "41/5"
+    }
+   }
+  },
+  {
+   "name": "priority_preemptive",
+   "algorithm": "priority",
+   "options": {
+    "quantum": null,
+    "preemptive": true,
+    "rrTie": null,
+    "lowerNumberIsHigherPriority": true
+   },
+   "processes": [
+    {
+     "id": "P1",
+     "arrival": 0,
+     "burst": 7,
+     "priority": 3
+    },
+    {
+     "id": "P2",
+     "arrival": 2,
+     "burst": 4,
+     "priority": 1
+    },
+    {
+     "id": "P3",
+     "arrival": 3,
+     "burst": 2,
+     "priority": 2
+    },
+    {
+     "id": "P4",
+     "arrival": 5,
+     "burst": 3,
+     "priority": 1
+    }
+   ],
+   "expected": {
+    "segments": [
+     {
+      "pid": "P1",
+      "start": 0,
+      "end": 2
+     },
+     {
+      "pid": "P2",
+      "start": 2,
+      "end": 6
+     },
+     {
+      "pid": "P4",
+      "start": 6,
+      "end": 9
+     },
+     {
+      "pid": "P3",
+      "start": 9,
+      "end": 11
+     },
+     {
+      "pid": "P1",
+      "start": 11,
+      "end": 16
+     }
+    ],
+    "rows": [
+     {
+      "id": "P1",
+      "completion": 16,
+      "turnaround": 16,
+      "waiting": 9,
+      "response": 0
+     },
+     {
+      "id": "P2",
+      "completion": 6,
+      "turnaround": 4,
+      "waiting": 0,
+      "response": 0
+     },
+     {
+      "id": "P3",
+      "completion": 11,
+      "turnaround": 8,
+      "waiting": 6,
+      "response": 6
+     },
+     {
+      "id": "P4",
+      "completion": 9,
+      "turnaround": 4,
+      "waiting": 1,
+      "response": 1
+     }
+    ],
+    "averages": {
+     "waiting": "4",
+     "turnaround": "8",
+     "response": "7/4"
+    }
+   }
+  },
+  {
+   "name": "fcfs_idle_gap",
+   "algorithm": "fcfs",
+   "options": {
+    "quantum": null,
+    "preemptive": false,
+    "rrTie": null,
+    "lowerNumberIsHigherPriority": true
+   },
+   "processes": [
+    {
+     "id": "P1",
+     "arrival": 2,
+     "burst": 3,
+     "priority": 0
+    },
+    {
+     "id": "P2",
+     "arrival": 10,
+     "burst": 2,
+     "priority": 0
+    }
+   ],
+   "expected": {
+    "segments": [
+     {
+      "pid": null,
+      "start": 0,
+      "end": 2
+     },
+     {
+      "pid": "P1",
+      "start": 2,
+      "end": 5
+     },
+     {
+      "pid": null,
+      "start": 5,
+      "end": 10
+     },
+     {
+      "pid": "P2",
+      "start": 10,
+      "end": 12
+     }
+    ],
+    "rows": [
+     {
+      "id": "P1",
+      "completion": 5,
+      "turnaround": 3,
+      "waiting": 0,
+      "response": 0
+     },
+     {
+      "id": "P2",
+      "completion": 12,
+      "turnaround": 2,
+      "waiting": 0,
+      "response": 0
+     }
+    ],
+    "averages": {
+     "waiting": "0",
+     "turnaround": "5/2",
+     "response": "0"
+    }
+   }
+  },
+  {
+   "name": "srtf_equal_remaining_does_not_preempt",
+   "algorithm": "srtf",
+   "options": {
+    "quantum": null,
+    "preemptive": false,
+    "rrTie": null,
+    "lowerNumberIsHigherPriority": true
+   },
+   "processes": [
+    {
+     "id": "P1",
+     "arrival": 0,
+     "burst": 5,
+     "priority": 0
+    },
+    {
+     "id": "P2",
+     "arrival": 1,
+     "burst": 4,
+     "priority": 0
+    }
+   ],
+   "expected": {
+    "segments": [
+     {
+      "pid": "P1",
+      "start": 0,
+      "end": 5
+     },
+     {
+      "pid": "P2",
+      "start": 5,
+      "end": 9
+     }
+    ],
+    "rows": [
+     {
+      "id": "P1",
+      "completion": 5,
+      "turnaround": 5,
+      "waiting": 0,
+      "response": 0
+     },
+     {
+      "id": "P2",
+      "completion": 9,
+      "turnaround": 8,
+      "waiting": 4,
+      "response": 4
+     }
+    ],
+    "averages": {
+     "waiting": "2",
+     "turnaround": "13/2",
+     "response": "2"
+    }
+   }
+  },
+  {
+   "name": "rr_tie_new_arrival_first_q2",
+   "algorithm": "rr",
+   "options": {
+    "quantum": 2,
+    "preemptive": false,
+    "rrTie": "new",
+    "lowerNumberIsHigherPriority": true
+   },
+   "processes": [
+    {
+     "id": "P1",
+     "arrival": 0,
+     "burst": 5,
+     "priority": 0
+    },
+    {
+     "id": "P2",
+     "arrival": 2,
+     "burst": 3,
+     "priority": 0
+    },
+    {
+     "id": "P3",
+     "arrival": 4,
+     "burst": 2,
+     "priority": 0
+    }
+   ],
+   "expected": {
+    "segments": [
+     {
+      "pid": "P1",
+      "start": 0,
+      "end": 2
+     },
+     {
+      "pid": "P2",
+      "start": 2,
+      "end": 4
+     },
+     {
+      "pid": "P1",
+      "start": 4,
+      "end": 6
+     },
+     {
+      "pid": "P3",
+      "start": 6,
+      "end": 8
+     },
+     {
+      "pid": "P2",
+      "start": 8,
+      "end": 9
+     },
+     {
+      "pid": "P1",
+      "start": 9,
+      "end": 10
+     }
+    ],
+    "rows": [
+     {
+      "id": "P1",
+      "completion": 10,
+      "turnaround": 10,
+      "waiting": 5,
+      "response": 0
+     },
+     {
+      "id": "P2",
+      "completion": 9,
+      "turnaround": 7,
+      "waiting": 4,
+      "response": 0
+     },
+     {
+      "id": "P3",
+      "completion": 8,
+      "turnaround": 4,
+      "waiting": 2,
+      "response": 2
+     }
+    ],
+    "averages": {
+     "waiting": "11/3",
+     "turnaround": "7",
+     "response": "2/3"
+    }
+   }
+  },
+  {
+   "name": "rr_tie_preempted_first_q2",
+   "algorithm": "rr",
+   "options": {
+    "quantum": 2,
+    "preemptive": false,
+    "rrTie": "preempted",
+    "lowerNumberIsHigherPriority": true
+   },
+   "processes": [
+    {
+     "id": "P1",
+     "arrival": 0,
+     "burst": 5,
+     "priority": 0
+    },
+    {
+     "id": "P2",
+     "arrival": 2,
+     "burst": 3,
+     "priority": 0
+    },
+    {
+     "id": "P3",
+     "arrival": 4,
+     "burst": 2,
+     "priority": 0
+    }
+   ],
+   "expected": {
+    "segments": [
+     {
+      "pid": "P1",
+      "start": 0,
+      "end": 4
+     },
+     {
+      "pid": "P2",
+      "start": 4,
+      "end": 6
+     },
+     {
+      "pid": "P1",
+      "start": 6,
+      "end": 7
+     },
+     {
+      "pid": "P3",
+      "start": 7,
+      "end": 9
+     },
+     {
+      "pid": "P2",
+      "start": 9,
+      "end": 10
+     }
+    ],
+    "rows": [
+     {
+      "id": "P1",
+      "completion": 7,
+      "turnaround": 7,
+      "waiting": 2,
+      "response": 0
+     },
+     {
+      "id": "P2",
+      "completion": 10,
+      "turnaround": 8,
+      "waiting": 5,
+      "response": 2
+     },
+     {
+      "id": "P3",
+      "completion": 9,
+      "turnaround": 5,
+      "waiting": 3,
+      "response": 3
+     }
+    ],
+    "averages": {
+     "waiting": "10/3",
+     "turnaround": "20/3",
+     "response": "5/3"
+    }
+   }
+  }
+ ]
+}
