@@ -221,7 +221,9 @@ async function main() {
       css,
       js,
       themeInline: theme.code,
-      analytics: ANALYTICS ? `${ANALYTICS_TAG}\n` : '',
+      // Pages sends the 404 response with Cache-Control: no-store, so Cloudflare injects the same
+      // beacon there itself; adding ours too would count each 404 twice.
+      analytics: ANALYTICS && !page.noindex ? `${ANALYTICS_TAG}\n` : '',
       jsonld: jsonLd(page),
       crumbs: crumbsHtml(page),
       body,
