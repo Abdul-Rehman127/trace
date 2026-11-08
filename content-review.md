@@ -223,7 +223,7 @@ Email: abdul at abmans dot com
 
 - Title: SJF Scheduling Simulator with Gantt Chart | Trace
 - Description (145 characters): Enter your processes, press play, and see Shortest Job First pick the smallest burst each time the CPU frees up, with every step explained. Free.
-- Written content: 782 words
+- Written content: 784 words
 
 ### H1: Shortest Job First scheduling
 
@@ -241,7 +241,7 @@ Only processes that have arrived are candidates. A 1-unit job arriving at time 5
 
 The idea behind SJF is that a short job finishing early shortens the wait of everyone queued behind it, while a long job finishing early helps nobody much. When all the processes are ready at the same moment, running them shortest first gives the lowest possible average waiting time of any order.
 
-The catch is that the scheduler has to know each burst before it runs. Exercises give you the numbers, but a real system can only guess. Textbook treatments usually predict the next burst of a process from the lengths of its previous bursts, for example with an exponential average. SJF also risks starvation: if short jobs keep arriving, a long job can be passed over again and again.
+The catch is that the scheduler has to know each burst before it runs. Exercises give you the numbers, but a real system can only guess. Textbook treatments often estimate the next burst of a process from the lengths of its previous bursts, for example with an exponential average. SJF also risks starvation: if short jobs keep arriving, a long job can be passed over again and again.
 
 #### Worked example
 
@@ -298,7 +298,7 @@ In the example, P2 is the longest job and runs last: it finishes at 24, so its t
 
 - **Choosing a job that has not arrived yet.** At each decision, look only at processes whose arrival time is at or before the current time.
 
-- **Breaking ties by process number first.** Between equal bursts, the earlier arrival goes first; the process number only decides when arrival times match too. Some textbooks use FCFS order for ties, which is the same thing.
+- **Breaking ties by process number first.** Between equal bursts, the earlier arrival goes first; the process number only decides when arrival times match too. Many courses break ties by arrival order, which is what Trace does. Check yours.
 
 - **Calling SJF optimal in every case.** Its guarantee holds for average waiting time with known bursts. It says nothing about fairness, and long jobs can be delayed without limit.
 
@@ -328,7 +328,7 @@ Email: abdul at abmans dot com
 
 - Title: SRTF Scheduling Simulator with Gantt Chart | Trace
 - Description (143 characters): Enter your processes, press play, and see Shortest Remaining Time First preempt when a shorter job arrives, with each decision explained. Free.
-- Written content: 838 words
+- Written content: 827 words
 
 ### H1: Shortest Remaining Time First scheduling
 
@@ -344,7 +344,7 @@ Shortest Remaining Time First (SRTF) is the preemptive version of Shortest Job F
 
 The arrival check is where most of the action happens. The newcomer's burst is compared with the time the running process has **left**, not with its original burst. If the newcomer needs strictly less, it takes over and the interrupted process goes back to the ready queue with its remaining time intact, to resume later from where it stopped.
 
-Ties need a rule, and textbooks do not all state one. In Trace, if a newcomer needs exactly as much time as the running process has left, the running process keeps the CPU, because switching would gain nothing. Other ties, between waiting processes, go to the earlier arrival and then to the lower process number.
+In Trace, if a newcomer needs exactly as much time as the running process has left, the running process keeps the CPU, because switching would gain nothing. Other ties, between waiting processes, go to the earlier arrival and then to the lower process number.
 
 With known burst lengths and free switching, SRTF gives the lowest average waiting time of any schedule for the same processes. Real systems pay for each switch and cannot know remaining times exactly, and long jobs can starve when short ones keep arriving. Trace treats a switch as taking no time, so the numbers here are the textbook ideal.
 
@@ -545,7 +545,7 @@ Email: abdul at abmans dot com
 
 - Title: Round Robin Scheduling Simulator with Gantt Chart | Trace
 - Description (144 characters): Set a time quantum, enter your processes, press play, and watch Round Robin rotate the ready queue, with every slice explained. Free, no signup.
-- Written content: 884 words
+- Written content: 883 words
 
 ### H1: Round Robin scheduling
 
@@ -561,7 +561,7 @@ Round Robin (RR) gives every process a turn of fixed length, called the time qua
 
 Three situations decide most schedules. If a process finishes before its slice ends, it gives up the CPU at that moment, and the next process starts straight away with a full slice. If a slice ends and nobody else is waiting, the same process simply continues with a new slice; the timeline marks that boundary with a thin tick inside the bar. And a process that arrives in the middle of a slice joins the back of the queue at its arrival time, ahead of the process whose slice is still running.
 
-The one moment textbooks disagree on is a new arrival at the exact instant a slice ends. Trace puts the new arrival in the queue first by default, then the process whose slice just ended. The "Ties at the same moment" switch reverses that, so you can match the convention your course uses. The Tie trap preset shows a case where the choice changes the answer.
+One moment where sources differ is a new arrival at the exact instant a slice ends. Trace puts the new arrival in the queue first by default, then the process whose slice just ended. The "Ties at the same moment" switch reverses that, so you can match the convention your course uses. The Tie trap preset shows a case where the choice changes the answer.
 
 The quantum shapes everything. A very large quantum means no process is ever cut off, and Round Robin turns into First Come First Served. A very small one gives every process a quick first turn, but in a real system each switch costs time, which Trace does not model. Do not expect average waiting time to move steadily as you change the quantum: for the example below it is 5.67 with a quantum of 4, 5.00 with 3, 6.33 with 2 and 17 with 24.
 
@@ -808,6 +808,10 @@ Why this happened
 
 Ready queue, next in line first
 
+Decision log
+
+Every moment something was decided. Choose a line to move the playhead there.
+
 Keyboard shortcuts
 
 SpacePlay or pause
@@ -845,23 +849,8 @@ Lowest number / Highest number
 
 ## Needs verification
 
-Claims in the copy that I am not 100 percent sure of, or that depend on how a source is read. Everything else is either a definition, a number computed by the engine at build time, or a rule of Trace itself.
+Items 1 to 10 from Checkpoint C were reviewed by Chat and accepted, with four wording edits that are now applied (SJF "often estimate", SRTF tie sentence removed, SJF mistake 3 rewritten, Round Robin "One moment where sources differ"). What remains open:
 
-### Facts about scheduling
-
-1. **SJF optimality** (SJF page, "How it works" and "Strengths"): "When all the processes are ready at the same moment, running them shortest first gives the lowest possible average waiting time of any order." I am confident this is the standard result for non-preemptive scheduling of jobs available at time 0, but please confirm the wording does not overreach.
-2. **SRTF optimality** (SRTF page; overview table; compare page "usually has the lowest"): "With known burst lengths and free switching, SRTF gives the lowest average waiting time of any schedule for the same processes." This is the shortest-remaining-processing-time result for one processor. Please confirm it may be stated for waiting time (it follows from turnaround, since the bursts are fixed).
-3. **Burst prediction** (SJF page): "Textbook treatments usually predict the next burst of a process from the lengths of its previous bursts, for example with an exponential average." Standard in the textbooks I know of; "usually" may be too strong.
-4. **SRTF tie rule in textbooks** (SRTF page): "Ties need a rule, and textbooks do not all state one." I believe many sources are silent on equal remaining time; I could not check this across sources.
-5. **SJF tie wording** (SJF page, mistake 3): "Some textbooks use FCFS order for ties, which is the same thing." Equal bursts broken by FCFS order means earlier arrival first, which is Trace's rule; please confirm the phrasing is fair.
-6. **Priority conventions** (Priority page): "What counts as best is a convention, and it differs between textbooks and systems" and "Many exercises use 1 as the highest priority, but not all of them do." Both are my understanding, not checked against a survey of sources.
-7. **SJF as a special case of Priority** (Priority page): "If you use the burst length as the priority, non-preemptive Priority becomes Shortest Job First." With Trace's tie rules (earlier arrival, then lower number) the two produce identical schedules; this is the standard textbook remark.
-8. **Round Robin tie disagreement** (Round Robin page): "The one moment textbooks disagree on is a new arrival at the exact instant a slice ends." Taken from the brief; "the one moment" may be too absolute.
-9. **Round Robin response time** (Round Robin page and compare page): "every process gets the CPU within a bounded time after arriving" (at most (n - 1) x quantum after it reaches the queue) and "Round Robin often has the best response time". "Often" is deliberate; it is not always the lowest.
-10. **Context switch cost** (several pages): statements that each switch "costs time in a real system" are general and safe. I made no claims about specific real operating systems.
-
-### Privacy and accuracy statements (About page)
-
-11. **Analytics** (About, privacy): "a privacy-friendly analytics service that sets no cookies and does not follow you across sites". This describes Cloudflare Web Analytics as I understand it. Please verify against Cloudflare's current documentation before launch. The service is deliberately not named, per the brief's rule on naming companies.
-12. **"Nothing you enter is sent anywhere"** (About, privacy): true for the simulator itself. Open question: if the analytics beacon records the full page URL including the query string, then opening a share link would send its process numbers to the analytics service. I do not know whether it records query strings. If it does, the options are to reword this sentence or to keep inputs out of the query (for example in the hash), which would change a locked decision. To settle at Checkpoint D.
-13. **Testing claim** (About, accuracy): "Thousands of random inputs are run through both the simulator and a separate, deliberately different reference scheduler". True (22,500 per run of `npm test`), but the tests are not run automatically by the Cloudflare build. The sentence says "automated checks back this up", not that they gate each deploy.
+1. **Analytics and cookies** (About, privacy): "a privacy-friendly analytics service that sets no cookies and does not follow you across sites". Cloudflare's documentation says (quotes at Checkpoint D) that Web Analytics uses no client-side state and does not fingerprint visitors. To confirm on the live site.
+2. **"Nothing you enter is sent anywhere"** (About, privacy): the beacon sends `landingPath` ("The landing page URL") and `referrer` ("The referring page URL"). Cloudflare's page does not say whether query strings are kept. If they are, a visitor who opens a share link sends its process numbers to the analytics service. To check at Checkpoint D in the browser's network panel on the live site.
+3. **Testing claim** (About, accuracy): "Three kinds of automated checks back this up." Now also true at deploy time: the Cloudflare build command runs the fast tests before building, so a failing test stops a deploy.
