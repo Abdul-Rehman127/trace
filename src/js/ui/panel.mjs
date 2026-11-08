@@ -113,5 +113,12 @@ export function createPanel(stage) {
     return lastText;
   }
 
-  return { setModel, update };
+  return {
+    setModel,
+    update,
+    /** The decision moment currently shown (latest at or before the playhead), or null. */
+    get moment() {
+      return shownMoment;
+    },
+  };
 }

@@ -13,6 +13,10 @@ const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, 'dist');
 const portArg = process.argv.indexOf('--port');
 const PORT = Number(portArg > -1 ? process.argv[portArg + 1] : process.env.PORT || 8788);
+// WebKit applies upgrade-insecure-requests even to http://localhost (Chromium exempts it),
+// which breaks every asset on a plain-HTTP dev server. --allow-http drops only that one
+// directive, for local WebKit testing. Production is HTTPS, where the directive is harmless.
+const ALLOW_HTTP = process.argv.includes('--allow-http');
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -109,6 +113,9 @@ function start() {
       }
       const found = await resolve(url.pathname);
       const headers = Object.fromEntries(headersFor(rules, url.pathname));
+      if (ALLOW_HTTP && headers['content-security-policy']) {
+        headers['content-security-policy'] = headers['content-security-policy'].replace(/\s*upgrade-insecure-requests;?/, '');
+      }
       if (found.status === 308) {
         res.writeHead(308, { ...headers, location: found.location + url.search }).end();
         return;

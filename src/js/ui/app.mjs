@@ -9,6 +9,7 @@ import { createTimeline } from './timeline.mjs';
 import { createPlayer, bindTransport, SPEEDS } from './controls.mjs';
 import { createPanel } from './panel.mjs';
 import { createResults } from './results.mjs';
+import { createLog } from './log.mjs';
 import { bindKeys } from './keys.mjs';
 import { toggleTheme } from './theme.mjs';
 
@@ -69,6 +70,12 @@ export function mountTool(root) {
     },
   });
   const ruler = timeline.ruler;
+  const log = createLog(root, {
+    onPick: (t) => {
+      player.seek(t);
+      announce();
+    },
+  });
 
   function runningAt(k) {
     const seg = current.result.segments.find((s) => s.start <= k && k < s.end);
@@ -106,6 +113,7 @@ export function mountTool(root) {
     const { k, playing } = pendingUnit;
     pendingUnit = null;
     lastText = panel.update(k, playing, player.speed);
+    log.setMoment(panel.moment);
     ruler.setAttribute('aria-valuenow', String(k));
     ruler.setAttribute('aria-valuetext', `Time ${k} of ${current.result.summary.makespan}. ${runningAt(k)}`);
     while (completedSince.length) results.flash(completedSince.shift());
@@ -117,6 +125,7 @@ export function mountTool(root) {
     current = { scenario, result };
     timeline.setModel(scenario, result);
     panel.setModel(scenario, result);
+    log.setModel(scenario, result);
     results.render(result);
     clockTotal.textContent = String(result.summary.makespan);
     player.load(result.summary.makespan);

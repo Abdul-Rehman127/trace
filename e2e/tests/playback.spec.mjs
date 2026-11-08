@@ -197,3 +197,26 @@ test('mouse tooltip is clamped inside the visible timeline', async ({ page }) =>
   await page.mouse.move(5, 5);
   await expect(tip).toBeHidden();
 });
+
+test('the decision log lists every moment and each line scrubs to it', async ({ page }) => {
+  await open(page, RR);
+  const log = page.locator('[data-log]');
+  await expect(page.locator('[data-log-list] li')).toHaveCount(0); // built only when opened
+  await log.locator('summary').click();
+  const lines = page.locator('.log-line');
+  const moments = await page.evaluate(() => [...new Set(window.__trace.player && document.querySelectorAll('.log-t').length ? [...document.querySelectorAll('.log-t')].map((e) => e.textContent) : [])]);
+  expect(moments.length).toBeGreaterThan(5);
+  await expect(lines.first()).toHaveAttribute('aria-current', 'step');
+  const line = page.locator('.log-line', { has: page.locator('.log-t', { hasText: /^7$/ }) });
+  await line.click();
+  await expect.poll(() => page.evaluate(() => window.__trace.player.time)).toBe(7);
+  await expect(line).toHaveAttribute('aria-current', 'step');
+  await expect(page.locator('[data-why-text]')).toHaveText(await line.locator('.log-text').textContent());
+  // Keyboard: lines are buttons
+  await page.locator('.log-line').nth(1).focus();
+  await page.keyboard.press('Enter');
+  await expect.poll(() => page.evaluate(() => window.__trace.player.time)).toBe(Number(await page.locator('.log-t').nth(1).textContent()));
+  // A new schedule rebuilds the open log
+  await page.locator('#p3-burst').fill('2');
+  await expect(page.locator('.log-line').first()).toHaveAttribute('aria-current', 'step');
+});

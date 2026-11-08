@@ -10,13 +10,19 @@ export default defineConfig({
     baseURL: `http://localhost:${PORT}`,
   },
   // Serves dist/ through dev.mjs so the real _headers (CSP included) apply.
-  webServer: {
-    command: `node ../dev.mjs --port ${PORT}`,
-    url: `http://localhost:${PORT}/`,
-    reuseExistingServer: false,
-    stdout: 'ignore',
-  },
+  // WebKit gets its own instance with --allow-http (see dev.mjs).
+  webServer: [
+    { command: `node ../dev.mjs --port ${PORT}`, url: `http://localhost:${PORT}/`, reuseExistingServer: false, stdout: 'ignore' },
+    { command: `node ../dev.mjs --port ${PORT + 1} --allow-http`, url: `http://localhost:${PORT + 1}/`, reuseExistingServer: false, stdout: 'ignore' },
+  ],
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    // WebKit: everything except the frame-time tests (they need Chromium's CPU throttling)
+    // and the Trusted Types self-test (WebKit has no Trusted Types).
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'], baseURL: `http://localhost:${PORT + 1}` },
+      grepInvert: /@perf|@chromium-only/,
+    },
   ],
 });

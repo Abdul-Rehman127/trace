@@ -91,7 +91,7 @@ test('fonts and hashed assets are cached immutably; HTML carries the security he
   }
 });
 
-test('the violation listener really catches CSP and Trusted Types violations', async ({ page }) => {
+test('the violation listener really catches CSP and Trusted Types violations @chromium-only', async ({ page }) => {
   await watch(page);
   await page.goto('/');
   const result = await page.evaluate(() => {

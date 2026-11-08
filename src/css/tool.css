@@ -567,3 +567,55 @@ html:not(.js) .tool { display: none; }
 }
 .rtable { table-layout: fixed; }
 .rtable th:first-child { width: 22%; }
+
+/* Decision log */
+.log { margin-top: 12px; }
+.log summary, .keys summary { display: inline-flex; align-items: center; min-height: 32px; padding: 4px 2px; cursor: pointer; color: var(--muted); font-size: .88rem; }
+.log summary:hover { color: var(--ink); }
+.log summary::-webkit-details-marker { display: none; }
+.log summary::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 10px 2px 2px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--t-ui) var(--ease-out);
+}
+.log[open] summary::before { transform: rotate(45deg); }
+.log-hint { margin: 4px 0 8px; color: var(--muted); font-size: .84rem; }
+.log-list {
+  max-height: 360px;
+  margin: 0;
+  padding: 4px 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.log-line {
+  display: grid;
+  grid-template-columns: 3.5ch 1fr;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--r-control);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: .9rem;
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+}
+.log-line:hover { background: var(--sunk); color: var(--ink); }
+.log-line[aria-current] { background: var(--sunk); color: var(--ink); box-shadow: inset 2px 0 0 var(--ink); }
+.log-t { color: var(--muted); font: 500 .82rem/1.75 var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+.log-text strong { color: var(--ink); font-weight: 600; }
+@media (pointer: coarse) {
+  .log summary, .keys summary { min-height: 44px; }
+  .log-line { padding: 12px 10px; }
+}

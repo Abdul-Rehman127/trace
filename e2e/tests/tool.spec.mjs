@@ -212,7 +212,8 @@ test('the share link updates and restores the exact scenario', async ({ page }) 
   await done();
 });
 
-test('copy link uses the clipboard and confirms', async ({ page, context }) => {
+test('copy link uses the clipboard and confirms', async ({ page, context, browserName }) => {
+  test.skip(browserName === 'webkit', 'Playwright WebKit has no clipboard permission');
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   const done = await open(page, RR_CLASSIC);
   await page.locator('[data-copy]').click();
