@@ -11,9 +11,10 @@
   "scripts": {
     "build": "node build.mjs",
     "dev": "node build.mjs && node dev.mjs",
-    "test": "node --test tests/engine.test.mjs tests/validate.test.mjs tests/share.test.mjs tests/narrate.test.mjs tests/tokens.test.mjs",
+    "test": "node tests/run.mjs",
     "e2e": "node build.mjs && npm --prefix e2e test",
-    "shots": "node build.mjs && npm --prefix e2e run shots"
+    "shots": "node build.mjs && npm --prefix e2e run shots",
+    "build:ci": "node tests/run.mjs && node build.mjs"
   },
   "devDependencies": {
     "esbuild": "0.28.2"

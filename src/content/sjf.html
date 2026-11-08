@@ -3,7 +3,7 @@
       <p>Shortest Job First (SJF) makes one decision each time the CPU becomes free: out of the processes that are already waiting, it runs the one with the smallest burst. Once a process starts, it runs to the end, even if a shorter one arrives a moment later. This page covers that non-preemptive form. The version that interrupts for a shorter newcomer has its own page, <a href="/operating-systems/cpu-scheduling/srtf/">Shortest Remaining Time First</a>.</p>
       <p>Only processes that have arrived are candidates. A 1-unit job arriving at time 5 cannot be chosen at time 4, however short it is. When two waiting processes have the same burst, Trace picks the one that arrived earlier, and if they also arrived together, the lower process number.</p>
       <p>The idea behind SJF is that a short job finishing early shortens the wait of everyone queued behind it, while a long job finishing early helps nobody much. When all the processes are ready at the same moment, running them shortest first gives the lowest possible average waiting time of any order.</p>
-      <p>The catch is that the scheduler has to know each burst before it runs. Exercises give you the numbers, but a real system can only guess. Textbook treatments usually predict the next burst of a process from the lengths of its previous bursts, for example with an exponential average. SJF also risks starvation: if short jobs keep arriving, a long job can be passed over again and again.</p>
+      <p>The catch is that the scheduler has to know each burst before it runs. Exercises give you the numbers, but a real system can only guess. Textbook treatments often estimate the next burst of a process from the lengths of its previous bursts, for example with an exponential average. SJF also risks starvation: if short jobs keep arriving, a long job can be passed over again and again.</p>
 
       <h2 id="example">Worked example</h2>
       <p>Four processes arrive at time 0 with bursts of 6, 8, 7 and 3. With everything ready at once, SJF simply sorts by burst: P4 (3), then P1 (6), P3 (7) and P2 (8).</p>
@@ -42,7 +42,7 @@
       <ol>
         <li><strong>Interrupting the running job.</strong> In non-preemptive SJF a shorter arrival waits until the current job finishes. Switching on arrival is SRTF, a different algorithm with different answers.</li>
         <li><strong>Choosing a job that has not arrived yet.</strong> At each decision, look only at processes whose arrival time is at or before the current time.</li>
-        <li><strong>Breaking ties by process number first.</strong> Between equal bursts, the earlier arrival goes first; the process number only decides when arrival times match too. Some textbooks use FCFS order for ties, which is the same thing.</li>
+        <li><strong>Breaking ties by process number first.</strong> Between equal bursts, the earlier arrival goes first; the process number only decides when arrival times match too. Many courses break ties by arrival order, which is what Trace does. Check yours.</li>
         <li><strong>Calling SJF optimal in every case.</strong> Its guarantee holds for average waiting time with known bursts. It says nothing about fairness, and long jobs can be delayed without limit.</li>
       </ol>
 
