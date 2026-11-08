@@ -127,7 +127,7 @@ describe('narration for every reason code', () => {
         for (const part of s) assert.ok(typeof part === 'string' || (part && /^P[1-8]$/.test(part.pid)), 'parts are strings or pids');
         const text = sentenceText(s);
         assert.match(text, /^[A-Z].*\.$/, text);
-        assert.doesNotMatch(text, /undefined|null|NaN|—|  |\.\./, text);
+        assert.doesNotMatch(text, /undefined|null|NaN|\u2014|  |\.\./, text);
         assert.doesNotMatch(text, /\b1 units\b|\b(?:[02-9]|\d\d+) unit\b/, text);
       }
       const times = [...ctx.byTime.keys()];
