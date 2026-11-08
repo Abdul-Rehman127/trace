@@ -81,6 +81,8 @@ test('fonts and hashed assets are cached immutably; HTML carries the security he
   for (const h of ['x-content-type-options', 'x-frame-options', 'referrer-policy', 'permissions-policy', 'strict-transport-security', 'cross-origin-opener-policy']) {
     expect(headers[h], h).toBeTruthy();
   }
+  // no-transform keeps Cloudflare from injecting a second analytics snippet into the HTML.
+  expect(headers['cache-control']).toBe('public, max-age=0, must-revalidate, no-transform');
   const body = await html.text();
   const css = /href="\/(app\.[0-9a-f]{10}\.css)"/.exec(body)[1];
   const js = /src="\/(app\.[0-9a-f]{10}\.js)"/.exec(body)[1];

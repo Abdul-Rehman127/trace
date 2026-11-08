@@ -15,6 +15,8 @@ for (const raw of readFileSync(join(ROOT, 'dist', '_headers'), 'utf8').split(/\r
     const pattern = raw.trim().replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
     cur = { re: new RegExp(`^${pattern}$`), h: [] };
     rules.push(cur);
+  } else if (raw.trim().startsWith('!')) {
+    cur.h.push(['!', raw.trim().slice(1).trim().toLowerCase()]);
   } else {
     const i = raw.indexOf(':');
     cur.h.push([raw.slice(0, i).trim().toLowerCase(), raw.slice(i + 1).trim()]);
@@ -22,7 +24,7 @@ for (const raw of readFileSync(join(ROOT, 'dist', '_headers'), 'utf8').split(/\r
 }
 const expected = (path) => {
   const m = new Map();
-  for (const r of rules) if (r.re.test(path)) for (const [k, v] of r.h) m.set(k, m.has(k) ? `${m.get(k)}, ${v}` : v);
+  for (const r of rules) if (r.re.test(path)) for (const [k, v] of r.h) k === '!' ? m.delete(v) : m.set(k, m.has(k) ? `${m.get(k)}, ${v}` : v);
   return m;
 };
 

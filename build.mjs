@@ -18,6 +18,13 @@ const SRC = join(ROOT, 'src');
 const DIST = join(ROOT, 'dist');
 const CSS_ORDER = ['tokens.css', 'base.css', 'components.css', 'tool.css', 'content.css'];
 const THEME_BUDGET = 300;
+// Cloudflare Web Analytics, added by hand so Cloudflare's automatic injection (blocked by
+// Cache-Control: no-transform) cannot add a second snippet. It reports to the same-origin
+// /cdn-cgi/rum endpoint. Only Cloudflare builds (CF_PAGES=1) include it, or TRACE_ANALYTICS=1 for tests.
+const ANALYTICS_TAG =
+  '<script defer src="https://static.cloudflareinsights.com/beacon.min.js" ' +
+  `data-cf-beacon='{"token":"9ab17dd6be034b23968fc7154a276c0f","send":{"to":"/cdn-cgi/rum"}}'></script>`;
+const ANALYTICS = process.env.CF_PAGES === '1' || process.env.TRACE_ANALYTICS === '1';
 
 const hash = (buf) => createHash('sha256').update(buf).digest('hex').slice(0, 10);
 
@@ -153,6 +160,7 @@ function checkCsp(html, slug, theme) {
     const tag = /^<script\b[^>]*>/i.exec(m[0])[0];
     if (/^<script type="module" src="\/app\.[0-9a-f]{10}\.js" defer>$/.test(tag) && m[1] === '') continue;
     if (tag === '<script type="application/ld+json">') continue;
+    if (ANALYTICS && m[0] === ANALYTICS_TAG) continue;
     // The only executable inline script, and only with exactly the hashed content.
     if (tag === '<script>' && m[1] === theme.code) {
       inline++;
@@ -213,6 +221,7 @@ async function main() {
       css,
       js,
       themeInline: theme.code,
+      analytics: ANALYTICS ? `${ANALYTICS_TAG}\n` : '',
       jsonld: jsonLd(page),
       crumbs: crumbsHtml(page),
       body,
@@ -238,7 +247,7 @@ async function main() {
   if (headerText.split('{{themeHash}}').length !== 2) throw new Error('_headers must contain {{themeHash}} exactly once');
   await writeFile(join(DIST, '_headers'), headerText.replace('{{themeHash}}', theme.source));
 
-  console.log(`Built ${PAGES.length} pages, ${css}, ${js}, theme ${theme.source} in ${Math.round(performance.now() - started)} ms`);
+  console.log(`Built ${PAGES.length} pages, ${css}, ${js}, theme ${theme.source}, analytics ${ANALYTICS ? 'on' : 'off'} in ${Math.round(performance.now() - started)} ms`);
 }
 
 main().catch((err) => {

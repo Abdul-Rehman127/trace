@@ -52,6 +52,9 @@ export function parseHeaders(text) {
       );
       current = { pattern, re, headers: [] };
       rules.push(current);
+    } else if (current && raw.trim().startsWith('!')) {
+      // "! Name" detaches a header set by an earlier matching rule, as on Pages.
+      current.headers.push(['!', raw.trim().slice(1).trim()]);
     } else if (current) {
       const i = raw.indexOf(':');
       if (i > 0) current.headers.push([raw.slice(0, i).trim(), raw.slice(i + 1).trim()]);
@@ -66,6 +69,10 @@ export function headersFor(rules, path) {
   for (const rule of rules) {
     if (!rule.re.test(path)) continue;
     for (const [name, value] of rule.headers) {
+      if (name === '!') {
+        out.delete(value.toLowerCase());
+        continue;
+      }
       const key = name.toLowerCase();
       out.set(key, out.has(key) ? `${out.get(key)}, ${value}` : value);
     }
@@ -107,6 +114,12 @@ function start() {
   const server = createServer(async (req, res) => {
     try {
       const url = new URL(req.url, 'http://localhost');
+      // Cloudflare answers the analytics beacon at this path; locally it is accepted and dropped.
+      if (req.method === 'POST' && url.pathname === '/cdn-cgi/rum') {
+        req.resume();
+        res.writeHead(204).end();
+        return;
+      }
       if (req.method !== 'GET' && req.method !== 'HEAD') {
         res.writeHead(405).end();
         return;
