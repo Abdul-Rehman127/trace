@@ -142,12 +142,45 @@
 .section-block { padding: 28px 0; border-top: 1px solid var(--line); }
 .section-block h2 { margin: 0 0 6px; font: 600 1.35rem/1.25 var(--font-sans); scroll-margin-top: 24px; }
 .section-block > p { margin: 0 0 20px; max-width: 60ch; color: var(--ink-2); }
-.tool-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0 32px; margin: 0; padding: 0; list-style: none; }
-.tool-links li { border-top: 1px solid var(--line); }
-.tool-links a { display: block; padding: 14px 0; text-decoration: none; }
-.tool-links a:hover .tl-name { text-decoration: underline; text-underline-offset: .18em; }
+/* Tool links: cards with a real edge, a fill and an arrow, so they read as things to open. */
+.tool-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.tool-links li { display: flex; }
+.tool-links a {
+  position: relative;
+  display: block;
+  flex: 1;
+  padding: 16px 48px 16px 18px;
+  border: 1px solid var(--line-control);
+  border-radius: var(--r-control-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    background-color var(--t-ui) var(--ease-out),
+    border-color var(--t-ui) var(--ease-out),
+    box-shadow var(--t-ui) var(--ease-out);
+}
+.tool-links a:focus-visible { border-radius: var(--r-control-lg); }
 .tl-name { display: block; font-weight: 600; }
 .tl-desc { display: block; margin-top: 2px; color: var(--muted); font-size: .88rem; }
+.tl-go {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  margin-top: -8px;
+  color: var(--ink-2);
+  transition: transform var(--t-ui) var(--ease-out);
+}
+@media (hover: hover) {
+  .tool-links a:hover { transform: translateY(-1px); border-color: var(--muted); box-shadow: var(--shadow-2); }
+  .tool-links a:hover .tl-go { transform: translateX(3px); color: var(--ink); }
+}
+.tool-links a:active { transform: scale(.98); box-shadow: var(--shadow-1); }
+@media (prefers-reduced-motion: reduce) {
+  .tool-links a, .tool-links a:hover, .tool-links a:active, .tool-links a:hover .tl-go { transform: none; }
+}
 .next-line { margin: 0; color: var(--muted); }
 
 /* ---------- Compare ---------- */
