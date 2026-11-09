@@ -1,0 +1,50 @@
+    <article class="prose">
+      <h2 id="how">How subnetting an IPv4 address works</h2>
+      <p>An IPv4 address is 32 bits, written as four numbers from 0 to 255. A prefix such as /26 splits those bits in two: the first 26 bits name the network, the remaining 6 name a host inside it. Every device on the same network shares the network bits. The subnet mask is the same split written as an address: 26 ones followed by 6 zeros, which is 255.255.255.192.</p>
+      <p>Two addresses in every block are special. The <strong>network address</strong> has all host bits set to 0 and names the block itself. The <strong>broadcast address</strong> has all host bits set to 1 and reaches every host in the block. Everything between them is a usable host address. The calculator above works this out as you type, and the binary view marks each bit as N (network) or H (host).</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>Take 192.168.1.130/26. The mask is {{exMask}}, so the last octet has 2 network bits and 6 host bits:</p>
+      {{{example}}}
+      <p>Setting the 6 host bits to 0 gives the network address {{exNet}}. Setting them to 1 gives the broadcast address {{exBc}}. The usable hosts run from {{exFirst}} to {{exLast}}: {{exUsable}} addresses. The wildcard mask, the inverse of the subnet mask, is {{exWild}}.</p>
+      <p>The same method works on any octet. For 172.16.5.10/20 the boundary falls inside the third octet, so the block runs from {{ex20}}, with {{ex20Usable}} usable hosts. A /8 such as 10.0.0.0/8 has {{ex8Usable}}.</p>
+
+      <h2 id="rules">Rules this calculator uses</h2>
+      <ul>
+        <li><strong>/31:</strong> a block of two addresses used for a point-to-point link between two routers. Both addresses are usable hosts; there is no network or broadcast address in use.</li>
+        <li><strong>/32:</strong> a single host. The block is one address.</li>
+        <li><strong>Host bits set:</strong> 192.168.1.130/26 has host bits set (130 is not the start of a block). That is accepted: the calculator shows the network the address belongs to and says so.</li>
+        <li><strong>Strict input:</strong> each part must be 0 to 255, without leading zeros. Some systems read "010" as octal (8), so Trace rejects it instead of guessing.</li>
+        <li><strong>Classes are history:</strong> class A, B and C told you the mask from the first octet. Prefixes (CIDR) replaced that, so the class is shown only as a note.</li>
+      </ul>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Addresses in a block <code>= 2^(32 - prefix)</code></li>
+        <li>Usable hosts <code>= 2^(32 - prefix) - 2</code> for prefixes up to /30; 2 for /31; 1 for /32</li>
+        <li>Network <code>= address AND mask</code>; broadcast <code>= network OR wildcard</code></li>
+        <li>Wildcard <code>= 255.255.255.255 - mask</code>, octet by octet</li>
+      </ul>
+
+      <h2 id="limits">Special ranges</h2>
+      <p>Some addresses are set aside. 10.0.0.0/8, 172.16.0.0/12 and 192.168.0.0/16 are private (RFC 1918): used inside home and office networks and not routed on the public internet. 127.0.0.0/8 is loopback, and 169.254.0.0/16 is link-local, the range a device can give itself when nothing else assigns an address. The calculator notes these when the address you enter falls in one.</p>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Forgetting the two reserved addresses.</strong> A /26 has 64 addresses but 62 usable hosts.</li>
+        <li><strong>Using the wrong octet.</strong> For a /20 the interesting octet is the third, not the fourth.</li>
+        <li><strong>Treating the given address as the network.</strong> 192.168.1.130/26 belongs to 192.168.1.128/26.</li>
+        <li><strong>Applying "minus 2" to /31 and /32.</strong> Those two follow their own rules above.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/networking/subnetting-practice/">Subnetting practice</a>, generated questions with worked steps</li>
+        <li><a href="/networking/vlsm-calculator/">VLSM subnet planner</a>, for subnets of different sizes</li>
+        <li><a href="/networking/tcp-handshake/">TCP handshake and teardown</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a number or a sentence on this page looks wrong, please say so. Include the address you entered, or paste the link from "Copy link".</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

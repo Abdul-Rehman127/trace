@@ -1,5 +1,5 @@
 // Frame times while playing at 4x speed under a 4x CPU throttle (headless Chromium).
-// Each scenario is measured 3 times on a fresh page; the median of each metric is used.
+// Each scenario is measured 5 times on a fresh page; the median of each metric is used.
 //   Typical load (5 processes, bursts up to 20): p95 under 20 ms and no frame over 50 ms.
 //   Heavy case (8 processes x 99-unit bursts, Round Robin q=2): p95 under 20 ms.
 import { test, expect } from '@playwright/test';
@@ -7,7 +7,7 @@ import { test, expect } from '@playwright/test';
 const BASE = '/operating-systems/cpu-scheduling/round-robin/';
 const TYPICAL = `${BASE}?alg=rr&q=2&tie=new&p=0:12,2:20,4:7,6:15,8:9`;
 const HEAVY = `${BASE}?alg=rr&q=2&tie=new&p=0:99,1:99,2:99,3:99,4:99,5:99,6:99,7:99`;
-const RUNS = 3;
+const RUNS = 5; // median of five: one noisy run cannot decide the result
 const SECONDS = 6;
 
 const median = (xs) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
@@ -81,3 +81,23 @@ test('memory heavy case: median p95 under 20 ms and median max under 50 ms @perf
   expect(r.p95).toBeLessThan(20);
   expect(r.max).toBeLessThan(50);
 });
+
+// Networking, heaviest case: the TCP simulator with data and the lost-SYN scenario (the
+// longest timeline), playing at 4x.
+test('networking heavy case (TCP): median p95 under 20 ms and median max under 50 ms @perf', async ({ browser }, info) => {
+  test.setTimeout(120000);
+  const r = await measure(browser, '/networking/tcp-handshake/?s=lost&c=4294967290&sv=4294967290&d=1460', info, 'networking heavy');
+  expect(r.p95).toBeLessThan(20);
+  expect(r.max).toBeLessThan(50);
+});
+
+// Logic, heaviest case: a six-variable circuit with many gates, the change travelling
+// through every level at 4x.
+test('logic heavy case (circuit): median p95 under 20 ms and median max under 50 ms @perf', async ({ browser }, info) => {
+  test.setTimeout(180000);
+  const expr = encodeURIComponent('((A XOR B) AND (C OR D)) XOR ((E NAND F) OR (A NOR C)) AND ((B XNOR E) XOR NOT (D AND F))');
+  const r = await measure(browser, `/logic/circuit/?e=${expr}&in=101010`, info, 'logic heavy');
+  expect(r.p95).toBeLessThan(20);
+  expect(r.max).toBeLessThan(50);
+});
+

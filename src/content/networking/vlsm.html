@@ -1,0 +1,43 @@
+    <article class="prose">
+      <h2 id="how">How VLSM works</h2>
+      <p>Variable Length Subnet Masking (VLSM) divides one network into subnets of different sizes, so each part of a network gets roughly what it needs instead of every subnet being as large as the biggest. A department of 100 hosts needs a /25; a link between two routers needs only a /30.</p>
+      <p>The planner above follows the usual method. It sorts the requirements from largest to smallest, gives each one the smallest block that holds its hosts plus the two reserved addresses (network and broadcast), and places the blocks one after another from the start of the network. Going largest first keeps every block aligned to its own size, so no space is wasted between blocks and every block starts on a valid boundary.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>Divide 192.168.10.0/24 into subnets for 100, 50, 25, 10 and 2 hosts:</p>
+      {{{example}}}
+      <p>100 hosts need 102 addresses, so the smallest block is 128 (/25). 50 hosts need 52 addresses, so 64 (/26). 25 need 27, so 32 (/27). 10 need 12, so 16 (/28). 2 need 4, so 4 (/30). The blocks fill the network in that order and {{exFree}} addresses are left, starting at {{exFreeFrom}}.</p>
+
+      <h2 id="rules">Rules this planner uses</h2>
+      <ul>
+        <li>Each subnet needs <code>hosts + 2</code> addresses; the block is the next power of two.</li>
+        <li>Largest first; requirements of the same size keep the order you typed them in.</li>
+        <li>Blocks are placed from the start of the network with no gaps.</li>
+        <li>/31 and /32 are not used, even for a two-host link, so every subnet keeps a network and a broadcast address. Some designs use /31 for router links; this planner does not.</li>
+        <li>If a block does not fit in what is left, the planner says which requirement failed and how many addresses were missing; the subnets that did fit are still shown.</li>
+      </ul>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Block size <code>= smallest power of 2 at least hosts + 2</code></li>
+        <li>Prefix <code>= 32 - log2(block size)</code></li>
+        <li>Spare hosts in a block <code>= block size - 2 - hosts needed</code></li>
+      </ul>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Forgetting the two reserved addresses.</strong> 62 hosts fit a /26 exactly; 63 do not.</li>
+        <li><strong>Allocating in the order given.</strong> Placing a small subnet first can push a large one onto a boundary it cannot start on.</li>
+        <li><strong>Overlapping ranges.</strong> Each block starts right after the previous block's broadcast address.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/networking/subnet-calculator/">IPv4 subnet calculator</a>, to look at any one block bit by bit</li>
+        <li><a href="/networking/subnetting-practice/">Subnetting practice</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a number or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes your network and host counts.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

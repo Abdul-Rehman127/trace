@@ -1,0 +1,45 @@
+    <article class="prose">
+      <h2 id="how">How a truth table works</h2>
+      <p>A Boolean expression combines inputs that are either 0 (false) or 1 (true) with operators such as AND, OR and NOT. A truth table lists every possible combination of the inputs and the value of the expression for each one. With n variables there are 2<sup>n</sup> rows, so 3 variables give 8 rows and 6 give 64.</p>
+      <p>The table above lists the variables in alphabetical order, with the first one as the most significant bit, so the row number is the inputs read as a binary number. Between the inputs and the result it adds a column for every part of the expression, innermost first, so you can follow how the answer is built up.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>For <code>A XOR B</code> the output is 1 exactly when the inputs differ:</p>
+      {{{example}}}
+      <p>The rows with output 1 are rows 1 and 2, so the sum of minterms is <code>Σm(1, 2)</code>. The rows with output 0 are rows 0 and 3, giving the product of maxterms <code>ΠM(0, 3)</code>.</p>
+
+      <h2 id="rules">How Trace reads an expression</h2>
+      <ul>
+        <li><strong>Precedence:</strong> NOT first, then AND (and NAND), then XOR (and XNOR), then OR (and NOR). Operators of the same level are applied left to right. Use parentheses whenever you want a different order.</li>
+        <li><strong>AND</strong> can be written AND, &amp;, *, · or by putting two operands side by side: <code>AB</code> and <code>A(B + C)</code> both mean AND.</li>
+        <li><strong>OR</strong> can be written OR, |, + or ∨; <strong>NOT</strong> as NOT, !, ~, ¬ or a trailing apostrophe (<code>A'</code>).</li>
+        <li>Variables are single letters A to Z (lowercase letters are read as capitals), up to 6 in one expression. 0, 1, TRUE and FALSE are constants.</li>
+        <li>An error message gives the position where reading stopped and what was expected there.</li>
+      </ul>
+      <p>Not every source uses this precedence: some give XOR the same level as OR, and some do not allow AND to be implied. When in doubt, add parentheses; the "Read as" line shows exactly how the expression was understood.</p>
+
+      <h2 id="formulas">Canonical forms</h2>
+      <ul class="formula-list">
+        <li>Sum of minterms <code>Σm(...)</code>: the rows where the output is 1</li>
+        <li>Product of maxterms <code>ΠM(...)</code>: the rows where the output is 0</li>
+        <li>Rows <code>= 2^n</code> for n variables</li>
+      </ul>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Reading A + B C as (A + B)C.</strong> AND comes first, so it is A + (BC).</li>
+        <li><strong>Getting the row order wrong.</strong> Count in binary with the first variable as the most significant bit.</li>
+        <li><strong>Confusing XOR and OR.</strong> They differ only when both inputs are 1: OR gives 1, XOR gives 0.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/logic/circuit/">Logic circuit simulator</a>, the same expression as gates</li>
+        <li><a href="/logic/simplifier/">Boolean simplifier</a>, the shortest form of the same function</li>
+        <li><a href="/logic/equivalence/">Equivalence checker</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a row or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes your expression.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

@@ -1,0 +1,111 @@
+/* Logic section: expression errors, truth tables, circuit, Karnaugh map, answers. */
+
+.lg-prec { margin: 6px 0 14px; color: var(--muted); font-size: .8rem; line-height: 1.45; }
+.lg-out { min-width: 0; }
+.lg-rows { margin-bottom: 14px; }
+.lg-scroll { max-height: 560px; overflow: auto; border: 1px solid var(--line); border-radius: var(--r-control-lg); background: var(--surface); }
+.lg-h { margin: 22px 0 8px; }
+.lg-note { margin: 6px 0 0; color: var(--ink-2); font-size: .9rem; }
+.lg-answers { margin: 0; padding: 0; list-style: none; }
+.lg-answers li { padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--r-control); background: var(--surface); font-size: 1.05rem; font-weight: 600; }
+.lg-answers li + li { margin-top: 6px; }
+.lg-primes, .lg-groups { margin: 0; padding-left: 18px; color: var(--ink-2); font-size: .9rem; line-height: 1.6; }
+.lg-steps { margin-top: 18px; }
+.lg-steps summary { cursor: pointer; font-weight: 500; }
+.qm-round { margin-top: 14px; }
+.qm-table { min-width: 420px; }
+.qm-table tr.grp td { border-top: 2px solid var(--line-strong); }
+.lg-which { margin: 0 0 6px; font-weight: 600; }
+
+/* Parse errors: the message and the input with a caret under the position. */
+.lg-error { padding: 10px 14px; border-left: 3px solid var(--c8); background: var(--sunk); color: var(--ink); }
+.lg-error p { margin: 0 0 6px; }
+.lg-caret { margin: 0; overflow-x: auto; font: 500 .9rem/1.4 var(--font-mono); white-space: pre; color: var(--ink-2); }
+
+/* Truth tables */
+.lg-table { border-collapse: collapse; font: 500 .9rem var(--font-mono); font-variant-numeric: tabular-nums; }
+.lg-table th, .lg-table td { padding: 6px 12px; border-bottom: 1px solid var(--line); text-align: center; white-space: nowrap; }
+.lg-table thead th { position: sticky; top: 0; z-index: 1; background: var(--surface); color: var(--muted); font: 500 .78rem var(--font-sans); }
+.lg-table th.out, .lg-table td.out { border-left: 2px solid var(--line-strong); font-weight: 700; color: var(--ink); }
+.lg-table td.m { color: var(--muted); font-size: .78rem; }
+.lg-table td.is0 { color: var(--muted); }
+.lg-table td.out.is1 { background: var(--pg-now); }
+.lg-table tr.differs td { background: var(--sunk); font-weight: 700; }
+.lg-verdict { margin: 0 0 12px; padding: 10px 14px; border-left: 3px solid var(--c3); background: var(--sunk); font-weight: 600; }
+.lg-verdict.no { border-left-color: var(--c8); }
+.lg-verdict.yes::before { content: "\2713  "; }
+.lg-verdict.no::before { content: "\2717  "; }
+
+/* Karnaugh map: each group is a ring at its own inset, so overlapping groups stay visible. */
+.kmap { border-collapse: collapse; font: 500 1rem var(--font-mono); }
+.kmap th { padding: 6px 10px; color: var(--muted); font: 500 .8rem var(--font-mono); }
+.kmap th.corner { font-size: .72rem; }
+.kmap td { position: relative; width: 58px; height: 52px; border: 1px solid var(--line-strong); text-align: center; vertical-align: middle; }
+.kmap .kv { position: relative; z-index: 1; font-weight: 700; }
+.kmap .k0 .kv, .kmap .kX .kv { color: var(--muted); font-weight: 500; }
+.kmap .km { position: absolute; right: 4px; bottom: 2px; color: var(--muted); font-size: .62rem; }
+.kmap .gm { position: absolute; border-radius: 6px; pointer-events: none; }
+.gm.g1 { inset: 3px; box-shadow: inset 0 0 0 2px var(--c1); }
+.gm.g2 { inset: 7px; box-shadow: inset 0 0 0 2px var(--c2); }
+.gm.g3 { inset: 11px; box-shadow: inset 0 0 0 2px var(--c3); }
+.gm.g4 { inset: 15px; box-shadow: inset 0 0 0 2px var(--c7); }
+.gm.g5 { inset: 5px; box-shadow: inset 0 0 0 2px var(--c4); }
+.gm.g6 { inset: 9px; box-shadow: inset 0 0 0 2px var(--c5); }
+.gkey { display: inline-block; width: 12px; height: 12px; margin-right: 6px; border-radius: 3px; vertical-align: -1px; }
+.gkey.g1 { box-shadow: inset 0 0 0 2px var(--c1); }
+.gkey.g2 { box-shadow: inset 0 0 0 2px var(--c2); }
+.gkey.g3 { box-shadow: inset 0 0 0 2px var(--c3); }
+.gkey.g4 { box-shadow: inset 0 0 0 2px var(--c7); }
+.gkey.g5 { box-shadow: inset 0 0 0 2px var(--c4); }
+.gkey.g6 { box-shadow: inset 0 0 0 2px var(--c5); }
+
+/* Circuit */
+.lg-circuit-scroll { overflow: auto; max-height: 560px; padding: 8px; contain: paint; }
+.circuit { display: block; width: 100%; max-width: 560px; height: auto; }
+.circuit .wire { fill: none; stroke-width: 2; transition: stroke var(--t-ui) var(--ease-out); }
+.circuit .wire.on { stroke: var(--c1); stroke-width: 3; }
+.circuit .wire.off { stroke: var(--line-control); }
+.circuit .g-body { fill: var(--surface); stroke: var(--ink-2); stroke-width: 2; }
+.circuit .g-line { fill: none; stroke: var(--ink-2); stroke-width: 2; }
+.circuit .gate.on .g-body { fill: var(--pg-now); stroke: var(--ink); }
+.circuit text { font: 500 12px var(--font-mono); fill: var(--ink-2); }
+.circuit .g-name { font: 500 10px var(--font-sans); fill: var(--muted); }
+.circuit .g-in { font: 700 14px var(--font-mono); fill: var(--ink); }
+.circuit .g-val { font: 700 11px var(--font-mono); }
+.circuit .on .g-val { fill: var(--ink); }
+.circuit .off .g-val { fill: var(--muted); }
+.circuit .g-pin { fill: var(--surface); stroke: var(--ink-2); stroke-width: 2; }
+.circuit .on .g-pin { fill: var(--c1); stroke: var(--c1); }
+.circuit .g-out { font: 700 14px var(--font-mono); fill: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .circuit .wire { transition: none; } }
+.lg-q { margin: 0; font: 700 1.6rem var(--font-mono); color: var(--ink); }
+.lg-gates { margin: 0 0 14px; padding-left: 20px; line-height: 1.7; }
+.lg-gate-table { min-width: 380px; }
+
+/* Input switches: real buttons with a pressed state shown in text (0 or 1) as well as fill. */
+.lg-switches { display: flex; flex-wrap: wrap; gap: 8px; }
+.lg-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line-control);
+  border-radius: var(--r-control);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  color: var(--ink);
+  font: 600 .95rem var(--font-mono);
+  cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out), border-color var(--t-ui) var(--ease-out);
+}
+.lg-switch .lg-sw-val { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 5px; background: var(--sunk); color: var(--ink-2); }
+.lg-switch[aria-pressed="true"] { border-color: var(--ink); }
+.lg-switch[aria-pressed="true"] .lg-sw-val { background: var(--ink); color: var(--bg); }
+@media (hover: hover) { .lg-switch:hover { transform: translateY(-1px); border-color: var(--muted); } }
+.lg-switch:active { transform: scale(.97); }
+@media (pointer: coarse) { .lg-switch { height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .lg-switch, .lg-switch:hover, .lg-switch:active { transform: none; } }
+.lg-mterm { margin-top: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-control); }
+.lg-mterm summary { cursor: pointer; font-weight: 500; }
+.lg-mterm .btn-line { margin-top: 8px; }

@@ -203,6 +203,8 @@ test('the decision log lists every moment and each line scrubs to it', async ({ 
   await expect(page.locator('[data-log-list] li')).toHaveCount(0); // built only when opened
   await log.locator('summary').click();
   const lines = page.locator('.log-line');
+  // The log is built on the toggle event; wait for it before reading.
+  await expect.poll(() => lines.count()).toBeGreaterThan(5);
   const moments = await page.evaluate(() => [...new Set(window.__trace.player && document.querySelectorAll('.log-t').length ? [...document.querySelectorAll('.log-t')].map((e) => e.textContent) : [])]);
   expect(moments.length).toBeGreaterThan(5);
   await expect(lines.first()).toHaveAttribute('aria-current', 'step');

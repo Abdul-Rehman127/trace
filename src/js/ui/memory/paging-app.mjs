@@ -107,14 +107,19 @@ export function mountPaging(root) {
     }, 300);
   }
 
-  // Keep the current step's column in view, with one more column of room on the right.
+  // Keep the current step's column in view. When it reaches the right edge the table jumps
+  // so the column sits a third of the way in, rather than scrolling one column every step:
+  // fewer scrolls while playing, and always at least one column of room on the right.
   function follow(k) {
     if (!viewW || k < 1) return;
     const w = colW();
     const left = LABEL_W + (k - 1) * w;
     const right = left + w;
-    if (left < scrollX + LABEL_W) scroller.scrollLeft = Math.max(0, left - LABEL_W);
-    else if (right + w > scrollX + viewW) scroller.scrollLeft = Math.max(0, Math.min(tableW() - viewW, right + w - viewW));
+    const room = viewW - LABEL_W;
+    if (left < scrollX + LABEL_W || right + w > scrollX + viewW) {
+      const target = left - LABEL_W - Math.floor(room / 3);
+      scroller.scrollLeft = Math.max(0, Math.min(tableW() - viewW, target));
+    }
   }
 
   function show(k, { playing }) {

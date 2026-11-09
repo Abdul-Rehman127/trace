@@ -1,0 +1,45 @@
+    <section class="intro intro-tool">
+      <div class="intro-text">
+        <h1>{{h1}}</h1>
+        <p class="lede">{{lede}}</p>
+      </div>
+      {{{selector}}}
+    </section>
+
+    <noscript><p class="noscript">The planner needs JavaScript. The explanation and the worked example below work without it.</p></noscript>
+
+    <div class="tool net-tool" data-tool="net-vlsm">
+      <div class="tool-grid">
+        <section class="inputs" aria-labelledby="h-vlsm-in">
+          <h2 id="h-vlsm-in" class="label">Requirements</h2>
+          <div class="field field-stack">
+            <div><label for="vlsm-net">Network to divide</label><small id="vlsm-net-hint">Address with prefix, for example 192.168.10.0/24</small></div>
+            <textarea class="text-in" id="vlsm-net" data-vlsm-net rows="1" autocomplete="off" spellcheck="false" aria-describedby="vlsm-net-hint">{{net}}</textarea>
+          </div>
+          <p class="err" id="vlsm-net-err" hidden></p>
+          <div class="field field-stack">
+            <div><label for="vlsm-hosts">Hosts needed per subnet</label><small id="vlsm-hosts-hint">Separated by commas, optionally named: Sales 100, Lab 50. Up to 12.</small></div>
+            <textarea class="text-in" id="vlsm-hosts" data-vlsm-hosts rows="2" autocomplete="off" spellcheck="false" aria-describedby="vlsm-hosts-hint">{{hosts}}</textarea>
+          </div>
+          <p class="err" id="vlsm-hosts-err" hidden></p>
+          <div class="presets" role="group" aria-label="Examples">
+            {{{examples}}}
+            {{{copyChip}}}
+          </div>
+          {{{copyFallback}}}
+        </section>
+        <section class="net-out" aria-labelledby="h-vlsm-out">
+          <h2 id="h-vlsm-out" class="label">Plan, largest first</h2>
+          <div class="table-scroll">
+            <table class="data net-table">
+              <thead><tr><th scope="col">Subnet</th><th scope="col">Hosts</th><th scope="col">Prefix</th><th scope="col">Network</th><th scope="col">Usable range</th><th scope="col">Broadcast</th><th scope="col">Spare</th></tr></thead>
+              <tbody data-vlsm-rows>{{{rows}}}</tbody>
+            </table>
+          </div>
+          <div data-vlsm-bar>{{{bar}}}</div>
+          <p class="net-summary" data-vlsm-summary aria-live="polite">{{summary}}</p>
+          <div class="toast" data-toast role="status" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+{{{content}}}

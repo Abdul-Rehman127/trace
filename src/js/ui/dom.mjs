@@ -79,3 +79,53 @@ export function bindCopy(root, getUrl, toast) {
     }
   });
 }
+
+/**
+ * Free-text fields show everything typed: CSS field-sizing grows them where supported;
+ * elsewhere this sets the height from the content after typing and when the width changes.
+ * Returns a function to call after setting the value from script.
+ */
+export function autoGrow(el) {
+  const native = !!(window.CSS && CSS.supports('field-sizing', 'content'));
+  const grow = () => {
+    if (native) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight + 2}px`;
+  };
+  if (!native) {
+    el.addEventListener('input', grow);
+    let lastW = 0;
+    new ResizeObserver((entries) => {
+      const w = Math.round(entries[0].contentRect.width);
+      if (w === lastW) return;
+      lastW = w;
+      grow();
+    }).observe(el);
+  }
+  return grow;
+}
+
+/** Show or clear a field's error message, keeping aria-invalid and aria-describedby in step. */
+export function fieldError(el, errEl, message) {
+  const hint = `${el.id}-hint`;
+  if (message) {
+    errEl.textContent = message;
+    errEl.hidden = false;
+    el.setAttribute('aria-invalid', 'true');
+    el.setAttribute('aria-describedby', `${hint} ${errEl.id}`);
+  } else {
+    errEl.hidden = true;
+    errEl.textContent = '';
+    el.removeAttribute('aria-invalid');
+    el.setAttribute('aria-describedby', hint);
+  }
+}
+
+/** Replace the query string without adding history; quietly does nothing where refused. */
+export function replaceQuery(query) {
+  try {
+    window.history.replaceState(window.history.state, '', `${window.location.pathname}?${query}${window.location.hash}`);
+  } catch {
+    /* some embedded browsers refuse; the copy button still works */
+  }
+}

@@ -197,6 +197,9 @@ test('reduced motion: stepping animates nothing', async ({ page }) => {
 });
 
 test('no layout shift while loading and while playing to the end @chromium-only', async ({ page }) => {
+  // Web fonts are blocked here so a shift can only come from the page itself; the font swap
+  // (kept by the owner, with metric overrides) is measured by Lighthouse and fontswap.spec.
+  await page.route('**/*.woff2', (r) => r.abort());
   await page.addInitScript(() => {
     window.__cls = 0;
     window.__clsSources = [];
@@ -204,7 +207,7 @@ test('no layout shift while loading and while playing to the end @chromium-only'
       for (const e of list.getEntries()) {
         if (e.hadRecentInput) continue;
         window.__cls += e.value;
-        for (const s of e.sources) window.__clsSources.push(`${s.node ? s.node.className || s.node.nodeName : '?'} ${s.previousRect.y}->${s.currentRect.y} h${s.previousRect.height}->${s.currentRect.height} at ${Math.round(e.startTime)}ms`);
+        for (const s of e.sources) window.__clsSources.push(`${s.node ? (s.node.className || s.node.nodeName) + " [" + (s.node.textContent || "").trim().slice(0, 30) + "]" : "?"} x ${s.previousRect.x}->${s.currentRect.x} w ${s.previousRect.width}->${s.currentRect.width} y ${s.previousRect.y}->${s.currentRect.y} h${s.previousRect.height}->${s.currentRect.height} at ${Math.round(e.startTime)}ms`);
       }
     }).observe({ type: 'layout-shift', buffered: true });
   });

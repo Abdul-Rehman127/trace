@@ -1,0 +1,118 @@
+/* Networking section: subnet results, binary view, VLSM plan and bar, practice card, TCP diagram. */
+
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.net-out { min-width: 0; }
+.net-sub { margin-top: 28px; }
+
+/* Result rows: label left, value right, an optional note under the value. */
+.net-rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
+.net-rows div { padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-control-lg); background: var(--surface); min-width: 0; }
+.net-rows dt { color: var(--muted); font-size: .8rem; }
+.net-rows dd { margin: 4px 0 0; overflow-wrap: anywhere; }
+.net-rows dd .mono { font-size: 1.08rem; font-weight: 600; color: var(--ink); }
+.net-rows dd small { display: block; margin-top: 2px; color: var(--muted); font-size: .78rem; }
+@media (max-width: 640px) { .net-rows { grid-template-columns: minmax(0, 1fr); } }
+
+/* Binary view: network bits and host bits differ in color, weight and the N / H row below. */
+.bits { border-collapse: collapse; font: 500 .9rem/1 var(--font-mono); }
+.bits th { padding: 6px 12px 6px 0; color: var(--muted); font: 500 .78rem var(--font-sans); text-align: left; white-space: nowrap; }
+.bits td.oct { padding: 4px 6px; white-space: nowrap; }
+.bits td.oct + td.oct { border-left: 1px dashed var(--line-strong); }
+.bits .bit { display: inline-block; width: 1.1em; text-align: center; }
+.bits .nb { color: var(--ink); font-weight: 700; }
+.bits .hb { color: var(--muted); }
+.bits .edge { box-shadow: inset -2px 0 0 var(--c1); }
+.bits .kinds .bit { font-size: .7rem; }
+.net-bits { padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-control-lg); background: var(--surface); }
+.net-notes { margin: 14px 0 0; padding-left: 18px; color: var(--ink-2); font-size: .9rem; line-height: 1.5; }
+.net-notes li + li { margin-top: 4px; }
+
+/* Tables of results (VLSM plan, TCP segments). */
+.net-table { min-width: 560px; }
+.net-table td, .net-table th { white-space: nowrap; }
+.net-summary { margin: 12px 0 0; color: var(--ink-2); }
+
+/* VLSM bar: the parent's addresses left to right, one block per subnet, widths in percent. */
+.vbar { display: flex; height: 40px; margin-top: 18px; overflow: hidden; border: 1px solid var(--line-control); border-radius: var(--r-control); background: var(--sunk); }
+.vb { display: flex; align-items: center; min-width: 0; padding: 0 6px; overflow: hidden; border-right: 1px solid var(--surface); font: 500 .74rem/1 var(--font-sans); white-space: nowrap; }
+.vb span { overflow: hidden; text-overflow: clip; }
+.vb.c1 { background: var(--c1); color: var(--on-c1); }
+.vb.c2 { background: var(--c2); color: var(--on-c2); }
+.vb.c3 { background: var(--c3); color: var(--on-c3); }
+.vb.c4 { background: var(--c4); color: var(--on-c4); }
+.vb.c5 { background: var(--c5); color: var(--on-c5); }
+.vb.c6 { background: var(--c6); color: var(--on-c6); }
+.vb.c7 { background: var(--c7); color: var(--on-c7); }
+.vb.c8 { background: var(--c8); color: var(--on-c8); }
+.vb.free { background: transparent; color: var(--muted); }
+.vb.narrow span { visibility: hidden; }
+
+/* Wider number fields for 32-bit sequence numbers. */
+.num-wide { width: 132px; }
+
+/* A filled primary button (practice "Check"). */
+.btn-solid {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--ink);
+  border-radius: var(--r-control);
+  background: var(--ink);
+  box-shadow: var(--shadow-1);
+  color: var(--bg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-ui) var(--ease-out);
+}
+@media (hover: hover) { .btn-solid:hover { transform: translateY(-1px); box-shadow: var(--shadow-2); } }
+.btn-solid:active { transform: scale(.97); }
+@media (pointer: coarse) { .btn-solid { height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .btn-solid, .btn-solid:hover, .btn-solid:active { transform: none; } }
+
+/* Practice */
+.pr-card { padding: 18px 20px; border: 1px solid var(--line); border-radius: var(--r-stage); background: var(--surface); }
+.pr-meta { color: var(--muted); font-weight: 400; }
+.pr-prompt { min-height: 3.2em; margin: 0 0 14px; font-size: 1.1rem; line-height: 1.5; }
+.pr-form { display: grid; gap: 6px; }
+.pr-form small { color: var(--muted); font-size: .8rem; }
+.pr-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.pr-result { min-height: 1.6em; margin-top: 14px; font-weight: 600; }
+.pr-result .ok { color: var(--ink); }
+.pr-result .ok::before { content: "\2713  "; }
+.pr-result .no::before { content: "\2717  "; }
+.pr-steps { margin: 10px 0 0; padding-left: 20px; color: var(--ink-2); line-height: 1.55; }
+.pr-steps li + li { margin-top: 6px; }
+.pr-types .chip[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink), var(--shadow-1); color: var(--ink); }
+
+/* TCP diagram: client on the left, server on the right, time going down. */
+.tcp-scroll { overflow: auto; max-height: 520px; padding: 6px 0; contain: paint; }
+.tcp-diagram { display: block; width: 100%; max-width: 600px; height: auto; margin: 0 auto; }
+.tcp-diagram text { fill: var(--ink-2); font: 500 12px var(--font-sans); }
+.tcp-diagram .td-h { fill: var(--ink); font: 600 14px var(--font-sans); }
+.tcp-diagram .td-t { fill: var(--muted); font: 500 11px var(--font-mono); }
+.tcp-diagram .td-state { fill: var(--ink); font: 600 11px var(--font-mono); }
+.tcp-diagram .td-axis { stroke: var(--line-control); stroke-width: 2; }
+.tcp-diagram .td-arrow { stroke-width: 2; }
+.tcp-diagram .client .td-arrow, .tcp-diagram .client .td-head { stroke: var(--c1); }
+.tcp-diagram .server .td-arrow, .tcp-diagram .server .td-head { stroke: var(--c7); }
+.tcp-diagram .td-head, .tcp-diagram .td-x { fill: none; stroke-width: 2; stroke-linecap: round; }
+.tcp-diagram .lost .td-arrow { stroke-dasharray: 5 4; }
+.tcp-diagram .td-x { stroke: var(--c8); }
+.tcp-diagram .td-label { fill: var(--ink); font: 500 11px var(--font-mono); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.tcp-diagram .td-now { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 2 3; opacity: .6; will-change: transform; }
+.tcp-diagram .fut { visibility: hidden; }
+.tcp-states { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.tcp-states div { padding: 8px 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--sunk); }
+.tcp-states dt { color: var(--muted); font-size: .76rem; }
+.tcp-states dd { margin: 2px 0 0; font: 600 .86rem var(--font-mono); color: var(--ink); }
+.tcp-table tr.past td { color: var(--ink); }
+.tcp-table tr.fut td { color: var(--muted); }
+@media (max-width: 640px) {
+  /* All 32 bits fit a phone screen: narrower bits and tighter octet padding. */
+  .net-bits { padding: 8px; }
+  .bits { font-size: .74rem; }
+  .bits th { padding-right: 6px; font-size: .7rem; }
+  .bits td.oct { padding: 3px 3px; }
+  .bits .bit { width: 1ch; }
+}

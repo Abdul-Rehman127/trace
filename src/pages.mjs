@@ -9,6 +9,8 @@ export const SITE = {
 
 const CPU = '/operating-systems/cpu-scheduling/';
 const PR = '/memory/page-replacement/';
+const NET = '/networking/';
+const LG = '/logic/';
 
 /** Breadcrumb trail for a CPU scheduling page (home is implied). */
 const cpuCrumbs = (last) => {
@@ -29,6 +31,12 @@ const prCrumbs = (last) => {
   if (last) trail.push(last);
   return trail;
 };
+
+/** Breadcrumb trail for a networking page. */
+const netCrumbs = (last) => [{ name: 'Networking', path: '/#networking' }, last];
+
+/** Breadcrumb trail for a logic page. */
+const lgCrumbs = (last) => [{ name: 'Logic', path: '/#logic' }, last];
 
 export const PAGES = [
   {
@@ -205,6 +213,110 @@ export const PAGES = [
     lede: 'Run all four algorithms on the same pages and compare their faults side by side.',
     breadcrumb: prCrumbs({ name: 'Compare', path: `${PR}compare/` }),
     algorithm: 'compare',
+  },
+  {
+    slug: `${NET}subnet-calculator/`,
+    template: 'net-subnet',
+    section: 'networking',
+    tool: 'subnet',
+    title: 'IPv4 Subnet Calculator with Binary View | Trace',
+    description:
+      'Enter an IPv4 address with a prefix or mask and see the network, broadcast, usable host range and mask, with every bit labelled in binary. Free.',
+    h1: 'IPv4 subnet calculator',
+    key: 'networking/subnet',
+    lede: 'Enter an address with a prefix or a mask. Every value updates as you type, and the binary view shows which bits are network and which are host.',
+    breadcrumb: netCrumbs({ name: 'Subnet calculator', path: `${NET}subnet-calculator/` }),
+  },
+  {
+    slug: `${NET}subnetting-practice/`,
+    template: 'net-practice',
+    section: 'networking',
+    tool: 'practice',
+    title: 'Subnetting Practice Questions with Solutions | Trace',
+    description:
+      'Generated subnetting questions at three levels: network, broadcast, host range, masks and more. Check your answer and see the steps. Free, no signup.',
+    h1: 'Subnetting practice',
+    key: 'networking/practice',
+    lede: 'Answer a generated question, check it, and read the worked steps. Every question has its own link, so you can share the exact one.',
+    breadcrumb: netCrumbs({ name: 'Practice', path: `${NET}subnetting-practice/` }),
+  },
+  {
+    slug: `${NET}vlsm-calculator/`,
+    template: 'net-vlsm',
+    section: 'networking',
+    tool: 'vlsm',
+    title: 'VLSM Calculator and Subnet Planner | Trace',
+    description:
+      'Enter a network and the hosts each subnet needs. The planner allocates largest first, shows every range and spare space, and says when it will not fit.',
+    h1: 'VLSM subnet planner',
+    key: 'networking/vlsm',
+    lede: 'Enter a network and how many hosts each subnet needs. The plan gives each one the smallest block that fits, largest first.',
+    breadcrumb: netCrumbs({ name: 'VLSM', path: `${NET}vlsm-calculator/` }),
+  },
+  {
+    slug: `${NET}tcp-handshake/`,
+    template: 'net-tcp',
+    section: 'networking',
+    tool: 'tcp',
+    title: 'TCP Three-Way Handshake and Teardown Simulator | Trace',
+    description:
+      'Watch a TCP connection open and close step by step: SYN, SYN-ACK, ACK, FIN, every state, and the sequence and acknowledgement numbers. Free.',
+    h1: 'TCP handshake and teardown',
+    key: 'networking/tcp',
+    lede: 'Press play and watch a connection open, carry data and close, with the state of each side and every sequence number explained.',
+    breadcrumb: netCrumbs({ name: 'TCP handshake', path: `${NET}tcp-handshake/` }),
+  },
+  {
+    slug: `${LG}truth-table/`,
+    template: 'lg-table',
+    section: 'logic',
+    tool: 'table',
+    title: 'Truth Table Generator for Boolean Expressions | Trace',
+    description:
+      'Type a Boolean expression with AND, OR, NOT, XOR, NAND, NOR or XNOR and get its full truth table, every subexpression, and its canonical forms. Free.',
+    h1: 'Truth table generator',
+    key: 'logic/table',
+    lede: 'Type an expression and get its truth table as you type, with a column for every part of the expression.',
+    breadcrumb: lgCrumbs({ name: 'Truth table', path: `${LG}truth-table/` }),
+  },
+  {
+    slug: `${LG}circuit/`,
+    template: 'lg-circuit',
+    section: 'logic',
+    tool: 'circuit',
+    title: 'Logic Circuit Simulator from a Boolean Expression | Trace',
+    description:
+      'Type a Boolean expression and get its logic gate circuit. Switch the inputs and watch each change travel gate by gate, with every step explained. Free.',
+    h1: 'Logic circuit simulator',
+    key: 'logic/circuit',
+    lede: 'Type an expression to draw its circuit, then switch an input and watch the change travel through the gates one level at a time.',
+    breadcrumb: lgCrumbs({ name: 'Circuit', path: `${LG}circuit/` }),
+  },
+  {
+    slug: `${LG}simplifier/`,
+    template: 'lg-table',
+    section: 'logic',
+    tool: 'simplify',
+    title: 'Boolean Simplifier with K-Map and Quine-McCluskey | Trace',
+    description:
+      'Simplify a Boolean expression or a list of minterms. See every minimal sum of products, the Karnaugh map groups and the Quine-McCluskey steps. Free.',
+    h1: 'Boolean expression simplifier',
+    key: 'logic/simplify',
+    lede: 'Enter an expression or minterms and get every shortest sum of products, the product of sums, the Karnaugh map and the steps.',
+    breadcrumb: lgCrumbs({ name: 'Simplifier', path: `${LG}simplifier/` }),
+  },
+  {
+    slug: `${LG}equivalence/`,
+    template: 'lg-table',
+    section: 'logic',
+    tool: 'equiv',
+    title: 'Boolean Expression Equivalence Checker | Trace',
+    description:
+      'Check whether two Boolean expressions are equivalent. If they are not, see the first input row where they give different outputs. Free, no signup.',
+    h1: 'Boolean equivalence checker',
+    key: 'logic/equiv',
+    lede: 'Type two expressions. Trace compares them on every row and shows the first row where they differ.',
+    breadcrumb: lgCrumbs({ name: 'Equivalence', path: `${LG}equivalence/` }),
   },
   {
     slug: '/about/',

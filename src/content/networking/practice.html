@@ -1,0 +1,46 @@
+    <article class="prose">
+      <h2 id="how">How the practice questions work</h2>
+      <p>Each question is generated from a number called a seed. The same seed, level and kind of question always give the same question, so the link in the address bar points at exactly the question on screen. "Next question" picks a new seed. Nothing is stored and nothing is sent anywhere: the answer is checked in your browser.</p>
+      <p>Level 1 uses familiar private addresses and the prefixes that come up most: /8, /16, /24 and /25 to /30. Level 2 uses any prefix from /16 to /30. Level 3 uses any prefix from /8 to /30, any ordinary address, and sometimes asks you to turn a dotted mask back into a prefix.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>"{{exPrompt}}" The answer is {{exAnswer}}, and these are the steps Trace shows after you check:</p>
+      {{{exSteps}}}
+
+      <h2 id="kinds">The kinds of question</h2>
+      <ul>
+        <li><strong>Network and broadcast address:</strong> AND the address with the mask; then OR the network with the wildcard.</li>
+        <li><strong>Usable host range:</strong> one after the network to one before the broadcast. Answer with two addresses, such as 10.0.0.1 - 10.0.0.62.</li>
+        <li><strong>Number of hosts:</strong> 2 to the power of the host bits, minus 2.</li>
+        <li><strong>Subnet mask:</strong> the prefix as ones followed by zeros, written as four numbers; or the other way round.</li>
+        <li><strong>Same subnet:</strong> two addresses are in the same subnet when their network addresses match. Answer yes or no.</li>
+        <li><strong>How many subnets:</strong> borrowing bits from the host part gives 2 to the power of the borrowed bits.</li>
+      </ul>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Usable hosts <code>= 2^(32 - prefix) - 2</code></li>
+        <li>Subnets from borrowing <code>= 2^(new prefix - old prefix)</code></li>
+        <li>Network <code>= address AND mask</code>; broadcast <code>= network OR wildcard</code></li>
+      </ul>
+
+      <h2 id="answers">How answers are read</h2>
+      <p>Spaces are ignored. Addresses must be four numbers from 0 to 255 without leading zeros. Prefixes can be written with or without the slash. Host counts can include commas, such as 1,022. If an answer cannot be read, the message says what form is expected instead of marking it wrong.</p>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Off by one in the range.</strong> The first usable host is network plus one, not the network itself.</li>
+        <li><strong>Counting subnets from the wrong prefix.</strong> Borrowed bits are new prefix minus old prefix.</li>
+        <li><strong>Mixing up mask and wildcard.</strong> The wildcard is the mask with every bit flipped.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/networking/subnet-calculator/">IPv4 subnet calculator</a>, to check any answer bit by bit</li>
+        <li><a href="/networking/vlsm-calculator/">VLSM subnet planner</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a question or a step looks wrong, please say so. Paste the link from "Copy link", which points at the exact question.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

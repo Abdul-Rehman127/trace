@@ -6,14 +6,32 @@ import { mountCompare } from './ui/compare.mjs';
 import { initHero } from './ui/hero.mjs';
 import { mountPaging } from './ui/memory/paging-app.mjs';
 import { mountPagingCompare } from './ui/memory/paging-compare.mjs';
+import { mountSubnet } from './ui/networking/subnet-app.mjs';
+import { mountVlsm } from './ui/networking/vlsm-app.mjs';
+import { mountPractice } from './ui/networking/practice-app.mjs';
+import { mountTcp } from './ui/networking/tcp-app.mjs';
+import { mountLogic } from './ui/logic/logic-app.mjs';
+import { mountCircuit } from './ui/logic/circuit-app.mjs';
+
+const MOUNT = {
+  paging: mountPaging,
+  'paging-compare': mountPagingCompare,
+  'net-subnet': mountSubnet,
+  'net-vlsm': mountVlsm,
+  'net-practice': mountPractice,
+  'net-tcp': mountTcp,
+  'lg-table': mountLogic,
+  'lg-simplify': mountLogic,
+  'lg-equiv': mountLogic,
+  'lg-circuit': mountCircuit,
+};
 
 initTheme();
 fillEmails();
 const tool = document.querySelector('[data-tool]');
 if (tool) {
   const kind = tool.dataset.tool;
-  const app =
-    kind === 'paging' ? mountPaging(tool) : kind === 'paging-compare' ? mountPagingCompare(tool) : tool.dataset.alg === 'compare' ? mountCompare(tool) : mountTool(tool);
+  const app = MOUNT[kind] ? MOUNT[kind](tool) : tool.dataset.alg === 'compare' ? mountCompare(tool) : mountTool(tool);
   // Exposed for the end-to-end and frame-time tests only; holds no visitor data.
   window.__trace = app;
 }

@@ -1,0 +1,30 @@
+    <section class="intro intro-tool">
+      <div class="intro-text">
+        <h1>{{h1}}</h1>
+        <p class="lede">{{lede}}</p>
+      </div>
+      {{{selector}}}
+    </section>
+
+    <noscript><p class="noscript">The tool needs JavaScript. The explanation and the worked example below work without it.</p></noscript>
+
+    <div class="tool lg-tool" data-tool="{{toolKind}}">
+      <div class="tool-grid">
+        <section class="inputs" aria-labelledby="h-lg-in">
+          <h2 id="h-lg-in" class="label">{{inputLabel}}</h2>
+{{{fields}}}
+          <p class="lg-prec">Precedence: NOT, then AND, then XOR, then OR. Write AND as AND, &amp;, * or two letters side by side; OR as OR, | or +; NOT as NOT, !, ~ or a trailing '.</p>
+          <div class="presets" role="group" aria-label="Examples">
+            {{{examples}}}
+            {{{copyChip}}}
+          </div>
+          {{{copyFallback}}}
+        </section>
+        <section class="net-out lg-out" aria-labelledby="h-lg-out">
+          <h2 id="h-lg-out" class="label">{{outputLabel}}</h2>
+          <div data-lg-out>{{{output}}}</div>
+          <div class="toast" data-toast role="status" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+{{{content}}}

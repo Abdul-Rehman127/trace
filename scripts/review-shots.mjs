@@ -1,6 +1,6 @@
 // Review screenshots for one section: every page in it, light and dark, at 1440, 1024
 // and 390 px, in the states default, hover, selected, focus, mid-play and end (simulator
-// pages; the compare page has no playback). Writes JPEGs to the folder given, named
+// pages with a player; the others have no playback). Writes JPEGs to the folder given, named
 // <page>-<theme>-<width>-<state>.jpg, plus an index.md.
 // Usage: node build.mjs && node scripts/review-shots.mjs memory <out-dir>
 import { createRequire } from 'node:module';
@@ -25,7 +25,7 @@ const index = [`# Review screenshots: ${section}`, '', 'Light and dark; 1440, 10
 
 const name = (slug) => slug.replace(/^\/|\/$/g, '').replace(/\//g, '_');
 for (const page of pages) {
-  const isCompare = page.template.endsWith('compare');
+  
   index.push(`## ${page.slug}`, '');
   for (const theme of ['light', 'dark']) {
     for (const width of [1440, 1024, 390]) {
@@ -48,28 +48,37 @@ for (const page of pages) {
         index.push(`- ${theme}, ${width} px, ${state}: \`${f}\``);
       };
       await shot('default');
-      // Hover: the first algorithm link or button that is not the current one, else the first preset chip.
-      const hoverTarget = isCompare ? tab.locator('.cmp-open').first() : tab.locator('.alg:not([aria-current]):not([aria-pressed="true"])').first();
+      // Hover: an algorithm or tool link that is not the current page, else an open-in-simulator link.
+      const hoverTarget = (await tab.locator('.alg:not([aria-current]):not([aria-pressed="true"])').count())
+        ? tab.locator('.alg:not([aria-current]):not([aria-pressed="true"])').first()
+        : tab.locator('.cmp-open').first();
       await hoverTarget.hover();
       await shot('hover');
       await tab.mouse.move(1, 1);
-      // Selected: the Belady preset pressed (and, on the overview, LRU chosen in the selector).
-      if (page.selectable) await tab.locator('[data-alg-choice="lru"]').click();
-      await tab.locator('[data-preset="belady"]').click();
+      // Selected: a preset, example or scenario chip pressed (and, on an overview, another algorithm chosen).
+      if (page.selectable) await tab.locator('[data-alg-choice]').nth(1).click();
+      for (const sel of ['[data-preset="belady"]', '[data-scenario="simultaneous"]', '[data-example]', '[data-net][data-hosts]', '[data-type="range"]']) {
+        const loc = tab.locator(sel);
+        if (await loc.count()) {
+          await loc.nth(Math.min(1, (await loc.count()) - 1)).click();
+          break;
+        }
+      }
       await tab.mouse.move(1, 1);
       await shot('selected');
-      // Focus: keyboard focus on the reference string field.
-      await tab.locator('#pg-refs').focus();
+      // Focus: keyboard focus on the first text or number field.
+      await tab.locator('textarea, input.num').first().focus();
       await tab.keyboard.press('Shift+Tab');
       await tab.keyboard.press('Tab');
       await shot('focus');
-      if (!isCompare) {
-        await tab.locator('[data-preset="classic"]').click();
+      const playable = await tab.evaluate(() => !!(window.__trace && window.__trace.player));
+      if (playable) {
         await tab.evaluate(() => {
+          window.__trace.player.seek(0, { animate: false });
           window.__trace.player.setSpeed(4);
           window.__trace.player.play();
         });
-        await tab.waitForFunction(() => window.__trace.player.time >= 9);
+        await tab.waitForFunction(() => window.__trace.player.time >= window.__trace.player.length / 2);
         await tab.evaluate(() => window.__trace.player.pause());
         await shot('mid-play');
         await tab.evaluate(() => window.__trace.player.seek(window.__trace.player.length, { animate: false }));

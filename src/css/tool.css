@@ -462,7 +462,9 @@ html:not(.js) .tool { display: none; }
 /* ---------- Results ---------- */
 
 .results { padding: 48px 0 0; }
-.table-scroll { overflow-x: auto; min-height: calc(32px + 44px + var(--rows, 3) * 44px); }
+.table-scroll { overflow-x: auto; }
+/* Only the scheduling results table reserves its height (it fills in after the script runs). */
+.table-scroll[data-rows] { min-height: calc(32px + 44px + var(--rows, 3) * 44px); }
 .table-scroll[data-rows="1"] { --rows: 1; }
 .table-scroll[data-rows="2"] { --rows: 2; }
 .table-scroll[data-rows="3"] { --rows: 3; }

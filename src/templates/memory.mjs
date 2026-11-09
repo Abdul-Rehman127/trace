@@ -85,7 +85,7 @@ export function pagingData(page) {
     selectable: page.selectable ? '1' : '0',
     selector: selector(page, PAGING_LINKS),
     inputs: inputsHtml(page),
-    transport: transportHtml('step'),
+    transport: transportHtml('step', r.references),
     table: treeToHtml(pagingTableTree(r, { k: 0, caption: 'Step table: frames after each page reference' })),
     steps: String(r.references),
     whyText: sentencesHtml(narratePagingStep(r, 0)),

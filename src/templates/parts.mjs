@@ -136,8 +136,9 @@ const INPUTS = readFileSync(new URL('./inputs.html', import.meta.url), 'utf8');
 const TRANSPORT = readFileSync(new URL('./transport.html', import.meta.url), 'utf8');
 export const fill = (tpl, data) => tpl.replace(/\{\{\{\s*(\w+)\s*\}\}\}|\{\{\s*(\w+)\s*\}\}/g, (_, raw, safe) => (raw ? String(data[raw]) : esc(data[safe])));
 
-/** The shared transport bar (play, steps, reset, speed, clock). */
-export const transportHtml = (clockLabel) => fill(TRANSPORT, { clockLabel });
+/** The shared transport bar (play, steps, reset, speed, clock). The total is rendered at build
+ * time so the clock never changes width when the script starts. */
+export const transportHtml = (clockLabel, total) => fill(TRANSPORT, { clockLabel, clockTotal: String(total) });
 
 /** Values for src/templates/tool.html and compare.html. */
 export function toolData(page) {
@@ -152,7 +153,7 @@ export function toolData(page) {
   }
   return {
     inputs: fill(INPUTS, base),
-    transport: transportHtml('time'),
+    transport: transportHtml('time', simulate(validateScenario(defaultScenario(page.algorithm)).value).summary.makespan),
     h1: page.h1,
     lede: page.lede,
     alg: page.algorithm,

@@ -13,11 +13,13 @@ import { toolData } from './src/templates/parts.mjs';
 import { miniUtilityCss } from './src/templates/mini.mjs';
 import { pageData } from './src/templates/pagedata.mjs';
 import { pagingData, pagingTableCss } from './src/templates/memory.mjs';
+import { networkingData, networkingUtilityCss } from './src/templates/networking.mjs';
+import { logicData } from './src/templates/logic.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const SRC = join(ROOT, 'src');
 const DIST = join(ROOT, 'dist');
-const CSS_ORDER = ['tokens.css', 'base.css', 'components.css', 'tool.css', 'content.css', 'memory.css'];
+const CSS_ORDER = ['tokens.css', 'base.css', 'components.css', 'tool.css', 'content.css', 'memory.css', 'networking.css', 'logic.css'];
 const THEME_BUDGET = 300;
 // Cloudflare Web Analytics, added by hand so Cloudflare's automatic injection (blocked by
 // Cache-Control: no-transform) cannot add a second snippet. It reports to the same-origin
@@ -55,7 +57,7 @@ const absolute = (path) => SITE.origin + path;
 
 function jsonLd(page) {
   const blocks = [];
-  if (['tool', 'compare', 'paging', 'paging-compare'].includes(page.template)) {
+  if (['tool', 'compare', 'paging', 'paging-compare'].includes(page.template) || page.template.startsWith('net-') || page.template.startsWith('lg-')) {
     blocks.push({
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
@@ -110,6 +112,7 @@ async function buildCss() {
   }
   parts.push(miniUtilityCss());
   parts.push(pagingTableCss());
+  parts.push(networkingUtilityCss());
   const result = await esbuild.transform(parts.join('\n'), {
     loader: 'css',
     minify: true,
@@ -213,6 +216,8 @@ async function main() {
     data.content = await loadContent(page.key, data);
     if (page.template === 'tool' || page.template === 'compare') Object.assign(data, toolData(page));
     if (page.template === 'paging' || page.template === 'paging-compare') Object.assign(data, pagingData(page));
+    if (page.template.startsWith('net-')) Object.assign(data, networkingData(page));
+    if (page.template.startsWith('lg-')) Object.assign(data, logicData(page));
     const body = render(await loadTemplate(page.template), data);
     const html = render(layout, {
       title: page.title,

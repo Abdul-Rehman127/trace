@@ -2,6 +2,7 @@
 // Validates as the visitor types and reports a valid input (or null) through onChange.
 import { parseRefs, parseFrames } from '../../engine/memory/validate.mjs';
 import { PAGING_PRESETS } from '../../engine/memory/presets.mjs';
+import { autoGrow } from '../dom.mjs';
 
 const BIT_HINT = {
   1: 'A page gets bit 1 when it is loaded, so it starts with a second chance. Some courses start it at 0.',
@@ -23,24 +24,7 @@ export function createPagingInputs(root, { initial, onChange }) {
 
   let newBit = initial.options?.newBit === 0 ? 0 : 1;
 
-  // Browsers without CSS field-sizing grow the field from its content height. Reading the
-  // height happens only after typing or a preset, and once after layout, never mid-play.
-  const autoGrow = !(window.CSS && CSS.supports('field-sizing', 'content'));
-  function grow() {
-    if (!autoGrow) return;
-    refsEl.style.height = 'auto';
-    refsEl.style.height = `${refsEl.scrollHeight + 2}px`;
-  }
-  if (autoGrow) {
-    // Only a width change can change the wrapping; growing the height must not re-trigger it.
-    let lastW = 0;
-    new ResizeObserver((entries) => {
-      const w = Math.round(entries[0].contentRect.width);
-      if (w === lastW) return;
-      lastW = w;
-      grow();
-    }).observe(refsEl);
-  }
+  const grow = autoGrow(refsEl);
   let last = null;
 
   function showError(el, errEl, message) {
@@ -84,10 +68,7 @@ export function createPagingInputs(root, { initial, onChange }) {
     framesEl.value = String(frames);
   }
 
-  refsEl.addEventListener('input', () => {
-    grow();
-    onChange(read(), 'edit');
-  });
+  refsEl.addEventListener('input', () => onChange(read(), 'edit'));
   framesEl.addEventListener('input', () => onChange(read(), 'edit'));
   for (const b of bitButtons) {
     b.addEventListener('click', () => {

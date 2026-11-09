@@ -1,0 +1,36 @@
+    <section class="intro intro-tool">
+      <div class="intro-text">
+        <h1>{{h1}}</h1>
+        <p class="lede">{{lede}}</p>
+      </div>
+      {{{selector}}}
+    </section>
+
+    <noscript><p class="noscript">The calculator needs JavaScript. The explanation and the worked example below work without it.</p></noscript>
+
+    <div class="tool net-tool" data-tool="net-subnet">
+      <div class="tool-grid">
+        <section class="inputs" aria-labelledby="h-net-in">
+          <h2 id="h-net-in" class="label">Address</h2>
+          <div class="field field-stack">
+            <div><label for="net-cidr">IPv4 address with prefix or mask</label><small id="net-cidr-hint">For example 192.168.1.130/26 or 192.168.1.130 255.255.255.192</small></div>
+            <textarea class="text-in" id="net-cidr" data-net-cidr rows="1" autocomplete="off" spellcheck="false" aria-describedby="net-cidr-hint">{{cidr}}</textarea>
+          </div>
+          <p class="err" id="net-cidr-err" hidden></p>
+          <div class="presets" role="group" aria-label="Examples">
+            {{{examples}}}
+            {{{copyChip}}}
+          </div>
+          {{{copyFallback}}}
+        </section>
+        <section class="net-out" aria-labelledby="h-net-out">
+          <h2 id="h-net-out" class="label">Subnet</h2>
+          <dl class="net-rows" data-net-rows>{{{rows}}}</dl>
+          <h2 class="label net-sub" id="h-bits">In binary</h2>
+          <div class="table-scroll net-bits" data-net-bits>{{{bits}}}</div>
+          <ul class="net-notes" data-net-notes>{{{notes}}}</ul>
+          <div class="toast" data-toast role="status" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+{{{content}}}
