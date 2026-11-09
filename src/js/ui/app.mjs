@@ -189,18 +189,6 @@ export function mountTool(root) {
       });
     }
   }
-  // Keep the selected algorithm visible in the horizontally scrolling selector.
-  // Read after the browser's own layout (ResizeObserver), so startup never forces a layout.
-  const selected = document.querySelector('.algs [aria-current="page"], .algs [aria-pressed="true"]');
-  const wrap = document.querySelector('.algs-wrap');
-  if (selected && wrap) {
-    const ro = new ResizeObserver(() => {
-      ro.disconnect();
-      if (wrap.scrollWidth > wrap.clientWidth) wrap.scrollLeft = selected.offsetLeft - (wrap.clientWidth - selected.offsetWidth) / 2;
-    });
-    ro.observe(wrap);
-  }
-
   // ---------- copy link ----------
   copyBtn.addEventListener('click', async () => {
     const url = shareUrl();

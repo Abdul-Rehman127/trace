@@ -20,23 +20,23 @@
 }
 
 /* Press feedback shared by every control. */
-.tbtn, .chip, .btn-quiet, .seg button, .seg a, .icon-btn, .speed button {
+.tbtn, .chip, .btn-quiet, .seg button, .icon-btn, .speed button, .alg {
   -webkit-tap-highlight-color: transparent;
 }
-.tbtn:active, .chip:active, .btn-quiet:active, .seg button:active, .seg a:active, .speed button:active {
+.tbtn:active, .chip:active, .btn-quiet:active, .seg button:active, .speed button:active {
   transform: scale(.94);
 }
 
-/* Segmented control (algorithm selector, tie rule, priority order) */
+/* Segmented control (tie rule, priority order): two choices in one bordered group. */
 .seg {
   display: inline-flex;
   gap: 2px;
   padding: 3px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-control);
   border-radius: var(--r-control-lg);
   background: var(--surface);
 }
-.seg button, .seg a {
+.seg button {
   flex: none;
   padding: 7px 14px;
   border: 0;
@@ -47,19 +47,122 @@
   font-size: .9rem;
   line-height: 1.2;
   white-space: nowrap;
-  text-decoration: none;
   cursor: pointer;
   transition: background-color var(--t-ui) var(--ease-out), color var(--t-ui) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
-.seg button:hover, .seg a:hover { color: var(--ink); background: var(--sunk); }
-.seg [aria-pressed="true"], .seg [aria-current="page"] {
+.seg button:hover { color: var(--ink); background: var(--sunk); }
+.seg [aria-pressed="true"], .seg [aria-pressed="true"]:hover {
   background: var(--ink);
   color: var(--bg);
 }
-.seg [aria-pressed="true"]:hover, .seg [aria-current="page"]:hover { background: var(--ink); color: var(--bg); }
 .seg-sm button { padding: 6px 10px; font-size: .84rem; }
 @media (pointer: coarse) {
-  .seg button, .seg a { min-height: 44px; }
+  .seg button { min-height: 44px; }
+}
+
+/* Algorithm selector: separate buttons. The selected one is filled and carries a check;
+   the others lift on hover and show a play mark. Icons sit in reserved padding, so
+   nothing moves when they appear. */
+.algs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.alg {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 26px;
+  border: 1px solid var(--line-control);
+  border-radius: var(--r-control);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  color: var(--ink-2);
+  font: 500 .9rem/1.2 var(--font-sans);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    background-color var(--t-ui) var(--ease-out),
+    border-color var(--t-ui) var(--ease-out),
+    box-shadow var(--t-ui) var(--ease-out);
+}
+.alg-t { position: relative; z-index: 1; }
+.alg-ic {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: calc(100% + 6px);
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  overflow: hidden;
+}
+.alg-ic svg { position: absolute; inset: 0; display: block; }
+.alg-go { transform: translateX(-130%); transition: transform var(--t-ui) var(--ease-out); }
+.alg-check { visibility: hidden; }
+/* The selected fill is its own element so a view transition can slide it between pages. */
+.alg-hl {
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--r-control);
+  background: var(--ink);
+  visibility: hidden;
+}
+.alg:focus-visible { border-radius: var(--r-control); }
+.alg[aria-current="page"], .alg[aria-pressed="true"] {
+  border-color: var(--ink);
+  color: var(--bg);
+  cursor: default;
+}
+.alg[aria-current="page"] .alg-hl, .alg[aria-pressed="true"] .alg-hl {
+  visibility: visible;
+  view-transition-name: alg-current;
+}
+.alg[aria-current="page"] .alg-check, .alg[aria-pressed="true"] .alg-check { visibility: visible; }
+.alg[aria-current="page"] .alg-go, .alg[aria-pressed="true"] .alg-go { visibility: hidden; }
+@media (hover: hover) {
+  .alg:not([aria-current="page"]):not([aria-pressed="true"]):hover {
+    transform: translateY(-1px);
+    border-color: var(--muted);
+    box-shadow: var(--shadow-2);
+    color: var(--ink);
+  }
+  .alg:hover .alg-go { transform: translateX(0); }
+}
+.alg:not([aria-current="page"]):not([aria-pressed="true"]):active {
+  transform: scale(.97);
+  box-shadow: var(--shadow-1);
+}
+@media (pointer: coarse) {
+  .alg { min-height: 44px; }
+}
+@media (max-width: 640px) {
+  .algs {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .alg { grid-column: span 2; min-height: 44px; padding: 0 22px; }
+  .alg:nth-child(4), .alg:nth-child(5) { grid-column: span 3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .alg, .alg:hover, .alg:active { transform: none !important; }
+  .alg-go { transform: none; }
+  .alg:not(:hover) .alg-go { visibility: hidden; }
+}
+
+/* Moving between algorithm pages slides the selected fill; the page itself swaps at once. */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+::view-transition-group(alg-current) {
+  animation-duration: 220ms;
+  animation-timing-function: var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
 }
 
 /* Chips */

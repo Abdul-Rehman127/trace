@@ -11,20 +11,10 @@ html:not(.js) .tool { display: none; }
 }
 .intro-text { min-width: 0; }
 
-/* Algorithm selector: scrolls sideways on small screens with soft edge fades. */
+/* Algorithm selector: a row of buttons, a 3 + 2 grid on phones (see components.css). */
 .algs-wrap { max-width: 100%; min-width: 0; }
-.algs { max-width: 100%; }
 @media (max-width: 640px) {
-  .algs-wrap {
-    width: calc(100% + 2 * var(--gutter));
-    margin: 0 calc(-1 * var(--gutter));
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--gutter), #000 calc(100% - var(--gutter)), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0, #000 var(--gutter), #000 calc(100% - var(--gutter)), transparent 100%);
-  }
-  .algs-wrap::-webkit-scrollbar { display: none; }
-  .algs-wrap .algs { margin: 0 var(--gutter); max-width: none; }
+  .algs-wrap { flex: 1 1 100%; }
 }
 
 .tool-grid {

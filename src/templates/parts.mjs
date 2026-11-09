@@ -30,20 +30,30 @@ export const ORDER_HINT = {
   high: '99 is the highest priority.',
 };
 
+// Check and play marks share one reserved slot; CSS shows the check when selected, the play mark on hover.
+const ALG_HL = '<span class="alg-hl" aria-hidden="true"></span>';
+const ALG_ICONS =
+  '<span class="alg-ic" aria-hidden="true">' +
+  '<svg class="alg-check" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M2 6.5 4.8 9 10 3"/></svg>' +
+  '<svg class="alg-go" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" focusable="false"><path d="M3 1.8v8.4L10 6z"/></svg>' +
+  '</span>';
+// The icon hangs off the label's left edge, inside the button's reserved padding.
+const algInner = (label) => `${ALG_HL}<span class="alg-t">${ALG_ICONS}${label}</span>`;
+
 function selector(page) {
   if (page.selectable) {
     const items = ALG_LINKS.map(
       (a) =>
-        `<button type="button" data-alg-choice="${a.alg}" aria-pressed="${a.alg === page.algorithm}">${a.label}</button>`,
+        `<button type="button" class="alg" data-alg-choice="${a.alg}" aria-pressed="${a.alg === page.algorithm}">${algInner(a.label)}</button>`,
     ).join('');
-    return `<div class="algs-wrap"><div class="seg algs" role="group" aria-label="Algorithm">${items}</div></div>`;
+    return `<div class="algs-wrap"><div class="algs" role="group" aria-label="Algorithm">${items}</div></div>`;
   }
   const items = ALG_LINKS.map((a) =>
     a.alg === page.algorithm
-      ? `<a href="${a.path}" data-alg-link="${a.alg}" aria-current="page">${a.label}</a>`
-      : `<a href="${a.path}" data-alg-link="${a.alg}">${a.label}</a>`,
+      ? `<a class="alg" href="${a.path}" data-alg-link="${a.alg}" aria-current="page">${algInner(a.label)}</a>`
+      : `<a class="alg" href="${a.path}" data-alg-link="${a.alg}">${algInner(a.label)}</a>`,
   ).join('');
-  return `<div class="algs-wrap"><nav class="seg algs" aria-label="Algorithm">${items}</nav></div>`;
+  return `<div class="algs-wrap"><nav class="algs" aria-label="Algorithm">${items}</nav></div>`;
 }
 
 function segmented(name, labelId, choices, current) {

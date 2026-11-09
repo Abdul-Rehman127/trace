@@ -55,6 +55,15 @@ for (const [name, t] of [['light', light], ['dark', darkMedia]]) {
   test(`${name}: focus ring reaches 3:1 against backgrounds`, () => {
     for (const bg of ['bg', 'surface']) assert.ok(contrast(t.focus, t[bg]) >= 3, `focus on ${bg}`);
   });
+  test(`${name}: control borders reach 3:1 in every state`, () => {
+    // Default border, hover border, and the selected fill all mark a button's edge.
+    for (const edge of ['line-control', 'muted', 'ink']) {
+      for (const bg of ['bg', 'surface']) {
+        const c = contrast(t[edge], t[bg]);
+        assert.ok(c >= 3, `--${edge} on --${bg} is ${c.toFixed(2)}:1`);
+      }
+    }
+  });
   test(`${name}: text on every process bar reaches 4.5:1`, () => {
     for (let i = 1; i <= 8; i++) {
       const c = contrast(t[`c${i}`], t[`on-c${i}`]);

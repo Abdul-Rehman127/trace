@@ -4,7 +4,7 @@ import { simulate, fractionText, fractionValue } from '../engine/scheduling.mjs'
 import { encodeScenario, decodeScenario } from '../engine/share.mjs';
 import { defaultScenario } from '../engine/presets.mjs';
 import { createInputs } from './inputs.mjs';
-import { h } from './dom.mjs';
+import { h, svg } from './dom.mjs';
 
 const ALGS = [
   { alg: 'fcfs', name: 'FCFS', path: '/operating-systems/cpu-scheduling/fcfs/' },
@@ -52,6 +52,21 @@ export function mountCompare(root) {
     toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms);
   };
 
+  // Each algorithm name opens its simulator with the same processes; it looks like a button and says so.
+  function openLink(name, href) {
+    return h(
+      'a',
+      // The label starts with the visible name, so voice control by name still works.
+      { class: 'cmp-open', href, 'aria-label': `${name}, open in the simulator` },
+      h('span', { text: name }),
+      svg(
+        'svg',
+        { class: 'cmp-open-ic', width: 12, height: 12, viewBox: '0 0 12 12', fill: 'none', stroke: 'currentColor', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false' },
+        svg('path', { d: 'M2 6h8M6.5 2.5 10 6 6.5 9.5' }),
+      ),
+    );
+  }
+
   function render(s) {
     const results = ALGS.map((a) => ({ ...a, scenario: { algorithm: a.alg, processes: s.processes, options: s.options } }))
       .map((a) => ({ ...a, result: simulate(a.scenario) }));
@@ -62,7 +77,7 @@ export function mountCompare(root) {
         h(
           'tr',
           {},
-          h('th', { scope: 'row' }, h('a', { href: `${r.path}?${encodeScenario(r.scenario)}`, text: r.name })),
+          h('th', { scope: 'row' }, openLink(r.name, `${r.path}?${encodeScenario(r.scenario)}`)),
           ...METRICS.map((m) => cell(r.result.averages[m], fractionValue(r.result.averages[m]) === best[m])),
           h('td', { text: String(r.result.summary.makespan) }),
         ),

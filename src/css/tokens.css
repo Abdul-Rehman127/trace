@@ -57,6 +57,9 @@
   --muted: #5F6976; /* brief value #707B8A was 3.79:1 on --bg; darkened to pass AA on bg, surface and sunk */
   --line: #D8DFE8;
   --line-strong: #B9C3D0;
+  --line-control: #808B9A; /* borders that mark a control: 3:1 on --bg and --surface */
+  --shadow-1: 0 1px 2px rgba(17, 24, 38, .08);
+  --shadow-2: 0 2px 6px rgba(17, 24, 38, .14);
   --focus: #2A6FDB;
 
   /* Process colors by slot. Fills are a pre-validated set; do not change them.
@@ -100,6 +103,9 @@
     --muted: #8793A2;
     --line: #263140;
     --line-strong: #38465A;
+    --line-control: #5A6A7F;
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, .45);
+    --shadow-2: 0 3px 8px rgba(0, 0, 0, .55);
     --focus: #6EA2F5;
     --c1: #3987e5; --on-c1: #0b0b0b;
     --c2: #d95926; --on-c2: #0b0b0b;
@@ -122,6 +128,9 @@
   --muted: #8793A2;
   --line: #263140;
   --line-strong: #38465A;
+  --line-control: #5A6A7F;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, .45);
+  --shadow-2: 0 3px 8px rgba(0, 0, 0, .55);
   --focus: #6EA2F5;
   --c1: #3987e5; --on-c1: #0b0b0b;
   --c2: #d95926; --on-c2: #0b0b0b;
