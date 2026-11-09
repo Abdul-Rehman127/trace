@@ -4,6 +4,7 @@ import { validateScenario } from '../js/engine/validate.mjs';
 import { defaultScenario } from '../js/engine/presets.mjs';
 import { workedExampleHtml } from './examples.mjs';
 import { miniHtml } from './mini.mjs';
+import { toolButtons } from './toolbuttons.mjs';
 
 const ALGS = ['fcfs', 'sjf', 'srtf', 'priority', 'rr'];
 const SUBJECT = {
@@ -27,6 +28,10 @@ export function pageData(page) {
     emailSubject: SUBJECT[page.key] || 'Mistake on Trace',
   };
   if (ALGS.includes(page.key)) data.example = workedExampleHtml(page.key);
-  if (page.key === 'home') data.hero = heroHtml();
+  if (page.key === 'home') {
+    data.hero = heroHtml();
+    data.toolButtons = toolButtons(['overview', 'fcfs', 'sjf', 'srtf', 'priority', 'rr', 'compare']);
+  }
+  if (page.key === 'notfound') data.toolButtons = toolButtons(['home', 'overviewShort'], 'notfound-links');
   return data;
 }
