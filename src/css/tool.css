@@ -112,7 +112,7 @@ html:not(.js) .tool { display: none; }
   width: 100%;
   height: 36px;
   padding: 0 8px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-control);
   border-radius: 7px;
   background: var(--surface);
   font: 400 .82rem var(--font-mono);

@@ -20,10 +20,10 @@
 }
 
 /* Press feedback shared by every control. */
-.tbtn, .chip, .btn-quiet, .seg button, .icon-btn, .speed button, .alg {
+.tbtn, .chip, .btn-line, .seg button, .icon-btn, .speed button, .alg {
   -webkit-tap-highlight-color: transparent;
 }
-.tbtn:active, .chip:active, .btn-quiet:active, .seg button:active, .speed button:active {
+.tbtn:active, .seg button:active, .speed button:active {
   transform: scale(.94);
 }
 
@@ -165,45 +165,81 @@
   @view-transition { navigation: none; }
 }
 
-/* Chips */
+/* Chips (presets, copy link): pill buttons with a real edge, a fill and a lift on hover. */
 .chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   height: 32px;
   padding: 0 12px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-control);
   border-radius: 999px;
-  background: transparent;
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
   color: var(--ink-2);
   font-size: .84rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: transform var(--t-fast) var(--ease-out);
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    background-color var(--t-ui) var(--ease-out),
+    border-color var(--t-ui) var(--ease-out),
+    box-shadow var(--t-ui) var(--ease-out);
 }
-.chip:hover { background: var(--sunk); color: var(--ink); }
-.chip[aria-pressed="true"] { border-color: var(--ink-2); color: var(--ink); }
+/* The active preset: ink edge doubled by an inset ring, so it differs by more than color. */
+.chip[aria-pressed="true"] {
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink), var(--shadow-1);
+  color: var(--ink);
+}
 @media (pointer: coarse) {
   .chip { height: 44px; padding: 0 16px; }
 }
 
-.btn-quiet {
+/* Outlined button (Add process): same edge and fill as the selector buttons. */
+.btn-line {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   height: 36px;
-  padding: 0 10px 0 6px;
-  border: 0;
+  padding: 0 14px 0 10px;
+  border: 1px solid var(--line-control);
   border-radius: var(--r-control);
-  background: transparent;
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
   color: var(--ink-2);
   font-weight: 500;
   cursor: pointer;
-  transition: transform var(--t-fast) var(--ease-out);
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    background-color var(--t-ui) var(--ease-out),
+    border-color var(--t-ui) var(--ease-out),
+    box-shadow var(--t-ui) var(--ease-out);
 }
-.btn-quiet:hover:not(:disabled) { background: var(--sunk); color: var(--ink); }
-.btn-quiet:disabled { color: var(--muted); cursor: not-allowed; }
+.btn-line:disabled {
+  border-color: var(--line-strong);
+  background: transparent;
+  box-shadow: none;
+  color: var(--muted);
+  cursor: not-allowed;
+}
 @media (pointer: coarse) {
-  .btn-quiet { height: 44px; }
+  .btn-line { height: 44px; }
+}
+
+/* Shared hover and press for the raised controls. Hover only where a pointer can hover. */
+@media (hover: hover) {
+  .chip:hover, .btn-line:hover:not(:disabled) {
+    transform: translateY(-1px);
+    border-color: var(--muted);
+    box-shadow: var(--shadow-2);
+    color: var(--ink);
+  }
+  .chip[aria-pressed="true"]:hover { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink), var(--shadow-2); }
+}
+.chip:active, .btn-line:active:not(:disabled) { transform: scale(.97); }
+@media (prefers-reduced-motion: reduce) {
+  .chip, .chip:hover, .chip:active, .btn-line, .btn-line:hover, .btn-line:active { transform: none !important; }
 }
 
 /* Number inputs */
@@ -211,7 +247,7 @@
   width: 56px;
   height: 36px;
   padding: 0 8px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-control);
   border-radius: 7px;
   background: var(--surface);
   font: 500 .95rem var(--font-mono);
