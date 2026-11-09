@@ -21,11 +21,13 @@ const CSS_ORDER = ['tokens.css', 'base.css', 'components.css', 'tool.css', 'cont
 const THEME_BUDGET = 300;
 // Cloudflare Web Analytics, added by hand so Cloudflare's automatic injection (blocked by
 // Cache-Control: no-transform) cannot add a second snippet. It reports to the same-origin
-// /cdn-cgi/rum endpoint. Only Cloudflare builds (CF_PAGES=1) include it, or TRACE_ANALYTICS=1 for tests.
+// /cdn-cgi/rum endpoint. Only production Cloudflare builds include it, or TRACE_ANALYTICS=1 for tests.
 const ANALYTICS_TAG =
   '<script defer src="https://static.cloudflareinsights.com/beacon.min.js" ' +
   `data-cf-beacon='{"token":"9ab17dd6be034b23968fc7154a276c0f","send":{"to":"/cdn-cgi/rum"}}'></script>`;
-const ANALYTICS = process.env.CF_PAGES === '1' || process.env.TRACE_ANALYTICS === '1';
+// Production only: preview deployments (other branches, on *.pages.dev) have no /cdn-cgi/rum
+// endpoint, so the beacon would 404 there, and preview visits should not count anyway.
+const ANALYTICS = (process.env.CF_PAGES === '1' && process.env.CF_PAGES_BRANCH === 'main') || process.env.TRACE_ANALYTICS === '1';
 
 const hash = (buf) => createHash('sha256').update(buf).digest('hex').slice(0, 10);
 
