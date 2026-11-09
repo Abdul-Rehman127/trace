@@ -124,8 +124,28 @@ async function buildCss() {
   return name;
 }
 
-async function buildJs() {
+/** The AI search worker, bundled on its own as a classic script. Returns its file name. */
+async function buildWorker() {
   const result = await esbuild.build({
+    entryPoints: [join(SRC, 'js', 'ai-worker.mjs')],
+    bundle: true,
+    minify: true,
+    format: 'iife',
+    target: ['es2020'],
+    write: false,
+    legalComments: 'none',
+  });
+  const code = result.outputFiles[0].contents;
+  const name = `app.worker.${hash(code)}.js`;
+  await writeFile(join(DIST, name), code);
+  return name;
+}
+
+async function buildJs() {
+  const worker = await buildWorker();
+  const result = await esbuild.build({
+    // The main bundle learns the worker's hashed path at build time.
+    define: { __AI_WORKER_URL__: JSON.stringify(`/${worker}`) },
     entryPoints: [join(SRC, 'js', 'main.mjs')],
     bundle: true,
     minify: true,

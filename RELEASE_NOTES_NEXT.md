@@ -2,9 +2,9 @@
 
 Sections 2 to 4 (Networking, Logic, AI) plus the section 1 review fixes, ready for batch review. Nothing has been merged; the owner merges `next-2` into `main` after review.
 
-## Your decision needed (STOP item)
+## CSP changes (approved)
 
-**AI: approve `worker-src 'self'`.** It is one change in the CSP line of `src/static/_headers`: `worker-src 'none'` becomes `worker-src 'self'`. It would let searches run in a Web Worker. Without it the AI pages already work: every search is time-sliced on the main thread with a cancel, and the frame-time gate passes with all agents at their caps. See `sections/ai/REPORT.md`.
+For the AI worker: `worker-src 'none'` became `worker-src 'self'`, and `trusted-types 'none'` became `trusted-types trace-worker`. The single policy accepts only the hashed AI worker file. See `sections/ai/REPORT.md`.
 
 ## What is in this branch
 
@@ -44,8 +44,7 @@ The home page lists the five sections with icon buttons, and the About page name
 
 ## Open questions
 
-1. `worker-src 'self'` for the AI section (above).
-2. Nothing else blocks. The reports list judgement calls (the TCP model's fixed timings, the VLSM planner never using /31, the circuit drawn as a tree) for you to confirm or change.
+1. Nothing blocks. The reports list judgement calls (the TCP model's fixed timings, the VLSM planner never using /31, the circuit drawn as a tree) for you to confirm or change.
 
 ## Needs verification (combined)
 
@@ -109,3 +108,10 @@ AI heavy frame times: median p95 16.7 ms, median max 16.8 ms
 100 100 100 100  CLS 0  /ai/compare/
 100 100 100 100  CLS 0  /about/
 ```
+
+## After the worker change (commit on top of the final run above)
+
+The AI search now runs in a Web Worker (both CSP changes approved). On that commit:
+- `verify:full` passed engine and contrast tests, build, content lint and all 372 browser tests (Chromium and WebKit, 4 skipped by design). These include a new test: the worker is used, the app causes no CSP or Trusted Types violation, and a second policy or another worker URL is refused.
+- The frame-time gate could not be confirmed. The machine slowed down during the run, and every case failed by a similar margin, including the unchanged CPU scheduling pages (typical p95 33 to 83 ms against 16.7 ms earlier the same day). The AI case stayed at p95 16.8 ms throughout. The owner chose to commit with this noted; **rerun `npm run verify:full` on a quiet machine during review.**
+- Lighthouse was not rerun on this commit. The last run passed 26 of 26 pages before the worker change, which touches only the AI pages' script.

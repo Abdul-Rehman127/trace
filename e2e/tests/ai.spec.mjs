@@ -61,8 +61,8 @@ test('arena: you can play against an agent', async ({ page }) => {
   await page.locator('[data-ai-human] summary').click();
   await page.locator('[data-ai-human-start]').click();
   await page.locator('[data-drop="3"]').click();
-  await expect(page.locator('[data-ai-status]')).toContainText('Your move', { timeout: 10000 });
-  expect(await page.evaluate(() => window.__trace.record.length)).toBe(2);
+  await expect.poll(() => page.evaluate(() => window.__trace.record.length), { timeout: 10000 }).toBe(2);
+  await expect(page.locator('[data-ai-status]')).toContainText('Your move');
   await done();
 });
 
@@ -107,4 +107,38 @@ test('no layout shift while loading the AI pages @chromium-only', async ({ page 
     await page.waitForTimeout(300);
     expect(await page.evaluate(() => window.__cls), path).toBe(0);
   }
+});
+
+test('searches run in a Web Worker allowed by the CSP, and Trusted Types still block anything else', async ({ page, browserName }) => {
+  const done = await open(page, `${AI}compare/?m=44433523&depth=3&it=200`);
+  expect(await page.evaluate(() => window.__trace.runnerMode())).toBe('worker');
+  await page.locator('[data-cmp-run]').click();
+  await expect(page.locator('[data-cmp-status]')).toContainText('Every agent answered', { timeout: 60000 });
+  const csp = await page.evaluate(async () => (await fetch(location.href)).headers.get('content-security-policy'));
+  expect(csp).toContain("worker-src 'self'");
+  expect(csp).toContain('trusted-types trace-worker');
+  // The app itself caused no violation while running every agent in the worker.
+  expect(await page.evaluate(() => window.__csp)).toEqual([]);
+  if (browserName === 'chromium') {
+    // No other policy can be made, and a worker from any other URL is refused.
+    const checks = await page.evaluate(() => {
+      const out = {};
+      try {
+        trustedTypes.createPolicy('other', { createScriptURL: (u) => u });
+        out.policy = 'allowed';
+      } catch {
+        out.policy = 'blocked';
+      }
+      try {
+        new Worker('/favicon.svg');
+        out.worker = 'allowed';
+      } catch {
+        out.worker = 'blocked';
+      }
+      return out;
+    });
+    expect(checks).toEqual({ policy: 'blocked', worker: 'blocked' });
+    return;
+  }
+  await done();
 });

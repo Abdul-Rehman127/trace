@@ -6,7 +6,7 @@ import { AGENTS, AGENT_KEYS, emptyBoard, cloneBoard, play, winsAt, isFull, LIMIT
 import { c4BoardTree, c4ExplainTree } from '../../engine/ai/views.mjs';
 import { readParams, getParam } from '../../engine/logic/share.mjs';
 import { parseBounded } from '../../engine/networking/tcp.mjs';
-import { runAgent, warmUp } from './runner.mjs';
+import { runAgent, warmUp, runnerMode } from './runner.mjs';
 import { createPlayer, bindTransport, SPEEDS } from '../controls.mjs';
 import { bindKeys } from '../keys.mjs';
 import { toggleTheme } from '../theme.mjs';
@@ -126,6 +126,7 @@ export function mountArena(root) {
     if (isFull(b)) return finishHuman('Draw.');
     loadRecord();
     busy(true);
+    status.textContent = `${AGENTS[pick.yellow].label} is thinking...`;
     const r = await agentMove(b, pick.yellow, record.length);
     busy(false);
     if (!r) return finishHuman('Stopped.');
@@ -246,7 +247,7 @@ export function mountArena(root) {
   loadRecord();
   showState({ playing: false, speed: player.speed, time: 0 });
   warmUp(emptyBoard());
-  return { player, get record() {
+  return { player, runnerMode, get record() {
     return record;
   }, play: playGameAsync, humanMove, get busy() {
     return !!job;

@@ -2,15 +2,21 @@
 
 Branch `next-2`. Not reviewed yet (batch review of sections 2 to 4).
 
-## STOP item: one CSP change needs your approval
+## CSP changes (approved by the owner)
 
-The brief asks for the search to run in a Web Worker. That needs this exact change to the `Content-Security-Policy` line in `src/static/_headers`:
+The search runs in a Web Worker. Two changes to the CSP line in `src/static/_headers`, both approved:
 
 ```
-worker-src 'none';   ->   worker-src 'self';
+worker-src 'none'      ->   worker-src 'self'
+trusted-types 'none'   ->   trusted-types trace-worker
 ```
 
-Nothing else changes. I have not made this change. Until you approve it, every search runs on the main thread in 5 ms slices with a cancel button (`src/js/ui/ai/runner.mjs`), and the frame-time gate shows the page stays smooth while all five agents think at the hard caps. Switching to a worker would change only `runner.mjs`.
+The second is needed because creating a worker is a Trusted Types sink. The single policy `trace-worker` accepts only the hashed worker file (`app.worker.[hash].js`) and throws for any other URL. A browser test confirms:
+- the worker is used in Chromium and WebKit
+- the app causes no CSP or Trusted Types violation
+- a second policy, or a worker from another URL, is still refused
+
+If a worker cannot be created, the same search runs time-sliced on the main thread.
 
 ## What was built
 
@@ -38,14 +44,13 @@ Nothing else changes. I have not made this change. Until you approve it, every s
 
 ## Deviations and why
 
-- **No Web Worker yet:** see the STOP item above.
 - **Tic-tac-toe step-through is limited to positions with up to 7 empty squares,** a few thousand steps at most. The empty board still shows its totals and the 549,946 count.
 - **Fixed centre-first move order** for both searches, so "same move as minimax" is well defined (the brief's invariant).
 - **Two performance fixes found by the frame-time gate:** smaller agent chunks with each agent starting in a fresh task, and integer formatting without Intl. The first `toLocaleString` call cost one long frame mid-search.
 
 ## Open questions
 
-1. Approve `worker-src 'self'` (above)?
+- None.
 
 ## Needs verification
 

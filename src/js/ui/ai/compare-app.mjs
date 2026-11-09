@@ -4,7 +4,7 @@ import { fmtInt } from '../../engine/format.mjs';
 import { AGENTS, AGENT_KEYS, boardFromMoves, LIMITS } from '../../engine/ai/c4.mjs';
 import { c4BoardTree } from '../../engine/ai/views.mjs';
 import { readParams, getParam } from '../../engine/logic/share.mjs';
-import { runAgent, warmUp } from './runner.mjs';
+import { runAgent, warmUp, runnerMode } from './runner.mjs';
 import { h, fromTree, createToast, bindCopy, autoGrow, fieldError, replaceQuery } from '../dom.mjs';
 
 export function mountAiCompare(root) {
@@ -105,7 +105,7 @@ export function mountAiCompare(root) {
   grow();
   load();
   if (board) warmUp(board);
-  return { runAll, get results() {
+  return { runAll, runnerMode, get results() {
     return results;
   } };
 }
