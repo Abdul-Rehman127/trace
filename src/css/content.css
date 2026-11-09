@@ -209,6 +209,8 @@
 .tb-ic .f4 { fill: var(--c4); }
 .tb-ic .gm-line { fill: none; stroke: var(--ink); stroke-opacity: .25; stroke-width: 1; }
 .tb-ic .gm-stroke { fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tb-ic .gm-dash { fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 2 3; }
+.tb-ic .f7 { fill: var(--c7); }
 .tb-text { min-width: 0; }
 .tb .tl-name { display: block; font-weight: 600; font-size: 1.02rem; line-height: 1.3; }
 .tb .tl-desc { display: block; margin-top: 3px; color: var(--muted); font-size: .86rem; line-height: 1.4; }

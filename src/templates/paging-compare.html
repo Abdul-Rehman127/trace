@@ -1,0 +1,40 @@
+    <section class="intro">
+      <h1>{{h1}}</h1>
+      <p class="lede">{{lede}} Change the pages or frames on the left and every row updates at once.</p>
+    </section>
+
+    <noscript><p class="noscript">The comparison needs JavaScript. The explanation below works without it.</p></noscript>
+
+    <div class="tool" data-tool="paging-compare" data-alg="compare">
+      <div class="tool-grid">
+{{{inputs}}}
+        <section class="compare-out" aria-labelledby="h-compare">
+          <h2 id="h-compare" class="label">Faults for the same pages</h2>
+          <div class="cmp-table-wrap pg-cmp-wrap">
+            <table class="cmp-table pg-cmp">
+              <thead>
+                <tr>
+                  <th scope="col">Algorithm</th>
+                  <th scope="col">Faults</th>
+                  <th scope="col">Hits</th>
+                  <th scope="col">Fault rate</th>
+                </tr>
+              </thead>
+              <tbody data-cmp-rows>{{{cmpRows}}}</tbody>
+            </table>
+          </div>
+          <h2 class="label pg-sub" id="h-strips">Fault or hit at each step</h2>
+          <div class="pg-strips" data-cmp-strips aria-labelledby="h-strips">{{{cmpStrips}}}</div>
+          <h2 class="label pg-sub" id="h-byframes">Faults with 1 to 8 frames</h2>
+          <div class="table-scroll pg-byframes-wrap">
+            <table class="pg-byframes" aria-labelledby="h-byframes">
+              <thead><tr><th scope="col">Algorithm</th>{{{framesHead}}}</tr></thead>
+              <tbody data-byframes>{{{byFrames}}}</tbody>
+            </table>
+          </div>
+          <p class="cmp-note" data-cmp-note>{{cmpNote}}</p>
+          <div class="toast" data-toast role="status" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+{{{content}}}

@@ -1,13 +1,15 @@
 // The decision log: one line per decision moment, each a button that moves the
-// playhead to that moment. Built only while the log is open, so long schedules cost
-// nothing until someone looks.
+// playhead to that moment. Built only while the log is open, so long runs cost
+// nothing until someone looks. Shared by every simulator: a section gives it the
+// moments and a function that narrates one moment.
 import { h, sentenceNodes } from './dom.mjs';
 import { narrationContext, narrateMoment } from '../engine/narrate.mjs';
 
 export function createLog(root, { onPick }) {
   const box = root.querySelector('[data-log]');
   const list = root.querySelector('[data-log-list]');
-  let ctx = null;
+  let sentencesAt = null;
+  let label = (t) => `Time ${t}`;
   let times = [];
   let items = new Map();
   let current = null;
@@ -17,12 +19,12 @@ export function createLog(root, { onPick }) {
     items = new Map();
     const lines = times.map((t) => {
       const nodes = [];
-      narrateMoment(ctx, t).forEach((s, j) => {
+      sentencesAt(t).forEach((s, j) => {
         if (j) nodes.push(' ');
         nodes.push(...sentenceNodes(s));
       });
       const btn = h('button', { type: 'button', class: 'log-line' }, h('span', { class: 'log-t', text: String(t) }), h('span', { class: 'log-text' }, nodes));
-      btn.setAttribute('aria-label', `Time ${t}: ${btn.querySelector('.log-text').textContent}`);
+      btn.setAttribute('aria-label', `${label(t)}: ${btn.querySelector('.log-text').textContent}`);
       btn.addEventListener('click', () => onPick(t));
       const li = h('li', {}, btn);
       items.set(t, btn);
@@ -47,13 +49,20 @@ export function createLog(root, { onPick }) {
   }
 
   box.addEventListener('toggle', () => {
-    if (box.open && !built && ctx) build();
+    if (box.open && !built && sentencesAt) build();
   });
 
   return {
+    /** Scheduling: one line per decision time. */
     setModel(scenario, result) {
-      ctx = narrationContext(scenario, result);
-      times = [...ctx.byTime.keys()].sort((a, b) => a - b);
+      const ctx = narrationContext(scenario, result);
+      this.setMoments([...ctx.byTime.keys()].sort((a, b) => a - b), (t) => narrateMoment(ctx, t));
+    },
+    /** Any section: the moments to list, how to narrate one, and how to name it for screen readers. */
+    setMoments(moments, narrate, name) {
+      times = moments;
+      sentencesAt = narrate;
+      if (name) label = name;
       built = false;
       list.replaceChildren();
       current = null;

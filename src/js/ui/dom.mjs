@@ -38,3 +38,43 @@ export function sentenceNodes(parts) {
 }
 
 export const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** DOM from a node tree ({ t, a, c } with strings as text), as built by the engine view modules. */
+export function fromTree(node) {
+  if (typeof node === 'string') return document.createTextNode(node);
+  const el = node.t === 'svg' || node.t === 'path' ? document.createElementNS(SVG_NS, node.t) : document.createElement(node.t);
+  for (const [k, v] of Object.entries(node.a)) el.setAttribute(k, v);
+  for (const c of node.c) el.append(fromTree(c));
+  return el;
+}
+
+/** A transient message in the tool's toast element. */
+export function createToast(el) {
+  let timer = 0;
+  return (text, ms = 1800) => {
+    el.textContent = text;
+    el.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(() => el.classList.remove('show'), ms);
+  };
+}
+
+/** The "Copy link" chip: clipboard first, a selectable field when the clipboard is refused. */
+export function bindCopy(root, getUrl, toast) {
+  const btn = root.querySelector('[data-copy]');
+  const fallback = root.querySelector('[data-copy-fallback]');
+  const field = root.querySelector('[data-copy-field]');
+  btn.addEventListener('click', async () => {
+    const url = getUrl();
+    try {
+      await navigator.clipboard.writeText(url);
+      fallback.hidden = true;
+      toast('Link copied');
+    } catch {
+      field.value = url;
+      fallback.hidden = false;
+      field.focus();
+      field.select();
+    }
+  });
+}

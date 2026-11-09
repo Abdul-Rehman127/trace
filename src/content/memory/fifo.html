@@ -1,0 +1,72 @@
+    <article class="prose">
+      <h2 id="how">How FIFO page replacement works</h2>
+      <p>A program asks for pages one after another. If the page is already in a frame, that is a hit and nothing changes. If it is not, that is a page fault: the page has to be loaded, and when every frame is full, some page already in memory has to leave to make room. First In, First Out (FIFO) answers "which page leaves?" in the simplest way possible: the page that has been in memory longest.</p>
+      <p>Think of the frames as a queue. Each newly loaded page joins the back. On a fault with full memory, the page at the front leaves. A hit does not change the queue at all, because FIFO only cares about when a page arrived, not about how often or how recently it was used. That is the source of both its simplicity and its main weakness: a page that is used constantly still leaves once it is the oldest.</p>
+      <p>In the step table above, each column is one reference. A filled cell marks the page that was just loaded, a ringed cell marks a hit, and the Evicted row shows which page left. The side panel lists the pages in load order, oldest first, which is exactly the order FIFO will evict them in.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>The reference string {{exRefs}} with {{exFrames}} frames gives {{exFaults}} faults and {{exHits}} hits in {{exRefCount}} references:</p>
+      {{{example}}}
+      <p>The first eviction happens at step {{exEvictStep}}. In Trace's words: "{{exEvictText}}"</p>
+      <p>Look at page 3 in the example. It is used again and again, yet FIFO does not reward that: once page 3 is the oldest page in memory, it is the next one to go, even though it is about to be needed. The frame count and the string decide the result together, so try the same string with more frames in the simulator.</p>
+
+      <h2 id="belady">Belady's anomaly</h2>
+      <p>You would expect more frames to mean fewer faults. With FIFO that is not guaranteed. On the string 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5, FIFO has {{belady3_fifo}} faults with 3 frames and {{belady4_fifo}} faults with 4 frames. Adding memory made things worse. This is called Belady's anomaly, and it can happen with FIFO because the set of pages it keeps with more frames is not always a superset of the set it keeps with fewer.</p>
+      <p>Press the "Belady's anomaly" preset to load that string. The "With one more frame" panel under the results runs the same string with one more frame and shows both fault counts side by side. For this string, FIFO with 1 to 8 frames gives {{fifoByFrames}} faults.</p>
+
+      <h2 id="rules">Rules Trace uses</h2>
+      <ul>
+        <li>Frames keep their position. The new page goes into the frame of the page it replaces, so each page stays in one row of the table while it is in memory.</li>
+        <li>While there are free frames, a fault fills the lowest-numbered free frame.</li>
+        <li>A hit changes nothing for FIFO. Only loading a page sets its place in the queue.</li>
+      </ul>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Fault rate <code>= page faults / references</code></li>
+        <li>Hit rate <code>= hits / references = 1 - fault rate</code></li>
+      </ul>
+      <p>In the example: {{exFaults}} faults in {{exRefCount}} references is a fault rate of {{exRate}}, or {{exPercent}}. Every fault counts, including the first few that only fill empty frames. Some courses count only replacements; if yours does, subtract the number of frames that started empty.</p>
+
+      <h2 id="pros-cons">Strengths and weaknesses</h2>
+      <div class="pros-cons">
+        <div>
+          <h3>Strengths</h3>
+          <ul>
+            <li>Very cheap: one queue, and nothing to update on a hit.</li>
+            <li>Easy to trace by hand: the side panel order is the whole state.</li>
+            <li>Every page eventually leaves, so stale pages do not stay forever.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Weaknesses</h3>
+          <ul>
+            <li>Ignores how a page is used, so a busy page can be evicted just before it is needed again.</li>
+            <li>Can show Belady's anomaly: more frames can mean more faults.</li>
+            <li>Usually more faults than LRU on strings with locality, where recent pages are reused soon.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Moving a page to the back on a hit.</strong> That is LRU, not FIFO. In FIFO a hit leaves the queue exactly as it was.</li>
+        <li><strong>Evicting from the wrong frame.</strong> The victim is the oldest page, which is not always in frame 0. Track the load order, not the row.</li>
+        <li><strong>Forgetting the first faults.</strong> Loading a page into an empty frame is still a page fault.</li>
+        <li><strong>Assuming more frames always help.</strong> With FIFO they usually do, but Belady's anomaly shows they can hurt.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/memory/page-replacement/lru/">LRU page replacement</a>, which looks at recent use instead of arrival</li>
+        <li><a href="/memory/page-replacement/clock/">Clock page replacement</a>, FIFO with a second chance for used pages</li>
+        <li><a href="/memory/page-replacement/optimal/">Optimal page replacement</a>, the lower bound to compare against</li>
+        <li><a href="/memory/page-replacement/compare/">Compare all four algorithms</a></li>
+        <li><a href="/memory/page-replacement/">Page replacement overview</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/fcfs/">First Come First Served scheduling</a>, the same first-in rule for the CPU</li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a number or a sentence on this page looks wrong, please say so. Include the reference string and frame count you used, or paste the link from "Copy link".</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

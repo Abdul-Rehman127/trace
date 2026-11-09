@@ -1,0 +1,25 @@
+        <section class="inputs pg-inputs" aria-labelledby="h-pages">
+          <h2 id="h-pages" class="label">Pages</h2>
+          <div class="field field-stack pg-field">
+            <div><label for="pg-refs">Reference string</label><small id="pg-refs-hint">Page numbers from 0 to 99, separated by commas or spaces. Up to 40.</small></div>
+            <input class="text-in" id="pg-refs" data-pg-refs type="text" autocomplete="off" spellcheck="false" value="{{refs}}" aria-describedby="pg-refs-hint">
+          </div>
+          <p class="err" id="pg-refs-err" data-err-for="pg-refs" hidden></p>
+          <div class="field">
+            <div><label for="pg-frames">Frames</label><small id="pg-frames-hint">How many pages fit in memory, 1 to 8</small></div>
+            <input class="num" id="pg-frames" data-pg-frames type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="{{frames}}" aria-describedby="pg-frames-hint">
+          </div>
+          <p class="err" id="pg-frames-err" data-err-for="pg-frames" hidden></p>
+          {{{clockOption}}}
+          <div class="presets" role="group" aria-label="Presets">
+            {{{presets}}}
+            <button type="button" class="chip chip-link" data-copy>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+              <span>Copy link</span>
+            </button>
+          </div>
+          <div class="copy-fallback" data-copy-fallback hidden>
+            <label for="share-url">Copy this link</label>
+            <input id="share-url" type="text" readonly data-copy-field>
+          </div>
+        </section>

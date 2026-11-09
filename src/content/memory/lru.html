@@ -1,0 +1,69 @@
+    <article class="prose">
+      <h2 id="how">How LRU page replacement works</h2>
+      <p>Least Recently Used (LRU) evicts the page that has gone unused for the longest time. The idea is that the recent past is a good guide to the near future: a page used a moment ago is likely to be used again soon, and a page nobody has touched for a while probably is not needed right now. Programs that loop over the same data or code behave this way, which is called locality of reference.</p>
+      <p>Unlike FIFO, LRU cares about every reference, not only about loads. Each time a page is used, hit or fault, it becomes the most recently used page. On a fault with full memory, the page whose last use lies furthest in the past is evicted. The side panel in the simulator lists the pages from least to most recently used, so the first entry is always the next victim.</p>
+      <p>LRU is a stack algorithm: with one more frame it keeps every page it would have kept with fewer frames, and possibly more. Because of that it can never show Belady's anomaly, where adding frames causes more faults.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>The reference string {{exRefs}} with {{exFrames}} frames gives {{exFaults}} faults and {{exHits}} hits in {{exRefCount}} references:</p>
+      {{{example}}}
+      <p>The first eviction happens at step {{exEvictStep}}. In Trace's words: "{{exEvictText}}"</p>
+      <p>Watch page 0 in the example. It is used again and again, so it keeps being the most recently used page and LRU never picks it, even though it was loaded early. FIFO would treat it as old and evict it.</p>
+
+      <h2 id="rules">Rules Trace uses</h2>
+      <ul>
+        <li>Loading a page counts as using it, so a page that has just arrived is the most recently used page.</li>
+        <li>A hit makes the page the most recently used one. Nothing else changes.</li>
+        <li>Frames keep their position: the new page goes into the frame of the evicted page. While there are free frames, a fault fills the lowest-numbered one.</li>
+        <li>Two pages can never have the same last use, because only one page is referenced at each step, so LRU never needs a tie rule.</li>
+      </ul>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Fault rate <code>= page faults / references</code></li>
+        <li>Hit rate <code>= hits / references = 1 - fault rate</code></li>
+      </ul>
+      <p>In the example: {{exFaults}} faults in {{exRefCount}} references is a fault rate of {{exRate}}, or {{exPercent}}. On the classic 20-page string with 3 frames, LRU has {{classic_lru}} faults, against {{classic_fifo}} for FIFO and {{classic_opt}} for Optimal.</p>
+
+      <h2 id="pros-cons">Strengths and weaknesses</h2>
+      <div class="pros-cons">
+        <div>
+          <h3>Strengths</h3>
+          <ul>
+            <li>Often close to Optimal on programs with locality, without needing to know the future.</li>
+            <li>No Belady's anomaly: more frames never cause more faults.</li>
+            <li>The choice is easy to explain: the page unused for longest goes.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Weaknesses</h3>
+          <ul>
+            <li>Expensive to do exactly: every single reference has to update the recency order, which real hardware rarely supports directly.</li>
+            <li>A loop slightly larger than memory defeats it: each page is evicted just before it comes round again. Try the "Loop" preset.</li>
+            <li>Recency is only a guess about the future, so it can be wrong.</li>
+          </ul>
+        </div>
+      </div>
+      <p>Because exact LRU is costly, many systems approximate it. The <a href="/memory/page-replacement/clock/">Clock algorithm</a> is one such approximation that uses a single reference bit per page.</p>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Not updating on a hit.</strong> A hit makes the page the most recently used one. Forgetting this turns LRU into FIFO.</li>
+        <li><strong>Looking forward instead of back.</strong> LRU looks at the past. Looking at when a page is needed next is Optimal.</li>
+        <li><strong>Evicting the least frequently used page.</strong> LRU is about how long ago a page was used, not how many times.</li>
+        <li><strong>Losing track on long strings.</strong> Keep a recency list beside your table, most recent at one end, like the side panel in the simulator.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/memory/page-replacement/fifo/">FIFO page replacement</a>, which ignores use completely</li>
+        <li><a href="/memory/page-replacement/optimal/">Optimal page replacement</a>, which looks forward instead of back</li>
+        <li><a href="/memory/page-replacement/clock/">Clock page replacement</a>, a cheap approximation of LRU</li>
+        <li><a href="/memory/page-replacement/compare/">Compare all four algorithms</a></li>
+        <li><a href="/memory/page-replacement/">Page replacement overview</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a number or a sentence on this page looks wrong, please say so. Include the reference string and frame count you used, or paste the link from "Copy link".</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

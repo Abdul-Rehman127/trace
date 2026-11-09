@@ -40,15 +40,19 @@ const ALG_ICONS =
 // The icon hangs off the label's left edge, inside the button's reserved padding.
 const algInner = (label) => `${ALG_HL}<span class="alg-t">${ALG_ICONS}${label}</span>`;
 
-function selector(page) {
+/**
+ * The algorithm selector: buttons that switch in place on an overview page, links on the
+ * other pages. `links` is a list of { alg, label, path }.
+ */
+export function selector(page, links = ALG_LINKS) {
   if (page.selectable) {
-    const items = ALG_LINKS.map(
+    const items = links.map(
       (a) =>
         `<button type="button" class="alg" data-alg-choice="${a.alg}" aria-pressed="${a.alg === page.algorithm}">${algInner(a.label)}</button>`,
     ).join('');
     return `<div class="algs-wrap"><div class="algs" role="group" aria-label="Algorithm">${items}</div></div>`;
   }
-  const items = ALG_LINKS.map((a) =>
+  const items = links.map((a) =>
     a.alg === page.algorithm
       ? `<a class="alg" href="${a.path}" data-alg-link="${a.alg}" aria-current="page">${algInner(a.label)}</a>`
       : `<a class="alg" href="${a.path}" data-alg-link="${a.alg}">${algInner(a.label)}</a>`,
@@ -129,7 +133,11 @@ function narrationParts(algorithm) {
 }
 
 const INPUTS = readFileSync(new URL('./inputs.html', import.meta.url), 'utf8');
-const fill = (tpl, data) => tpl.replace(/\{\{\{\s*(\w+)\s*\}\}\}|\{\{\s*(\w+)\s*\}\}/g, (_, raw, safe) => (raw ? String(data[raw]) : esc(data[safe])));
+const TRANSPORT = readFileSync(new URL('./transport.html', import.meta.url), 'utf8');
+export const fill = (tpl, data) => tpl.replace(/\{\{\{\s*(\w+)\s*\}\}\}|\{\{\s*(\w+)\s*\}\}/g, (_, raw, safe) => (raw ? String(data[raw]) : esc(data[safe])));
+
+/** The shared transport bar (play, steps, reset, speed, clock). */
+export const transportHtml = (clockLabel) => fill(TRANSPORT, { clockLabel });
 
 /** Values for src/templates/tool.html and compare.html. */
 export function toolData(page) {
@@ -144,6 +152,7 @@ export function toolData(page) {
   }
   return {
     inputs: fill(INPUTS, base),
+    transport: transportHtml('time'),
     h1: page.h1,
     lede: page.lede,
     alg: page.algorithm,

@@ -1,5 +1,5 @@
 // Page metadata. The build generates one static HTML page per entry.
-// Later sections (page replacement, disk scheduling, ...) add entries here.
+// Each section adds its entries here; `section` groups them for the build.
 
 export const SITE = {
   name: 'Trace',
@@ -8,6 +8,7 @@ export const SITE = {
 };
 
 const CPU = '/operating-systems/cpu-scheduling/';
+const PR = '/memory/page-replacement/';
 
 /** Breadcrumb trail for a CPU scheduling page (home is implied). */
 const cpuCrumbs = (last) => {
@@ -19,13 +20,23 @@ const cpuCrumbs = (last) => {
   return trail;
 };
 
+/** Breadcrumb trail for a page replacement page. */
+const prCrumbs = (last) => {
+  const trail = [
+    { name: 'Memory', path: '/#memory' },
+    { name: 'Page replacement', path: PR },
+  ];
+  if (last) trail.push(last);
+  return trail;
+};
+
 export const PAGES = [
   {
     slug: '/',
     template: 'hub',
     title: 'Trace: step-by-step simulators for how computers decide',
     description:
-      'Step-by-step simulators that show how computers decide what runs next. Press play, watch every decision, and read why it happened. Free, no signup.',
+      'Step-by-step simulators that show how computers decide: which process runs, which page leaves memory. Press play and read why. Free, no signup.',
     h1: 'Watch computers decide',
     key: 'home',
     lede: '',
@@ -114,6 +125,85 @@ export const PAGES = [
     key: 'compare',
     lede: 'Run all five algorithms on the same processes and compare their averages side by side.',
     breadcrumb: cpuCrumbs({ name: 'Compare', path: `${CPU}compare/` }),
+    algorithm: 'compare',
+  },
+  {
+    slug: PR,
+    template: 'paging',
+    section: 'memory',
+    title: 'Page Replacement Simulator: FIFO, LRU, Optimal, Clock | Trace',
+    description:
+      'Enter a reference string and a frame count, pick FIFO, LRU, Optimal or Clock, press play, and see every page fault and why it happened. Free.',
+    h1: 'Page replacement simulator',
+    key: 'memory/overview',
+    lede: 'Pick an algorithm, enter the pages a program asks for, and press play. Every hit, fault and eviction comes with the reason for it.',
+    breadcrumb: prCrumbs(null),
+    algorithm: 'fifo',
+    selectable: true,
+  },
+  {
+    slug: `${PR}fifo/`,
+    template: 'paging',
+    section: 'memory',
+    title: 'FIFO Page Replacement Simulator, Step by Step | Trace',
+    description:
+      'Enter a reference string, press play, and watch FIFO evict the page that came in first, with frames, faults and every eviction explained. Free.',
+    h1: 'FIFO page replacement',
+    key: 'memory/fifo',
+    lede: 'When memory is full, the page that has been there longest goes. Press play and watch every hit and fault.',
+    breadcrumb: prCrumbs({ name: 'FIFO', path: `${PR}fifo/` }),
+    algorithm: 'fifo',
+  },
+  {
+    slug: `${PR}lru/`,
+    template: 'paging',
+    section: 'memory',
+    title: 'LRU Page Replacement Simulator, Step by Step | Trace',
+    description:
+      'Enter a reference string, press play, and watch Least Recently Used evict the page unused for longest, with every fault and hit explained. Free.',
+    h1: 'LRU page replacement',
+    key: 'memory/lru',
+    lede: 'When memory is full, the page that has gone unused the longest goes. Press play and watch every hit and fault.',
+    breadcrumb: prCrumbs({ name: 'LRU', path: `${PR}lru/` }),
+    algorithm: 'lru',
+  },
+  {
+    slug: `${PR}optimal/`,
+    template: 'paging',
+    section: 'memory',
+    title: 'Optimal Page Replacement Simulator, Step by Step | Trace',
+    description:
+      'Enter a reference string, press play, and watch Optimal (MIN) evict the page needed furthest in the future, with each choice explained. Free.',
+    h1: 'Optimal page replacement',
+    key: 'memory/opt',
+    lede: 'When memory is full, the page needed furthest in the future goes. It needs to know the future, so it is a yardstick. Press play and watch.',
+    breadcrumb: prCrumbs({ name: 'Optimal', path: `${PR}optimal/` }),
+    algorithm: 'opt',
+  },
+  {
+    slug: `${PR}clock/`,
+    template: 'paging',
+    section: 'memory',
+    title: 'Clock Page Replacement Simulator (Second Chance) | Trace',
+    description:
+      'Enter a reference string, press play, and watch the Clock pointer sweep the frames, clear reference bits and pick a victim, step by step. Free.',
+    h1: 'Clock page replacement',
+    key: 'memory/clock',
+    lede: 'A pointer sweeps the frames. A page with its reference bit set gets a second chance; the first page without one goes. Press play and watch.',
+    breadcrumb: prCrumbs({ name: 'Clock', path: `${PR}clock/` }),
+    algorithm: 'clock',
+  },
+  {
+    slug: `${PR}compare/`,
+    template: 'paging-compare',
+    section: 'memory',
+    title: 'Compare Page Replacement Algorithms | Trace',
+    description:
+      'Run FIFO, LRU, Optimal and Clock on the same reference string and compare page faults, hit rates and how faults change with more frames. Free.',
+    h1: 'Compare page replacement algorithms',
+    key: 'memory/compare',
+    lede: 'Run all four algorithms on the same pages and compare their faults side by side.',
+    breadcrumb: prCrumbs({ name: 'Compare', path: `${PR}compare/` }),
     algorithm: 'compare',
   },
   {

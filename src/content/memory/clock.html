@@ -1,0 +1,68 @@
+    <article class="prose">
+      <h2 id="how">How Clock page replacement works</h2>
+      <p>Clock, also called second chance, keeps one reference bit for every frame and a pointer, the clock hand, that moves around the frames in a circle. When a page is used, its reference bit is set to 1. When a fault needs a victim, the hand looks at the frame it points to. If that page's bit is 1, the page has been used recently: the hand clears the bit to 0, giving the page a second chance, and moves on to the next frame. The first page it finds with bit 0 is evicted, the new page goes into that frame, and the hand moves one frame further.</p>
+      <p>The result sits between FIFO and LRU. Without any hits, Clock behaves like FIFO, because the hand simply goes round in load order. With hits, recently used pages survive a sweep, which approximates LRU at a fraction of the cost: a hit only sets one bit, and the hand does the rest when memory is full.</p>
+      <p>In the step table, the small number next to each page is its reference bit after that step, and the Pointer row shows where the hand points. The side panel lists the pages starting from the hand, which is the order it will check them.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>The reference string {{exRefs}} with {{exFrames}} frames, new pages starting with bit 1, gives {{exFaults}} faults and {{exHits}} hits in {{exRefCount}} references:</p>
+      {{{example}}}
+      <p>The first second chance happens at step {{exSecondStep}}. In Trace's words: "{{exSecondText}}"</p>
+      <p>Notice that a full sweep can clear every bit and come back to where it started. When every page has bit 1, the hand evicts the page it started on, exactly as FIFO would.</p>
+
+      <h2 id="rules">Rules Trace uses</h2>
+      <ul>
+        <li>The hand starts at frame 0 and moves in frame order, wrapping from the last frame back to frame 0.</li>
+        <li>While frames are free, a fault loads the page at the hand and moves the hand on. Frames fill in order 0, 1, 2 and so on.</li>
+        <li>A hit sets the page's bit to 1 and does not move the hand.</li>
+        <li><strong>The bit of a newly loaded page.</strong> Sources differ. Trace sets it to 1 by default, so a new page starts with a second chance, and offers a switch to start it at 0. The choice can change the result: on the string 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5 with 3 frames, Clock has {{belady3_clock}} faults when new pages start at 1 and {{clockBit0}} when they start at 0.</li>
+      </ul>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Fault rate <code>= page faults / references</code></li>
+        <li>Hit rate <code>= hits / references = 1 - fault rate</code></li>
+      </ul>
+      <p>In the example: {{exFaults}} faults in {{exRefCount}} references is a fault rate of {{exRate}}, or {{exPercent}}. On the classic 20-page string with 3 frames, Clock has {{classic_clock}} faults, between LRU with {{classic_lru}} and FIFO with {{classic_fifo}}.</p>
+
+      <h2 id="pros-cons">Strengths and weaknesses</h2>
+      <div class="pros-cons">
+        <div>
+          <h3>Strengths</h3>
+          <ul>
+            <li>Cheap: a hit sets one bit, and only a fault moves the hand.</li>
+            <li>Protects recently used pages, which plain FIFO does not.</li>
+            <li>Simple hardware support: many processors set a reference bit when a page is accessed.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Weaknesses</h3>
+          <ul>
+            <li>Only an approximation of LRU: one bit cannot tell "used a moment ago" from "used a while ago".</li>
+            <li>When every bit is set, a fault has to sweep all the frames before it finds a victim.</li>
+            <li>It can show Belady's anomaly. On the string above it has {{belady3_clock}} faults with 3 frames and {{belady4_clock}} with 4.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Moving the hand on a hit.</strong> A hit only sets the bit. The hand moves only while looking for a victim.</li>
+        <li><strong>Forgetting to clear bits.</strong> Every page the hand passes with bit 1 loses its bit, even if it is not evicted.</li>
+        <li><strong>Leaving the hand on the new page.</strong> After loading, the hand moves on to the next frame.</li>
+        <li><strong>Mixing up the new-page bit.</strong> State whether new pages start at 1 or 0. The two give different tables.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/memory/page-replacement/fifo/">FIFO page replacement</a>, which Clock becomes when no page is reused</li>
+        <li><a href="/memory/page-replacement/lru/">LRU page replacement</a>, which Clock approximates</li>
+        <li><a href="/memory/page-replacement/optimal/">Optimal page replacement</a></li>
+        <li><a href="/memory/page-replacement/compare/">Compare all four algorithms</a></li>
+        <li><a href="/memory/page-replacement/">Page replacement overview</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a number or a sentence on this page looks wrong, please say so. Include the reference string, frame count and bit setting you used, or paste the link from "Copy link".</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

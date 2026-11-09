@@ -322,3 +322,70 @@ describe('narration', () => {
     for (const p of PAGING_PRESETS) assert.equal(validatePaging({ algorithm: 'fifo', refs: p.refs, frames: p.frames }).ok, true, p.key);
   });
 });
+
+describe('claims made in the page copy (src/content/memory)', () => {
+  test('FIFO example: page 3 is evicted at step 6 and needed again at step 7', () => {
+    const r = run('fifo', [1, 3, 0, 3, 5, 6, 3], 3);
+    assert.equal(r.steps[5].evicted, 3);
+    assert.equal(r.steps[6].page, 3);
+    assert.equal(r.steps[6].hit, false);
+  });
+  test('LRU example: page 0 is never evicted, while FIFO evicts it', () => {
+    const refs = [7, 0, 1, 2, 0, 3, 0, 4];
+    assert.ok(run('lru', refs, 3).steps.every((s) => s.evicted !== 0));
+    assert.ok(run('fifo', refs, 3).steps.some((s) => s.evicted === 0));
+  });
+  test('Optimal: any choice among never-used pages gives the same number of faults', () => {
+    // An alternative tie rule (evict the newest never-used page) written inline.
+    const altOpt = (refs, frames) => {
+      let mem = [];
+      let faults = 0;
+      refs.forEach((p, i) => {
+        if (mem.some((m) => m.page === p)) return;
+        faults++;
+        if (mem.length < frames) return mem.push({ page: p, at: i });
+        const next = (q) => {
+          const j = refs.indexOf(q, i + 1);
+          return j === -1 ? Infinity : j;
+        };
+        mem.sort((a, b) => next(b.page) - next(a.page) || b.at - a.at);
+        mem[0] = { page: p, at: i };
+      });
+      return faults;
+    };
+    const rand = prng(11);
+    for (let n = 0; n < 2000; n++) {
+      const refs = Array.from({ length: int(rand, 1, 40) }, () => int(rand, 0, int(rand, 1, 12)));
+      const f = int(rand, 1, 8);
+      assert.equal(run('opt', refs, f).faults, altOpt(refs, f), refs.join(','));
+    }
+  });
+  test('Clock with no hits evicts in exactly FIFO order', () => {
+    const rand = prng(12);
+    let checked = 0;
+    for (let n = 0; n < 3000; n++) {
+      const refs = Array.from({ length: int(rand, 1, 40) }, () => int(rand, 0, 30));
+      const f = int(rand, 1, 8);
+      for (const bit of [1, 0]) {
+        const c = run('clock', refs, f, bit);
+        if (c.hits) continue;
+        checked++;
+        assert.deepEqual(c.steps.map((s) => s.evicted), run('fifo', refs, f).steps.map((s) => s.evicted));
+      }
+    }
+    assert.ok(checked > 500);
+  });
+  test('Loop preset: FIFO and LRU fault on every reference, Optimal on at most half', () => {
+    const loop = PAGING_PRESETS.find((p) => p.key === 'loop');
+    assert.equal(run('fifo', loop.refs, loop.frames).faults, loop.refs.length);
+    assert.equal(run('lru', loop.refs, loop.frames).faults, loop.refs.length);
+    assert.ok(run('opt', loop.refs, loop.frames).faults <= loop.refs.length / 2);
+  });
+  test('Clock can show Belady anomaly (FIFO and Clock "can", copy says)', () => {
+    assert.ok(run('clock', BELADY, 4).faults > run('clock', BELADY, 3).faults);
+  });
+  test('classic string: Clock lies between LRU and FIFO, as the Clock page says', () => {
+    const [l, c, f] = ['lru', 'clock', 'fifo'].map((a) => run(a, CLASSIC, 3).faults);
+    assert.ok(l <= c && c <= f);
+  });
+});
