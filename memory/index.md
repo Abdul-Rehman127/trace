@@ -1,0 +1,225 @@
+# Review screenshots: memory
+
+Light and dark; 1440, 1024 and 390 px. Each image shows the page from the top through the results.
+
+## /memory/page-replacement/
+
+- light, 1440 px, default: `memory_page-replacement-light-1440-default.jpg`
+- light, 1440 px, hover: `memory_page-replacement-light-1440-hover.jpg`
+- light, 1440 px, selected: `memory_page-replacement-light-1440-selected.jpg`
+- light, 1440 px, focus: `memory_page-replacement-light-1440-focus.jpg`
+- light, 1440 px, mid-play: `memory_page-replacement-light-1440-mid-play.jpg`
+- light, 1440 px, end: `memory_page-replacement-light-1440-end.jpg`
+- light, 1024 px, default: `memory_page-replacement-light-1024-default.jpg`
+- light, 1024 px, hover: `memory_page-replacement-light-1024-hover.jpg`
+- light, 1024 px, selected: `memory_page-replacement-light-1024-selected.jpg`
+- light, 1024 px, focus: `memory_page-replacement-light-1024-focus.jpg`
+- light, 1024 px, mid-play: `memory_page-replacement-light-1024-mid-play.jpg`
+- light, 1024 px, end: `memory_page-replacement-light-1024-end.jpg`
+- light, 390 px, default: `memory_page-replacement-light-390-default.jpg`
+- light, 390 px, hover: `memory_page-replacement-light-390-hover.jpg`
+- light, 390 px, selected: `memory_page-replacement-light-390-selected.jpg`
+- light, 390 px, focus: `memory_page-replacement-light-390-focus.jpg`
+- light, 390 px, mid-play: `memory_page-replacement-light-390-mid-play.jpg`
+- light, 390 px, end: `memory_page-replacement-light-390-end.jpg`
+- dark, 1440 px, default: `memory_page-replacement-dark-1440-default.jpg`
+- dark, 1440 px, hover: `memory_page-replacement-dark-1440-hover.jpg`
+- dark, 1440 px, selected: `memory_page-replacement-dark-1440-selected.jpg`
+- dark, 1440 px, focus: `memory_page-replacement-dark-1440-focus.jpg`
+- dark, 1440 px, mid-play: `memory_page-replacement-dark-1440-mid-play.jpg`
+- dark, 1440 px, end: `memory_page-replacement-dark-1440-end.jpg`
+- dark, 1024 px, default: `memory_page-replacement-dark-1024-default.jpg`
+- dark, 1024 px, hover: `memory_page-replacement-dark-1024-hover.jpg`
+- dark, 1024 px, selected: `memory_page-replacement-dark-1024-selected.jpg`
+- dark, 1024 px, focus: `memory_page-replacement-dark-1024-focus.jpg`
+- dark, 1024 px, mid-play: `memory_page-replacement-dark-1024-mid-play.jpg`
+- dark, 1024 px, end: `memory_page-replacement-dark-1024-end.jpg`
+- dark, 390 px, default: `memory_page-replacement-dark-390-default.jpg`
+- dark, 390 px, hover: `memory_page-replacement-dark-390-hover.jpg`
+- dark, 390 px, selected: `memory_page-replacement-dark-390-selected.jpg`
+- dark, 390 px, focus: `memory_page-replacement-dark-390-focus.jpg`
+- dark, 390 px, mid-play: `memory_page-replacement-dark-390-mid-play.jpg`
+- dark, 390 px, end: `memory_page-replacement-dark-390-end.jpg`
+
+## /memory/page-replacement/fifo/
+
+- light, 1440 px, default: `memory_page-replacement_fifo-light-1440-default.jpg`
+- light, 1440 px, hover: `memory_page-replacement_fifo-light-1440-hover.jpg`
+- light, 1440 px, selected: `memory_page-replacement_fifo-light-1440-selected.jpg`
+- light, 1440 px, focus: `memory_page-replacement_fifo-light-1440-focus.jpg`
+- light, 1440 px, mid-play: `memory_page-replacement_fifo-light-1440-mid-play.jpg`
+- light, 1440 px, end: `memory_page-replacement_fifo-light-1440-end.jpg`
+- light, 1024 px, default: `memory_page-replacement_fifo-light-1024-default.jpg`
+- light, 1024 px, hover: `memory_page-replacement_fifo-light-1024-hover.jpg`
+- light, 1024 px, selected: `memory_page-replacement_fifo-light-1024-selected.jpg`
+- light, 1024 px, focus: `memory_page-replacement_fifo-light-1024-focus.jpg`
+- light, 1024 px, mid-play: `memory_page-replacement_fifo-light-1024-mid-play.jpg`
+- light, 1024 px, end: `memory_page-replacement_fifo-light-1024-end.jpg`
+- light, 390 px, default: `memory_page-replacement_fifo-light-390-default.jpg`
+- light, 390 px, hover: `memory_page-replacement_fifo-light-390-hover.jpg`
+- light, 390 px, selected: `memory_page-replacement_fifo-light-390-selected.jpg`
+- light, 390 px, focus: `memory_page-replacement_fifo-light-390-focus.jpg`
+- light, 390 px, mid-play: `memory_page-replacement_fifo-light-390-mid-play.jpg`
+- light, 390 px, end: `memory_page-replacement_fifo-light-390-end.jpg`
+- dark, 1440 px, default: `memory_page-replacement_fifo-dark-1440-default.jpg`
+- dark, 1440 px, hover: `memory_page-replacement_fifo-dark-1440-hover.jpg`
+- dark, 1440 px, selected: `memory_page-replacement_fifo-dark-1440-selected.jpg`
+- dark, 1440 px, focus: `memory_page-replacement_fifo-dark-1440-focus.jpg`
+- dark, 1440 px, mid-play: `memory_page-replacement_fifo-dark-1440-mid-play.jpg`
+- dark, 1440 px, end: `memory_page-replacement_fifo-dark-1440-end.jpg`
+- dark, 1024 px, default: `memory_page-replacement_fifo-dark-1024-default.jpg`
+- dark, 1024 px, hover: `memory_page-replacement_fifo-dark-1024-hover.jpg`
+- dark, 1024 px, selected: `memory_page-replacement_fifo-dark-1024-selected.jpg`
+- dark, 1024 px, focus: `memory_page-replacement_fifo-dark-1024-focus.jpg`
+- dark, 1024 px, mid-play: `memory_page-replacement_fifo-dark-1024-mid-play.jpg`
+- dark, 1024 px, end: `memory_page-replacement_fifo-dark-1024-end.jpg`
+- dark, 390 px, default: `memory_page-replacement_fifo-dark-390-default.jpg`
+- dark, 390 px, hover: `memory_page-replacement_fifo-dark-390-hover.jpg`
+- dark, 390 px, selected: `memory_page-replacement_fifo-dark-390-selected.jpg`
+- dark, 390 px, focus: `memory_page-replacement_fifo-dark-390-focus.jpg`
+- dark, 390 px, mid-play: `memory_page-replacement_fifo-dark-390-mid-play.jpg`
+- dark, 390 px, end: `memory_page-replacement_fifo-dark-390-end.jpg`
+
+## /memory/page-replacement/lru/
+
+- light, 1440 px, default: `memory_page-replacement_lru-light-1440-default.jpg`
+- light, 1440 px, hover: `memory_page-replacement_lru-light-1440-hover.jpg`
+- light, 1440 px, selected: `memory_page-replacement_lru-light-1440-selected.jpg`
+- light, 1440 px, focus: `memory_page-replacement_lru-light-1440-focus.jpg`
+- light, 1440 px, mid-play: `memory_page-replacement_lru-light-1440-mid-play.jpg`
+- light, 1440 px, end: `memory_page-replacement_lru-light-1440-end.jpg`
+- light, 1024 px, default: `memory_page-replacement_lru-light-1024-default.jpg`
+- light, 1024 px, hover: `memory_page-replacement_lru-light-1024-hover.jpg`
+- light, 1024 px, selected: `memory_page-replacement_lru-light-1024-selected.jpg`
+- light, 1024 px, focus: `memory_page-replacement_lru-light-1024-focus.jpg`
+- light, 1024 px, mid-play: `memory_page-replacement_lru-light-1024-mid-play.jpg`
+- light, 1024 px, end: `memory_page-replacement_lru-light-1024-end.jpg`
+- light, 390 px, default: `memory_page-replacement_lru-light-390-default.jpg`
+- light, 390 px, hover: `memory_page-replacement_lru-light-390-hover.jpg`
+- light, 390 px, selected: `memory_page-replacement_lru-light-390-selected.jpg`
+- light, 390 px, focus: `memory_page-replacement_lru-light-390-focus.jpg`
+- light, 390 px, mid-play: `memory_page-replacement_lru-light-390-mid-play.jpg`
+- light, 390 px, end: `memory_page-replacement_lru-light-390-end.jpg`
+- dark, 1440 px, default: `memory_page-replacement_lru-dark-1440-default.jpg`
+- dark, 1440 px, hover: `memory_page-replacement_lru-dark-1440-hover.jpg`
+- dark, 1440 px, selected: `memory_page-replacement_lru-dark-1440-selected.jpg`
+- dark, 1440 px, focus: `memory_page-replacement_lru-dark-1440-focus.jpg`
+- dark, 1440 px, mid-play: `memory_page-replacement_lru-dark-1440-mid-play.jpg`
+- dark, 1440 px, end: `memory_page-replacement_lru-dark-1440-end.jpg`
+- dark, 1024 px, default: `memory_page-replacement_lru-dark-1024-default.jpg`
+- dark, 1024 px, hover: `memory_page-replacement_lru-dark-1024-hover.jpg`
+- dark, 1024 px, selected: `memory_page-replacement_lru-dark-1024-selected.jpg`
+- dark, 1024 px, focus: `memory_page-replacement_lru-dark-1024-focus.jpg`
+- dark, 1024 px, mid-play: `memory_page-replacement_lru-dark-1024-mid-play.jpg`
+- dark, 1024 px, end: `memory_page-replacement_lru-dark-1024-end.jpg`
+- dark, 390 px, default: `memory_page-replacement_lru-dark-390-default.jpg`
+- dark, 390 px, hover: `memory_page-replacement_lru-dark-390-hover.jpg`
+- dark, 390 px, selected: `memory_page-replacement_lru-dark-390-selected.jpg`
+- dark, 390 px, focus: `memory_page-replacement_lru-dark-390-focus.jpg`
+- dark, 390 px, mid-play: `memory_page-replacement_lru-dark-390-mid-play.jpg`
+- dark, 390 px, end: `memory_page-replacement_lru-dark-390-end.jpg`
+
+## /memory/page-replacement/optimal/
+
+- light, 1440 px, default: `memory_page-replacement_optimal-light-1440-default.jpg`
+- light, 1440 px, hover: `memory_page-replacement_optimal-light-1440-hover.jpg`
+- light, 1440 px, selected: `memory_page-replacement_optimal-light-1440-selected.jpg`
+- light, 1440 px, focus: `memory_page-replacement_optimal-light-1440-focus.jpg`
+- light, 1440 px, mid-play: `memory_page-replacement_optimal-light-1440-mid-play.jpg`
+- light, 1440 px, end: `memory_page-replacement_optimal-light-1440-end.jpg`
+- light, 1024 px, default: `memory_page-replacement_optimal-light-1024-default.jpg`
+- light, 1024 px, hover: `memory_page-replacement_optimal-light-1024-hover.jpg`
+- light, 1024 px, selected: `memory_page-replacement_optimal-light-1024-selected.jpg`
+- light, 1024 px, focus: `memory_page-replacement_optimal-light-1024-focus.jpg`
+- light, 1024 px, mid-play: `memory_page-replacement_optimal-light-1024-mid-play.jpg`
+- light, 1024 px, end: `memory_page-replacement_optimal-light-1024-end.jpg`
+- light, 390 px, default: `memory_page-replacement_optimal-light-390-default.jpg`
+- light, 390 px, hover: `memory_page-replacement_optimal-light-390-hover.jpg`
+- light, 390 px, selected: `memory_page-replacement_optimal-light-390-selected.jpg`
+- light, 390 px, focus: `memory_page-replacement_optimal-light-390-focus.jpg`
+- light, 390 px, mid-play: `memory_page-replacement_optimal-light-390-mid-play.jpg`
+- light, 390 px, end: `memory_page-replacement_optimal-light-390-end.jpg`
+- dark, 1440 px, default: `memory_page-replacement_optimal-dark-1440-default.jpg`
+- dark, 1440 px, hover: `memory_page-replacement_optimal-dark-1440-hover.jpg`
+- dark, 1440 px, selected: `memory_page-replacement_optimal-dark-1440-selected.jpg`
+- dark, 1440 px, focus: `memory_page-replacement_optimal-dark-1440-focus.jpg`
+- dark, 1440 px, mid-play: `memory_page-replacement_optimal-dark-1440-mid-play.jpg`
+- dark, 1440 px, end: `memory_page-replacement_optimal-dark-1440-end.jpg`
+- dark, 1024 px, default: `memory_page-replacement_optimal-dark-1024-default.jpg`
+- dark, 1024 px, hover: `memory_page-replacement_optimal-dark-1024-hover.jpg`
+- dark, 1024 px, selected: `memory_page-replacement_optimal-dark-1024-selected.jpg`
+- dark, 1024 px, focus: `memory_page-replacement_optimal-dark-1024-focus.jpg`
+- dark, 1024 px, mid-play: `memory_page-replacement_optimal-dark-1024-mid-play.jpg`
+- dark, 1024 px, end: `memory_page-replacement_optimal-dark-1024-end.jpg`
+- dark, 390 px, default: `memory_page-replacement_optimal-dark-390-default.jpg`
+- dark, 390 px, hover: `memory_page-replacement_optimal-dark-390-hover.jpg`
+- dark, 390 px, selected: `memory_page-replacement_optimal-dark-390-selected.jpg`
+- dark, 390 px, focus: `memory_page-replacement_optimal-dark-390-focus.jpg`
+- dark, 390 px, mid-play: `memory_page-replacement_optimal-dark-390-mid-play.jpg`
+- dark, 390 px, end: `memory_page-replacement_optimal-dark-390-end.jpg`
+
+## /memory/page-replacement/clock/
+
+- light, 1440 px, default: `memory_page-replacement_clock-light-1440-default.jpg`
+- light, 1440 px, hover: `memory_page-replacement_clock-light-1440-hover.jpg`
+- light, 1440 px, selected: `memory_page-replacement_clock-light-1440-selected.jpg`
+- light, 1440 px, focus: `memory_page-replacement_clock-light-1440-focus.jpg`
+- light, 1440 px, mid-play: `memory_page-replacement_clock-light-1440-mid-play.jpg`
+- light, 1440 px, end: `memory_page-replacement_clock-light-1440-end.jpg`
+- light, 1024 px, default: `memory_page-replacement_clock-light-1024-default.jpg`
+- light, 1024 px, hover: `memory_page-replacement_clock-light-1024-hover.jpg`
+- light, 1024 px, selected: `memory_page-replacement_clock-light-1024-selected.jpg`
+- light, 1024 px, focus: `memory_page-replacement_clock-light-1024-focus.jpg`
+- light, 1024 px, mid-play: `memory_page-replacement_clock-light-1024-mid-play.jpg`
+- light, 1024 px, end: `memory_page-replacement_clock-light-1024-end.jpg`
+- light, 390 px, default: `memory_page-replacement_clock-light-390-default.jpg`
+- light, 390 px, hover: `memory_page-replacement_clock-light-390-hover.jpg`
+- light, 390 px, selected: `memory_page-replacement_clock-light-390-selected.jpg`
+- light, 390 px, focus: `memory_page-replacement_clock-light-390-focus.jpg`
+- light, 390 px, mid-play: `memory_page-replacement_clock-light-390-mid-play.jpg`
+- light, 390 px, end: `memory_page-replacement_clock-light-390-end.jpg`
+- dark, 1440 px, default: `memory_page-replacement_clock-dark-1440-default.jpg`
+- dark, 1440 px, hover: `memory_page-replacement_clock-dark-1440-hover.jpg`
+- dark, 1440 px, selected: `memory_page-replacement_clock-dark-1440-selected.jpg`
+- dark, 1440 px, focus: `memory_page-replacement_clock-dark-1440-focus.jpg`
+- dark, 1440 px, mid-play: `memory_page-replacement_clock-dark-1440-mid-play.jpg`
+- dark, 1440 px, end: `memory_page-replacement_clock-dark-1440-end.jpg`
+- dark, 1024 px, default: `memory_page-replacement_clock-dark-1024-default.jpg`
+- dark, 1024 px, hover: `memory_page-replacement_clock-dark-1024-hover.jpg`
+- dark, 1024 px, selected: `memory_page-replacement_clock-dark-1024-selected.jpg`
+- dark, 1024 px, focus: `memory_page-replacement_clock-dark-1024-focus.jpg`
+- dark, 1024 px, mid-play: `memory_page-replacement_clock-dark-1024-mid-play.jpg`
+- dark, 1024 px, end: `memory_page-replacement_clock-dark-1024-end.jpg`
+- dark, 390 px, default: `memory_page-replacement_clock-dark-390-default.jpg`
+- dark, 390 px, hover: `memory_page-replacement_clock-dark-390-hover.jpg`
+- dark, 390 px, selected: `memory_page-replacement_clock-dark-390-selected.jpg`
+- dark, 390 px, focus: `memory_page-replacement_clock-dark-390-focus.jpg`
+- dark, 390 px, mid-play: `memory_page-replacement_clock-dark-390-mid-play.jpg`
+- dark, 390 px, end: `memory_page-replacement_clock-dark-390-end.jpg`
+
+## /memory/page-replacement/compare/
+
+- light, 1440 px, default: `memory_page-replacement_compare-light-1440-default.jpg`
+- light, 1440 px, hover: `memory_page-replacement_compare-light-1440-hover.jpg`
+- light, 1440 px, selected: `memory_page-replacement_compare-light-1440-selected.jpg`
+- light, 1440 px, focus: `memory_page-replacement_compare-light-1440-focus.jpg`
+- light, 1024 px, default: `memory_page-replacement_compare-light-1024-default.jpg`
+- light, 1024 px, hover: `memory_page-replacement_compare-light-1024-hover.jpg`
+- light, 1024 px, selected: `memory_page-replacement_compare-light-1024-selected.jpg`
+- light, 1024 px, focus: `memory_page-replacement_compare-light-1024-focus.jpg`
+- light, 390 px, default: `memory_page-replacement_compare-light-390-default.jpg`
+- light, 390 px, hover: `memory_page-replacement_compare-light-390-hover.jpg`
+- light, 390 px, selected: `memory_page-replacement_compare-light-390-selected.jpg`
+- light, 390 px, focus: `memory_page-replacement_compare-light-390-focus.jpg`
+- dark, 1440 px, default: `memory_page-replacement_compare-dark-1440-default.jpg`
+- dark, 1440 px, hover: `memory_page-replacement_compare-dark-1440-hover.jpg`
+- dark, 1440 px, selected: `memory_page-replacement_compare-dark-1440-selected.jpg`
+- dark, 1440 px, focus: `memory_page-replacement_compare-dark-1440-focus.jpg`
+- dark, 1024 px, default: `memory_page-replacement_compare-dark-1024-default.jpg`
+- dark, 1024 px, hover: `memory_page-replacement_compare-dark-1024-hover.jpg`
+- dark, 1024 px, selected: `memory_page-replacement_compare-dark-1024-selected.jpg`
+- dark, 1024 px, focus: `memory_page-replacement_compare-dark-1024-focus.jpg`
+- dark, 390 px, default: `memory_page-replacement_compare-dark-390-default.jpg`
+- dark, 390 px, hover: `memory_page-replacement_compare-dark-390-hover.jpg`
+- dark, 390 px, selected: `memory_page-replacement_compare-dark-390-selected.jpg`
+- dark, 390 px, focus: `memory_page-replacement_compare-dark-390-focus.jpg`
