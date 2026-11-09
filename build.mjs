@@ -12,7 +12,7 @@ import { PAGES, SITE } from './src/pages.mjs';
 import { toolData } from './src/templates/parts.mjs';
 import { miniUtilityCss } from './src/templates/mini.mjs';
 import { pageData } from './src/templates/pagedata.mjs';
-import { pagingData } from './src/templates/memory.mjs';
+import { pagingData, pagingTableCss } from './src/templates/memory.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const SRC = join(ROOT, 'src');
@@ -109,6 +109,7 @@ async function buildCss() {
     if (existsSync(p)) parts.push(await readFile(p, 'utf8'));
   }
   parts.push(miniUtilityCss());
+  parts.push(pagingTableCss());
   const result = await esbuild.transform(parts.join('\n'), {
     loader: 'css',
     minify: true,

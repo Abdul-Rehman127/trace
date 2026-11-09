@@ -22,6 +22,25 @@ export function createPagingInputs(root, { initial, onChange }) {
   const presetChips = [...root.querySelectorAll('[data-preset]')];
 
   let newBit = initial.options?.newBit === 0 ? 0 : 1;
+
+  // Browsers without CSS field-sizing grow the field from its content height. Reading the
+  // height happens only after typing or a preset, and once after layout, never mid-play.
+  const autoGrow = !(window.CSS && CSS.supports('field-sizing', 'content'));
+  function grow() {
+    if (!autoGrow) return;
+    refsEl.style.height = 'auto';
+    refsEl.style.height = `${refsEl.scrollHeight + 2}px`;
+  }
+  if (autoGrow) {
+    // Only a width change can change the wrapping; growing the height must not re-trigger it.
+    let lastW = 0;
+    new ResizeObserver((entries) => {
+      const w = Math.round(entries[0].contentRect.width);
+      if (w === lastW) return;
+      lastW = w;
+      grow();
+    }).observe(refsEl);
+  }
   let last = null;
 
   function showError(el, errEl, message) {
@@ -65,7 +84,10 @@ export function createPagingInputs(root, { initial, onChange }) {
     framesEl.value = String(frames);
   }
 
-  refsEl.addEventListener('input', () => onChange(read(), 'edit'));
+  refsEl.addEventListener('input', () => {
+    grow();
+    onChange(read(), 'edit');
+  });
   framesEl.addEventListener('input', () => onChange(read(), 'edit'));
   for (const b of bitButtons) {
     b.addEventListener('click', () => {
@@ -80,6 +102,7 @@ export function createPagingInputs(root, { initial, onChange }) {
     c.addEventListener('click', () => {
       const p = PAGING_PRESETS.find((x) => x.key === c.dataset.preset);
       set(p.refs, p.frames);
+      grow();
       onChange(read(), 'preset');
     });
   }

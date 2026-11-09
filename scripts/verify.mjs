@@ -6,7 +6,9 @@
 //      state, share links, background tabs, link affordance)
 //   4. Frame times on the heaviest interaction of each section (median of 3 runs)
 //   5. Lighthouse mobile on every page
-// Pass --skip-lighthouse to leave out gate 5 (for quick local runs; it is not skipped by default).
+// --quick runs gates 1 to 3 only (tests, build, lint, browser tests): npm run verify:quick.
+// The full run (npm run verify:full) adds frame times and Lighthouse; run it once per
+// section before writing the report.
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,16 +17,18 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const node = process.execPath;
 // Playwright's CLI is run through Node directly, so no shell reads the "|" in a grep pattern.
 const PW = join(ROOT, 'e2e', 'node_modules', 'playwright', 'cli.js');
-const skipLighthouse = process.argv.includes('--skip-lighthouse');
+const quick = process.argv.includes('--quick');
 
 const gates = [
   ['Engine and contrast tests', node, ['tests/run.mjs'], ROOT],
   ['Build', node, ['build.mjs'], ROOT],
   ['Content lint', node, ['scripts/content-lint.mjs'], ROOT],
   ['Browser tests (Chromium and WebKit)', node, [PW, 'test', '--grep-invert', '@perf|@fontswap'], join(ROOT, 'e2e')],
-  ['Frame times', node, [PW, 'test', '--project=chromium', '--grep', '@perf', '--workers=1'], join(ROOT, 'e2e')],
 ];
-if (!skipLighthouse) gates.push(['Lighthouse mobile, every page', node, ['scripts/lighthouse.mjs'], ROOT]);
+if (!quick) {
+  gates.push(['Frame times', node, [PW, 'test', '--project=chromium', '--grep', '@perf', '--workers=1'], join(ROOT, 'e2e')]);
+  gates.push(['Lighthouse mobile, every page', node, ['scripts/lighthouse.mjs'], ROOT]);
+}
 
 const started = Date.now();
 for (const [name, cmd, args, cwd] of gates) {

@@ -18,9 +18,12 @@ export const PAGING_LINKS = [
   { alg: 'clock', label: 'Clock', path: `${PR_PATH}clock/` },
 ];
 
-const rateText = (faults, refs) => {
+/** "14 of 20 (70%)": the counts people compare with their own working, then the percent. */
+const rateText = (faults, refs) => `${faults} of ${refs} (${faultRate(faults, refs).percent}%)`;
+/** The reduced fraction, only when it differs from the counts (shown small, as a secondary note). */
+const reducedNote = (faults, refs) => {
   const r = faultRate(faults, refs);
-  return `${r.num}/${r.den} (${r.percent}%)`;
+  return r.den !== refs ? N('span', { class: 'pg-frac' }, `= ${r.num}/${r.den}`) : null;
 };
 
 /** Children of <dl data-totals>. */
@@ -29,7 +32,7 @@ export function totalsTree(result) {
   return [
     item('Page faults', String(result.faults)),
     item('Hits', String(result.hits)),
-    item('Fault rate', rateText(result.faults, result.references)),
+    N('div', null, N('dt', null, 'Fault rate'), N('dd', null, rateText(result.faults, result.references), reducedNote(result.faults, result.references))),
     item('References', String(result.references)),
   ];
 }

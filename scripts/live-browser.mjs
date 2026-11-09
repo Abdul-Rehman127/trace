@@ -10,6 +10,9 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(join(ROOT, 'e2e', 'package.json'));
 const { chromium, webkit } = require('@playwright/test');
 const ORIGIN = process.argv[2] || 'https://trace.abmans.com';
+if (/\.pages\.dev/.test(ORIGIN)) {
+  console.error('Note: this is a preview deployment. Cloudflare Pages injects its own analytics snippet there, so one CSP error per page is expected (see README). Use the local build or production for CSP checks.');
+}
 
 const PAGES = [
   '/', '/operating-systems/cpu-scheduling/', '/operating-systems/cpu-scheduling/fcfs/', '/operating-systems/cpu-scheduling/sjf/',

@@ -239,7 +239,7 @@ test('keyboard only on a memory page: every control is reachable with a focus ri
     if (info.footer) break;
   }
   const keys = seen.map((s) => s.key);
-  for (const expected of ['a:Skip to content', 'a:FIFO', 'input:pg-refs', 'input:pg-frames', 'button:Starts at 1', 'button:Classic example', 'button:Copy link', 'button:Play', 'button:Reset', 'div:Step table', 'div:Step', 'summary:Decision log']) {
+  for (const expected of ['a:Skip to content', 'a:FIFO', 'textarea:', 'input:pg-frames', 'button:Starts at 1', 'button:Classic example', 'button:Copy link', 'button:Play', 'button:Reset', 'div:Step table', 'div:Step', 'summary:Decision log']) {
     expect(keys.some((x) => x.startsWith(expected)), `reachable: ${expected}`).toBe(true);
   }
   for (const s of seen) expect(s.ring, `${s.key} has a focus ring`).toBe(true);
@@ -259,4 +259,97 @@ test('the decision log lists every step and jumps there', async ({ page }) => {
   await expect(page.locator('[data-pg-scroll] table.pg')).toHaveAttribute('data-k', '5');
   await expect(page.locator('.log-line').nth(5)).toHaveAttribute('aria-current', 'step');
   await done();
+});
+
+// ---------- fixes from the section 1 review ----------
+
+const FORTY = Array.from({ length: 40 }, (_, i) => ((i * 37) % 89) + 10).join(',');
+const refsOf = (n) => FORTY.split(',').slice(0, n).join(',');
+
+for (const width of [1440, 390]) {
+  test(`the reference field shows all 40 references at ${width} px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(`${PR}fifo/?alg=fifo&f=3&r=${FORTY}`);
+    await page.waitForFunction(() => !!window.__trace);
+    const field = page.locator('#pg-refs');
+    await expect(field).toHaveValue(FORTY.split(',').join(', '));
+    await expect.poll(() => field.evaluate((el) => el.scrollHeight - el.clientHeight)).toBeLessThanOrEqual(1);
+    expect(await field.evaluate((el) => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(1);
+    // Typing more keeps it fully visible too.
+    await field.fill(`${FORTY.split(',').slice(0, 30).join(', ')}, 1, 2`);
+    await expect.poll(() => field.evaluate((el) => el.scrollHeight - el.clientHeight)).toBeLessThanOrEqual(1);
+  });
+}
+
+for (const width of [1440, 1024, 390]) {
+  for (const n of [20, 30, 40]) {
+    test(`step table at ${width} px with ${n} references: every column reachable, playhead in view @chromium-only`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`${PR}clock/?alg=clock&f=4&r=${refsOf(n)}`);
+      await page.waitForFunction(() => !!window.__trace);
+      const scroller = page.locator('[data-pg-scroll]');
+      const fits = await scroller.evaluate((el) => el.scrollWidth <= el.clientWidth + 1);
+      if (width === 1440 && n === 20) expect(fits, '20 steps fit at 1440 without scrolling').toBe(true);
+      // A cue shows exactly when columns are hidden to the right.
+      await expect(page.locator('[data-pg-cue]')).toBeVisible({ visible: !fits });
+      // Jump to the end: the last column is inside the visible part of the table.
+      await page.evaluate(() => window.__trace.player.seek(window.__trace.player.length, { animate: false }));
+      const inView = async (col) =>
+        page.evaluate((c) => {
+          const box = document.querySelector('[data-pg-scroll]').getBoundingClientRect();
+          const cell = document.querySelector(`[data-pg-scroll] tr.pg-step th:nth-child(${c + 1})`).getBoundingClientRect();
+          const label = document.querySelector('[data-pg-scroll] tr.pg-step th:first-child').getBoundingClientRect();
+          return cell.left >= label.right - 1 && cell.right <= box.right + 1;
+        }, col);
+      await expect.poll(() => inView(n)).toBe(true);
+      if (!fits) await expect(page.locator('[data-pg-cue]')).toBeHidden();
+      // Stepping back from the end keeps the playhead column in view too.
+      for (let i = 0; i < 3; i++) await page.locator('[data-act="back"]').click();
+      await expect.poll(() => inView(n - 3)).toBe(true);
+      await page.evaluate(() => window.__trace.player.seek(1, { animate: false }));
+      await expect.poll(() => inView(1)).toBe(true);
+    });
+  }
+}
+
+for (const path of [`${PR}clock/`, '/operating-systems/cpu-scheduling/round-robin/']) {
+  test(`390 px, real scrolling on ${path}: the docked transport only ever covers the stage`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(path);
+    await page.waitForFunction(() => !!window.__trace);
+    const total = await page.evaluate(() => document.documentElement.scrollHeight);
+    let docked = 0;
+    for (let y = 0; y < total; y += 120) {
+      await page.mouse.wheel(0, 120);
+      await page.waitForTimeout(60);
+      const r = await page.evaluate(() => {
+        const stage = document.querySelector('[data-stage]');
+        const bar = document.querySelector('[data-transport]');
+        if (getComputedStyle(bar).position !== 'fixed') return { docked: false };
+        const b = bar.getBoundingClientRect();
+        const s = stage.getBoundingClientRect();
+        const hit = (e) => {
+          const x = e.getBoundingClientRect();
+          return x.width > 0 && x.height > 0 && x.bottom > b.top && x.top < b.bottom && x.right > b.left && x.left < b.right;
+        };
+        const covered = [...document.querySelectorAll('a, button, input, textarea, summary, [tabindex="0"]')]
+          .filter((e) => !stage.contains(e) && hit(e))
+          .map((e) => e.getAttribute('aria-label') || e.textContent.trim().slice(0, 30) || e.id);
+        return { docked: true, inside: b.top >= s.top - 1 && b.bottom <= s.bottom + 1, covered };
+      });
+      if (!r.docked) continue;
+      docked++;
+      expect(r.covered, `at scroll ${y}`).toEqual([]);
+      expect(r.inside, `dock inside the stage at scroll ${y}`).toBe(true);
+    }
+    expect(docked, 'the dock was used at some scroll position').toBeGreaterThan(0);
+  });
+}
+
+test('results show the fault rate as counts and percent, with the fraction secondary', async ({ page }) => {
+  await page.goto(`${PR}clock/`);
+  await page.waitForFunction(() => !!window.__trace);
+  const dd = page.locator('[data-totals] div', { hasText: 'Fault rate' }).locator('dd');
+  await expect(dd).toContainText('14 of 20 (70%)');
+  await expect(dd.locator('.pg-frac')).toHaveText('= 7/10');
 });

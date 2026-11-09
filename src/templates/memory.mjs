@@ -59,7 +59,9 @@ function clockOption(page) {
 
 function inputsHtml(page) {
   const d = defaultPaging('fifo');
-  return fill(INPUTS, { refs: d.refs.join(', '), frames: String(d.frames), presets: presetsHtml(), clockOption: clockOption(page) });
+  // The field shows the whole string. Two rows fit the default 20 references at every width;
+  // longer strings grow it (CSS field-sizing, or the small script fallback in paging-inputs.mjs).
+  return fill(INPUTS, { refs: d.refs.join(', '), refRows: '2', frames: String(d.frames), presets: presetsHtml(), clockOption: clockOption(page) });
 }
 
 /** Values for paging.html and paging-compare.html. */
@@ -105,4 +107,11 @@ export function pagingExampleHtml(algorithm, refs, frames, newBit = 1) {
     hits: r.hits,
     result: r,
   };
+}
+
+/** Width bounds for the step table by column count: 36 to 44 px per step plus the 96 px label column. */
+export function pagingTableCss() {
+  const rules = [];
+  for (let n = 1; n <= 40; n++) rules.push(`.pg[data-cols="${n}"]{min-width:${96 + n * 36}px;max-width:${96 + n * 44}px}`);
+  return rules.join('\n');
 }

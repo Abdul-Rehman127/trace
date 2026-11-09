@@ -40,11 +40,12 @@ export function sentenceNodes(parts) {
 export const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /** DOM from a node tree ({ t, a, c } with strings as text), as built by the engine view modules. */
-export function fromTree(node) {
+export function fromTree(node, inSvg = false) {
   if (typeof node === 'string') return document.createTextNode(node);
-  const el = node.t === 'svg' || node.t === 'path' ? document.createElementNS(SVG_NS, node.t) : document.createElement(node.t);
+  const svgNode = inSvg || node.t === 'svg';
+  const el = svgNode ? document.createElementNS(SVG_NS, node.t) : document.createElement(node.t);
   for (const [k, v] of Object.entries(node.a)) el.setAttribute(k, v);
-  for (const c of node.c) el.append(fromTree(c));
+  for (const c of node.c) el.append(fromTree(c, svgNode));
   return el;
 }
 

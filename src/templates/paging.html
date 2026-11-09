@@ -14,8 +14,11 @@
         <section class="stage-col" aria-label="Simulation">
           <div class="stage" data-stage>
 {{{transport}}}
-            <div class="pg-scroll" data-pg-scroll tabindex="0" aria-label="Step table, scrolls sideways">
-              {{{table}}}
+            <div class="pg-wrap">
+              <div class="pg-scroll" data-pg-scroll tabindex="0" aria-label="Step table, scrolls sideways">
+                {{{table}}}
+              </div>
+              <div class="pg-cue" data-pg-cue aria-hidden="true" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M9 6l6 6-6 6"/></svg></div>
             </div>
             <div class="ruler pg-ruler" data-ruler role="slider" tabindex="0" aria-label="Step" aria-valuemin="0" aria-valuemax="{{steps}}" aria-valuenow="0" aria-valuetext="Before step 1">
               <div class="pg-track" aria-hidden="true"><div class="pg-fill" data-pg-fill></div></div>

@@ -2,7 +2,7 @@
           <h2 id="h-pages" class="label">Pages</h2>
           <div class="field field-stack pg-field">
             <div><label for="pg-refs">Reference string</label><small id="pg-refs-hint">Page numbers from 0 to 99, separated by commas or spaces. Up to 40.</small></div>
-            <input class="text-in" id="pg-refs" data-pg-refs type="text" autocomplete="off" spellcheck="false" value="{{refs}}" aria-describedby="pg-refs-hint">
+            <textarea class="text-in grow" id="pg-refs" data-pg-refs rows="{{refRows}}" autocomplete="off" spellcheck="false" aria-describedby="pg-refs-hint">{{refs}}</textarea>
           </div>
           <p class="err" id="pg-refs-err" data-err-for="pg-refs" hidden></p>
           <div class="field">
