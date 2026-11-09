@@ -66,19 +66,21 @@ for (const page of pages) {
       }
       await tab.mouse.move(1, 1);
       await shot('selected');
-      // Focus: keyboard focus on the first text or number field.
-      await tab.locator('textarea, input.num').first().focus();
+      // Focus: keyboard focus on the first field (or board square or chip where there is no field).
+      await tab.locator('textarea, input.num, button.ttt-c:not([disabled]), .presets .chip').first().focus();
       await tab.keyboard.press('Shift+Tab');
       await tab.keyboard.press('Tab');
       await shot('focus');
       const playable = await tab.evaluate(() => !!(window.__trace && window.__trace.player));
       if (playable) {
+        // Mid-play: start playing, then move to the halfway point (long traces would take minutes).
         await tab.evaluate(() => {
-          window.__trace.player.seek(0, { animate: false });
-          window.__trace.player.setSpeed(4);
-          window.__trace.player.play();
+          const p = window.__trace.player;
+          p.seek(Math.floor(p.length / 2), { animate: false });
+          p.setSpeed(4);
+          p.play();
         });
-        await tab.waitForFunction(() => window.__trace.player.time >= window.__trace.player.length / 2);
+        await tab.waitForTimeout(300);
         await tab.evaluate(() => window.__trace.player.pause());
         await shot('mid-play');
         await tab.evaluate(() => window.__trace.player.seek(window.__trace.player.length, { animate: false }));

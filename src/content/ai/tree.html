@@ -1,0 +1,33 @@
+    <article class="prose">
+      <h2 id="how">How minimax searches a game tree</h2>
+      <p>A game like Tic-tac-toe can be drawn as a tree: the current position at the root, one branch for every legal move, and so on until each line of play ends in a win, a loss or a draw. Minimax gives every finished game a value (here +1 when X wins, 0 for a draw, &minus;1 when O wins) and works backwards. At a position where X is to move, the value is the highest value among its moves; where O is to move, it is the lowest. The value at the root says what happens if both players play perfectly, and the move that achieves it is the best move.</p>
+      <p>Counting every position in the full tree from the empty board, with play stopping at a win or a full board, gives {{treeSize}} positions including the root. That number is computed by Trace's engine when the site is built, not copied from anywhere. Minimax from the empty board examines all of them ({{emptyMinimax}}), and finds that perfect play is a draw.</p>
+
+      <h2 id="ab">How alpha-beta pruning saves work</h2>
+      <p>Alpha-beta finds exactly the same value and, when moves are tried in the same order, the same best move, but it stops looking at a branch as soon as it is clear the branch cannot change the decision above it. It keeps two numbers while it searches: alpha, the best value the maximizing player (X) is already sure of, and beta, the best value the minimizing player (O) is already sure of. When alpha reaches beta at some position, the remaining moves there are skipped; the explorer shows them as cut.</p>
+      <p>From the empty board alpha-beta examines {{emptyAlphabeta}} positions instead of {{emptyMinimax}}. On the default position in the explorer, minimax examines {{exMinimax}} positions and alpha-beta {{exAlphabeta}}. How much is saved depends on the order moves are tried in: good moves first lets alpha-beta cut more. Here moves are tried in square order, 1 to 9.</p>
+
+      <h2 id="reading">Reading the explorer</h2>
+      <ul>
+        <li>The small board shows the position the search is looking at right now; highlighted squares are the moves that led there from the starting position.</li>
+        <li>"First moves and their values" fills in as the search finishes each move from the starting position. With alpha-beta, some first moves are marked cut.</li>
+        <li>Positions examined counts every position visited, the starting one included. Branches cut counts every move that alpha-beta skipped.</li>
+      </ul>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Taking the maximum at every level.</strong> The players alternate: maximize on your move, minimize on the opponent's.</li>
+        <li><strong>Thinking alpha-beta can give a different answer.</strong> It returns the same value as minimax; it only skips work.</li>
+        <li><strong>Cutting too early.</strong> A branch is cut only when alpha is at least beta, not when a value merely looks bad.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/ai/connect-four/">Connect Four arena</a>, where depth-limited search meets a real game</li>
+        <li><a href="/ai/compare/">Compare agents</a> on one position</li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a value or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes the position.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

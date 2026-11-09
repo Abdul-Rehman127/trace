@@ -11,6 +11,7 @@ const CPU = '/operating-systems/cpu-scheduling/';
 const PR = '/memory/page-replacement/';
 const NET = '/networking/';
 const LG = '/logic/';
+const AI = '/ai/';
 
 /** Breadcrumb trail for a CPU scheduling page (home is implied). */
 const cpuCrumbs = (last) => {
@@ -37,6 +38,9 @@ const netCrumbs = (last) => [{ name: 'Networking', path: '/#networking' }, last]
 
 /** Breadcrumb trail for a logic page. */
 const lgCrumbs = (last) => [{ name: 'Logic', path: '/#logic' }, last];
+
+/** Breadcrumb trail for an AI page. */
+const aiCrumbs = (last) => [{ name: 'AI', path: '/#ai' }, last];
 
 export const PAGES = [
   {
@@ -317,6 +321,45 @@ export const PAGES = [
     key: 'logic/equiv',
     lede: 'Type two expressions. Trace compares them on every row and shows the first row where they differ.',
     breadcrumb: lgCrumbs({ name: 'Equivalence', path: `${LG}equivalence/` }),
+  },
+  {
+    slug: `${AI}game-tree/`,
+    template: 'ai-tree',
+    section: 'ai',
+    tool: 'tree',
+    title: 'Minimax and Alpha-Beta Game Tree Explorer | Trace',
+    description:
+      'Step through minimax and alpha-beta on Tic-tac-toe: the position being searched, every value, the branches cut and a live count of positions examined. Free.',
+    h1: 'Game tree explorer',
+    key: 'ai/tree',
+    lede: 'Pick a Tic-tac-toe position and step through minimax or alpha-beta: every position examined, every value, every branch cut.',
+    breadcrumb: aiCrumbs({ name: 'Game tree', path: `${AI}game-tree/` }),
+  },
+  {
+    slug: `${AI}connect-four/`,
+    template: 'ai-arena',
+    section: 'ai',
+    tool: 'arena',
+    title: 'Connect Four AI Arena: Minimax, Alpha-Beta, MCTS | Trace',
+    description:
+      'Watch random, greedy, minimax, alpha-beta and Monte Carlo tree search agents play Connect Four, with every move explained. Play one yourself. Free.',
+    h1: 'Connect Four AI arena',
+    key: 'ai/arena',
+    lede: 'Choose two agents and a seed and watch them play, with the reason for every move. Or play against one yourself.',
+    breadcrumb: aiCrumbs({ name: 'Connect Four', path: `${AI}connect-four/` }),
+  },
+  {
+    slug: `${AI}compare/`,
+    template: 'ai-compare',
+    section: 'ai',
+    tool: 'compare',
+    title: 'Compare Game AI Agents on One Position | Trace',
+    description:
+      'Give one Connect Four position to random, greedy, minimax, alpha-beta and MCTS agents and compare their moves, times and how much work each one did. Free.',
+    h1: 'Compare game AI agents',
+    key: 'ai/compare',
+    lede: 'Give one position to every agent and see what each one chooses, how long it takes and how much it looks at.',
+    breadcrumb: aiCrumbs({ name: 'Compare agents', path: `${AI}compare/` }),
   },
   {
     slug: '/about/',

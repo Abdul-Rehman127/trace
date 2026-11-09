@@ -27,6 +27,7 @@ const totals = (page, label) => page.locator('[data-totals] div', { hasText: lab
 
 for (const [alg, path] of Object.entries(PAGES)) {
   test(`${alg}: the classic example ends with ${CLASSIC_FAULTS[alg]} faults and every step narrates`, async ({ page }) => {
+    test.setTimeout(60000); // 20 steps, each waiting for its column; slow under a full parallel run
     const done = await open(page, `${PR}${path}`);
     await expect(page.locator('[data-clock-total]')).toHaveText('20');
     await expect(totals(page, 'Page faults')).toHaveText(String(CLASSIC_FAULTS[alg]));

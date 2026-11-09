@@ -116,3 +116,9 @@
   .bits td.oct { padding: 3px 3px; }
   .bits .bit { width: 1ch; }
 }
+@media (max-width: 640px) {
+  /* Example chips in two fixed columns: their wrapping no longer depends on text width, so
+     the web font arriving cannot move what is below them. */
+  :is(.net-tool, .lg-tool, .ai-tool) .presets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  :is(.net-tool, .lg-tool, .ai-tool) .presets .chip { justify-content: center; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}

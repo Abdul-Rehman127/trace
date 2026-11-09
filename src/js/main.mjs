@@ -12,6 +12,9 @@ import { mountPractice } from './ui/networking/practice-app.mjs';
 import { mountTcp } from './ui/networking/tcp-app.mjs';
 import { mountLogic } from './ui/logic/logic-app.mjs';
 import { mountCircuit } from './ui/logic/circuit-app.mjs';
+import { mountTree } from './ui/ai/tree-app.mjs';
+import { mountArena } from './ui/ai/arena-app.mjs';
+import { mountAiCompare } from './ui/ai/compare-app.mjs';
 
 const MOUNT = {
   paging: mountPaging,
@@ -24,6 +27,9 @@ const MOUNT = {
   'lg-simplify': mountLogic,
   'lg-equiv': mountLogic,
   'lg-circuit': mountCircuit,
+  'ai-tree': mountTree,
+  'ai-arena': mountArena,
+  'ai-compare': mountAiCompare,
 };
 
 initTheme();

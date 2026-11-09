@@ -8,6 +8,7 @@ const CPU = '/operating-systems/cpu-scheduling/';
 const PR = '/memory/page-replacement/';
 const NET = '/networking/';
 const LG = '/logic/';
+const AI = '/ai/';
 // A small square (one page in one frame) for the memory glyphs.
 const sq = (x, y, c) => `<rect class="g f${c}" x="${x}" y="${y}" width="6" height="6" rx="1.5"/>`;
 
@@ -43,11 +44,14 @@ const GLYPHS = {
   lgCircuit: ['<path class="gm-stroke" d="M3 11h7M3 21h7M10 7h7a9 9 0 0 1 0 18h-7zM26 16h4"/>'],
   lgSimplify: ['<path class="gm-stroke" d="M4 4h24v24H4zM16 4v24M4 16h24"/>', sq(6, 6, 1), sq(20, 6, 1), sq(6, 20, 3), sq(20, 20, 3)],
   lgEquiv: ['<path class="gm-stroke" d="M6 12h20M6 20h20"/>'],
+  // AI: a game tree, a Connect Four board, a comparison.
+  aiTree: ['<path class="gm-stroke" d="M16 5v6M16 11L8 19M16 11l8 8M8 19v6M24 19v6"/>', sq(13, 2, 1), sq(5, 16, 3), sq(21, 16, 8)],
+  aiArena: [sq(4, 22, 8), sq(11, 22, 4), sq(18, 22, 8), sq(11, 15, 8), sq(18, 15, 4), sq(18, 8, 4)],
   prClock: ['<circle class="gm-stroke" cx="16" cy="16" r="9"/>', '<path class="gm-stroke" d="M16 16l5-5"/>', sq(13, 1, 1), sq(25, 13, 2), sq(13, 25, 3), sq(1, 13, 4)],
 };
 const RAILED = new Set(['overview', 'fcfs', 'sjf', 'srtf', 'priority', 'rr', 'prLru']);
 // Accent per button: the icon tile is tinted with one process color.
-const ACCENT = { overview: 1, fcfs: 1, sjf: 2, srtf: 3, priority: 4, rr: 7, compare: 5, home: 1, prOverview: 3, prFifo: 1, prLru: 2, prOpt: 4, prClock: 7, netSubnet: 1, netPractice: 2, netVlsm: 3, netTcp: 7, lgTable: 4, lgCircuit: 1, lgSimplify: 3, lgEquiv: 2 };
+const ACCENT = { overview: 1, fcfs: 1, sjf: 2, srtf: 3, priority: 4, rr: 7, compare: 5, home: 1, prOverview: 3, prFifo: 1, prLru: 2, prOpt: 4, prClock: 7, netSubnet: 1, netPractice: 2, netVlsm: 3, netTcp: 7, lgTable: 4, lgCircuit: 1, lgSimplify: 3, lgEquiv: 2, aiTree: 7, aiArena: 1, compare: 5 };
 
 const ARROW =
   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
@@ -76,6 +80,9 @@ export const TOOL_BUTTONS = {
   lgCircuit: { href: `${LG}circuit/`, glyph: 'lgCircuit', name: 'Logic circuit simulator', desc: 'Draw the gates, switch inputs, watch the change travel' },
   lgSimplify: { href: `${LG}simplifier/`, glyph: 'lgSimplify', name: 'Boolean simplifier', desc: 'Karnaugh map, Quine-McCluskey and every minimal answer' },
   lgEquiv: { href: `${LG}equivalence/`, glyph: 'lgEquiv', name: 'Equivalence checker', desc: 'Two expressions, the same function or the first row that differs' },
+  aiTree: { href: `${AI}game-tree/`, glyph: 'aiTree', primary: true, name: 'Game tree explorer', desc: 'Minimax and alpha-beta on Tic-tac-toe, step by step' },
+  aiArena: { href: `${AI}connect-four/`, glyph: 'aiArena', name: 'Connect Four AI arena', desc: 'Five agents, every move explained; play one yourself' },
+  aiCompare: { href: `${AI}compare/`, glyph: 'compare', name: 'Compare game AI agents', desc: 'One position, every agent: move, time and work' },
   prCompare: { href: `${PR}compare/`, glyph: 'compare', name: 'Compare page replacement algorithms', desc: 'All four on the same pages, and faults with 1 to 8 frames' },
 };
 
@@ -104,6 +111,12 @@ export const HUB_SECTIONS = [
     title: 'Logic',
     text: 'How Boolean expressions become truth tables, circuits and their shortest equivalent forms. Type an expression and see every row, gate and step.',
     keys: ['lgTable', 'lgCircuit', 'lgSimplify', 'lgEquiv'],
+  },
+  {
+    id: 'ai',
+    title: 'AI',
+    text: 'How a program chooses a move in a game: from a random pick to minimax, alpha-beta and Monte Carlo tree search. Step through a search or watch the agents play.',
+    keys: ['aiTree', 'aiArena', 'aiCompare'],
   },
 ];
 

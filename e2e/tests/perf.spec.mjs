@@ -101,3 +101,45 @@ test('logic heavy case (circuit): median p95 under 20 ms and median max under 50
   expect(r.max).toBeLessThan(50);
 });
 
+
+// AI, heaviest case: every agent thinking about one position at depth 6 and 20,000 MCTS
+// iterations. The search runs in slices, so the page must keep drawing frames meanwhile.
+test('AI heavy case (agents thinking): median p95 under 20 ms and median max under 50 ms @perf', async ({ browser }, info) => {
+  test.setTimeout(240000);
+  const runs = [];
+  for (let i = 0; i < RUNS; i++) {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto('/ai/compare/?m=44433523&depth=6&it=20000');
+    await page.waitForFunction(() => !!window.__trace);
+    const cdp = await context.newCDPSession(page);
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
+    const stats = await page.evaluate(
+      (seconds) =>
+        new Promise((resolve) => {
+          const deltas = [];
+          let last = 0;
+          const start = performance.now();
+          window.__trace.runAll();
+          function tick(ts) {
+            if (last) deltas.push(ts - last);
+            last = ts;
+            if (ts - start < seconds * 1000) requestAnimationFrame(tick);
+            else {
+              const sorted = [...deltas].sort((a, b) => a - b);
+              resolve({ frames: deltas.length, p95: +sorted[Math.floor(sorted.length * 0.95)].toFixed(1), max: +sorted[sorted.length - 1].toFixed(1) });
+            }
+          }
+          requestAnimationFrame(tick);
+        }),
+      SECONDS,
+    );
+    runs.push(stats);
+    await context.close();
+  }
+  const result = { runs, p95: median(runs.map((r) => r.p95)), max: median(runs.map((r) => r.max)) };
+  console.log(`AI heavy frame times: ${JSON.stringify(result)}`);
+  info.annotations.push({ type: 'AI heavy frame times', description: JSON.stringify(result) });
+  expect(result.p95).toBeLessThan(20);
+  expect(result.max).toBeLessThan(50);
+});

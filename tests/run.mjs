@@ -8,7 +8,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
-const FILES = ['engine', 'validate', 'share', 'narrate', 'tokens', 'paging', 'networking', 'logic'].map((n) => join(DIR, `${n}.test.mjs`));
+const FILES = ['engine', 'validate', 'share', 'narrate', 'tokens', 'paging', 'networking', 'logic', 'ai'].map((n) => join(DIR, `${n}.test.mjs`));
 
 const started = Date.now();
 const result = spawnSync(process.execPath, ['--test', '--test-reporter=dot', ...FILES], { stdio: 'inherit' });
