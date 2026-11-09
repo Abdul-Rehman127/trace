@@ -147,6 +147,8 @@
   }
   .alg { grid-column: span 2; min-height: 44px; padding: 0 22px; }
   .alg:nth-child(4), .alg:nth-child(5) { grid-column: span 3; }
+  /* Four choices (page replacement): two rows of two. */
+  .algs[data-n="4"] .alg { grid-column: span 3; }
 }
 @media (prefers-reduced-motion: reduce) {
   .alg, .alg:hover, .alg:active { transform: none !important; }

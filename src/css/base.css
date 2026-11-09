@@ -59,8 +59,8 @@ main:focus { outline: none; }
 .crumbs ol { display: flex; flex-wrap: nowrap; margin: 0; padding: 0; list-style: none; overflow: hidden; white-space: nowrap; }
 .crumbs li { min-width: 0; }
 .crumbs li + li::before { content: "/"; padding: 0 6px; color: var(--muted); }
-.crumbs a { text-decoration: none; color: var(--muted); }
-.crumbs a:hover { color: var(--ink); text-decoration: underline; }
+.crumbs a { color: var(--muted); text-decoration: underline; text-decoration-color: var(--line-control); }
+.crumbs a:hover { color: var(--ink); text-decoration-color: currentColor; }
 .crumbs [aria-current] { font-weight: 500; color: var(--ink-2); }
 
 .icon-btn {

@@ -2,17 +2,11 @@
 // in both themes, served with the production headers.
 import { test, expect } from '@playwright/test';
 
-const PAGES = [
-  '/',
-  '/operating-systems/cpu-scheduling/',
-  '/operating-systems/cpu-scheduling/fcfs/',
-  '/operating-systems/cpu-scheduling/sjf/',
-  '/operating-systems/cpu-scheduling/srtf/',
-  '/operating-systems/cpu-scheduling/priority/',
-  '/operating-systems/cpu-scheduling/round-robin/',
-  '/operating-systems/cpu-scheduling/compare/',
-  '/about/',
-];
+import { PAGES as SITE_PAGES } from '../../src/pages.mjs';
+
+// Every built page except the 404 (tested on its own below), taken from the page list,
+// so a new section is covered the moment it is added.
+const PAGES = SITE_PAGES.filter((p) => !p.noindex).map((p) => p.slug);
 
 async function watch(page) {
   const problems = [];

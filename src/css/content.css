@@ -97,7 +97,9 @@
 }
 .mb::after { content: attr(data-label); color: var(--ink-2); }
 .mf { position: absolute; inset: 0; z-index: 1; overflow: hidden; background: var(--c); }
-.mfl { color: var(--on); }
+/* The label repeats the fill color behind itself: no visible change (the fill clips it), but
+   contrast checkers measure it against the bar color while the fill is still sweeping in. */
+.mfl { background: var(--c); color: var(--on); }
 .mb.narrow::after, .mb.narrow .mfl { display: none; }
 .mt { position: absolute; top: 0; bottom: 0; z-index: 2; left: calc(var(--b) / var(--len) * 100%); width: 1px; background: color-mix(in srgb, var(--surface) 85%, transparent); }
 .mi {
@@ -209,6 +211,8 @@
 .tb-ic .f4 { fill: var(--c4); }
 .tb-ic .gm-line { fill: none; stroke: var(--ink); stroke-opacity: .25; stroke-width: 1; }
 .tb-ic .gm-stroke { fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tb-ic .gm-dash { fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 2 3; }
+.tb-ic .f7 { fill: var(--c7); }
 .tb-text { min-width: 0; }
 .tb .tl-name { display: block; font-weight: 600; font-size: 1.02rem; line-height: 1.3; }
 .tb .tl-desc { display: block; margin-top: 3px; color: var(--muted); font-size: .86rem; line-height: 1.4; }

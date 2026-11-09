@@ -1,0 +1,64 @@
+    <section class="intro intro-tool">
+      <div class="intro-text">
+        <h1>{{h1}}</h1>
+        <p class="lede">{{lede}}</p>
+      </div>
+      {{{selector}}}
+    </section>
+
+    <noscript><p class="noscript">The simulator needs JavaScript. The written explanation and the worked example below work without it.</p></noscript>
+
+    <div class="tool" data-tool="paging" data-alg="{{alg}}" data-selectable="{{selectable}}">
+      <div class="tool-grid">
+{{{inputs}}}
+        <section class="stage-col" aria-label="Simulation">
+          <div class="stage" data-stage>
+{{{transport}}}
+            <div class="pg-scroll" data-pg-scroll tabindex="0" aria-label="Step table, scrolls sideways">
+              {{{table}}}
+            </div>
+            <div class="ruler pg-ruler" data-ruler role="slider" tabindex="0" aria-label="Step" aria-valuemin="0" aria-valuemax="{{steps}}" aria-valuenow="0" aria-valuetext="Before step 1">
+              <div class="pg-track" aria-hidden="true"><div class="pg-fill" data-pg-fill></div></div>
+            </div>
+
+            <div class="decide">
+              <div class="why-box">
+                <div class="label">Why this happened <span class="why-time" data-why-time></span></div>
+                <div class="why" data-why><p class="why-text" data-why-text>{{{whyText}}}</p><div class="why-sizers" aria-hidden="true">{{{whySizers}}}</div></div>
+              </div>
+              <div class="queue-box">
+                <div class="label" id="view-label" data-view-label>{{viewLabel}}</div>
+                <ol class="queue pg-view" data-view aria-labelledby="view-label">{{{viewItems}}}</ol>
+              </div>
+            </div>
+          </div>
+          <div class="sr-only" aria-live="polite" data-live></div>
+          <details class="log" data-log>
+            <summary>Decision log</summary>
+            <p class="log-hint">One line per step. Choose a line to move to that step.</p>
+            <ol class="log-list" data-log-list></ol>
+          </details>
+          <details class="keys">
+            <summary>Keyboard shortcuts</summary>
+            <dl>
+              <div><dt><kbd>Space</kbd></dt><dd>Play or pause</dd></div>
+              <div><dt><kbd>Left</kbd> <kbd>Right</kbd></dt><dd>Step back or forward</dd></div>
+              <div><dt><kbd>Home</kbd> <kbd>End</kbd></dt><dd>Jump to the start or the end</dd></div>
+              <div><dt><kbd>R</kbd></dt><dd>Reset</dd></div>
+              <div><dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>Slower or faster</dd></div>
+              <div><dt><kbd>T</kbd></dt><dd>Switch light or dark theme</dd></div>
+            </dl>
+            <p>Shortcuts are off while you type in a field.</p>
+          </details>
+        </section>
+      </div>
+
+      <section class="results" aria-labelledby="h-results">
+        <h2 id="h-results" class="label">Results</h2>
+        <dl class="pg-totals" data-totals>{{{totals}}}</dl>
+        <p class="formula">Fault rate is <code>faults / references</code>. Hit rate is <code>hits / references</code>.</p>
+        <div class="pg-more" data-more>{{{more}}}</div>
+      </section>
+      <div class="toast" data-toast role="status" aria-live="polite"></div>
+    </div>
+{{{content}}}

@@ -70,3 +70,14 @@ test('heavy case: median p95 under 20 ms @perf', async ({ browser }, info) => {
   const r = await measure(browser, HEAVY, info, 'heavy');
   expect(r.p95).toBeLessThan(20);
 });
+
+// Memory section, heaviest case: Clock with 8 frames and 40 two-digit references, so every
+// step rewrites the narration, the eight-slot side list and scrolls the step table.
+const MEMORY_HEAVY = `/memory/page-replacement/clock/?alg=clock&f=8&r=${Array.from({ length: 40 }, (_, i) => ((i * 37) % 23) + 10).join(',')}`;
+
+test('memory heavy case: median p95 under 20 ms and median max under 50 ms @perf', async ({ browser }, info) => {
+  test.setTimeout(120000);
+  const r = await measure(browser, MEMORY_HEAVY, info, 'memory heavy');
+  expect(r.p95).toBeLessThan(20);
+  expect(r.max).toBeLessThan(50);
+});

@@ -5,6 +5,9 @@ const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;
 const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ESC[c]);
 
 const CPU = '/operating-systems/cpu-scheduling/';
+const PR = '/memory/page-replacement/';
+// A small square (one page in one frame) for the memory glyphs.
+const sq = (x, y, c) => `<rect class="g f${c}" x="${x}" y="${y}" width="6" height="6" rx="1.5"/>`;
 
 // One bar: lane 0-2 (top to bottom), start and end on a 0-32 axis, process color 1-8.
 const bar = (lane, x0, x1, c) => `<rect class="g f${c}" x="${x0}" y="${5 + lane * 9}" width="${x1 - x0}" height="6" rx="2"/>`;
@@ -23,10 +26,16 @@ const GLYPHS = {
   rr: [bar(0, 2, 7, 1), bar(1, 7, 12, 2), bar(2, 12, 16, 3), bar(0, 16, 21, 1), bar(1, 21, 25, 2), bar(2, 25, 28, 3), bar(0, 28, 30, 1)],
   compare: ['<path class="gm-line" d="M2 28.5h28"/>', col(4, 15, 1), col(10, 22, 2), col(16, 11, 3), col(22, 18, 4)],
   home: ['<path class="gm-stroke" d="M5 15 16 6l11 9M8.5 13v13h15V13M13.5 26v-7h5v7"/>'],
+  // Memory: frames over time, pages coming in.
+  prOverview: [sq(3, 5, 1), sq(10, 5, 1), sq(17, 5, 1), sq(24, 5, 4), sq(10, 14, 2), sq(17, 14, 2), sq(24, 14, 2), sq(17, 23, 3), sq(24, 23, 3)],
+  prFifo: [sq(5, 9, 1), sq(13, 9, 2), sq(21, 9, 3), '<path class="gm-stroke" d="M27 23H6M9 20l-3 3 3 3"/>'],
+  prLru: [sq(3, 5, 1), sq(3, 14, 2), sq(3, 23, 3), bar(0, 12, 29, 1), bar(1, 12, 21, 2), bar(2, 12, 15, 3)],
+  prOpt: [sq(3, 5, 1), sq(3, 14, 2), sq(3, 23, 3), '<path class="gm-dash" d="M12 8h17M12 17h8M12 26h12"/>', '<path class="gm-stroke" d="M25 4l4 4-4 4"/>'],
+  prClock: ['<circle class="gm-stroke" cx="16" cy="16" r="9"/>', '<path class="gm-stroke" d="M16 16l5-5"/>', sq(13, 1, 1), sq(25, 13, 2), sq(13, 25, 3), sq(1, 13, 4)],
 };
-const RAILED = new Set(['overview', 'fcfs', 'sjf', 'srtf', 'priority', 'rr']);
+const RAILED = new Set(['overview', 'fcfs', 'sjf', 'srtf', 'priority', 'rr', 'prLru']);
 // Accent per button: the icon tile is tinted with one process color.
-const ACCENT = { overview: 1, fcfs: 1, sjf: 2, srtf: 3, priority: 4, rr: 7, compare: 5, home: 1 };
+const ACCENT = { overview: 1, fcfs: 1, sjf: 2, srtf: 3, priority: 4, rr: 7, compare: 5, home: 1, prOverview: 3, prFifo: 1, prLru: 2, prOpt: 4, prClock: 7 };
 
 const ARROW =
   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
@@ -41,7 +50,41 @@ export const TOOL_BUTTONS = {
   priority: { href: `${CPU}priority/`, glyph: 'priority', name: 'Priority scheduling', desc: 'Runs the most important ready process, with or without interrupting' },
   rr: { href: `${CPU}round-robin/`, glyph: 'rr', name: 'Round Robin', desc: 'Gives each process a fixed slice in turn' },
   compare: { href: `${CPU}compare/`, glyph: 'compare', name: 'Compare scheduling algorithms', desc: 'All five on the same processes, side by side' },
+  prOverview: { href: PR, glyph: 'prOverview', primary: true, name: 'Page replacement simulator', desc: 'FIFO, LRU, Optimal and Clock in one place, and how they differ' },
+  prOverviewShort: { href: PR, glyph: 'prOverview', name: 'Page replacement simulator', desc: 'FIFO, LRU, Optimal and Clock' },
+  prFifo: { href: `${PR}fifo/`, glyph: 'prFifo', name: 'FIFO page replacement', desc: 'Evicts the page that has been in memory longest' },
+  prLru: { href: `${PR}lru/`, glyph: 'prLru', name: 'LRU page replacement', desc: 'Evicts the page that has gone unused longest' },
+  prOpt: { href: `${PR}optimal/`, glyph: 'prOpt', name: 'Optimal page replacement', desc: 'Evicts the page needed furthest in the future' },
+  prClock: { href: `${PR}clock/`, glyph: 'prClock', name: 'Clock page replacement', desc: 'Gives pages with their reference bit set a second chance' },
+  prCompare: { href: `${PR}compare/`, glyph: 'compare', name: 'Compare page replacement algorithms', desc: 'All four on the same pages, and faults with 1 to 8 frames' },
 };
+
+/** The sections listed on the home page. Only built sections appear here. */
+export const HUB_SECTIONS = [
+  {
+    id: 'operating-systems',
+    title: 'Operating systems',
+    text: 'How an operating system shares one CPU between many processes. Enter your own processes, press play, and read the reason for every decision.',
+    keys: ['overview', 'fcfs', 'sjf', 'srtf', 'priority', 'rr', 'compare'],
+  },
+  {
+    id: 'memory',
+    title: 'Memory',
+    text: 'How an operating system chooses which page leaves memory when a new one has to come in. Enter the pages a program asks for, press play, and see every hit, fault and eviction.',
+    keys: ['prOverview', 'prFifo', 'prLru', 'prOpt', 'prClock', 'prCompare'],
+  },
+];
+
+/** The home page section blocks. */
+export function hubSectionsHtml() {
+  return HUB_SECTIONS.map(
+    (sec) => `      <section class="section-block" id="${sec.id}" aria-labelledby="h-${sec.id}">
+        <h2 id="h-${sec.id}">${esc(sec.title)}</h2>
+        <p>${esc(sec.text)}</p>
+        ${toolButtons(sec.keys)}
+      </section>`,
+  ).join('\n');
+}
 
 function button(t) {
   const rails = RAILED.has(t.glyph) ? RAILS : '';

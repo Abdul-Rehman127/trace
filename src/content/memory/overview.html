@@ -1,0 +1,54 @@
+    <article class="prose">
+      <h2 id="what">What page replacement decides</h2>
+      <p>With virtual memory, a program's memory is split into pages, and only some of them sit in physical memory at once, each in a frame. When the program asks for a page that is not in a frame, that is a page fault: the page has to be loaded, which is slow. If every frame is already full, one page has to leave first. Page replacement is the rule that picks which one.</p>
+      <p>The simulator above takes the pages a program asks for, in order (the reference string), and the number of frames. Each column of the step table is one reference: the frame rows show what is in memory after it, the Result row shows a hit or a fault, and the Evicted row shows which page left. The four algorithms here answer "which page leaves?" in four different ways, so switch between them and watch the table change.</p>
+
+      <h2 id="measures">How results are measured</h2>
+      <p>The main number is the count of page faults: fewer is better, because each fault means a slow load. The fault rate divides that by the number of references, so strings of different lengths can be compared. Trace counts every fault, including the first ones that only fill empty frames.</p>
+      <ul class="formula-list">
+        <li>Fault rate <code>= page faults / references</code></li>
+        <li>Hit rate <code>= hits / references = 1 - fault rate</code></li>
+      </ul>
+
+      <h2 id="choose">How the four algorithms differ</h2>
+      <p>On the classic 20-page string with 3 frames, FIFO has {{classic_fifo}} faults, LRU {{classic_lru}}, Clock {{classic_clock}} and Optimal {{classic_opt}}. Use this table as a starting point, then try your own strings in the <a href="/memory/page-replacement/compare/">compare view</a>.</p>
+      <div class="table-scroll">
+        <table class="data text">
+          <caption class="sr-only">How the four page replacement algorithms compare</caption>
+          <thead>
+            <tr><th scope="col">Algorithm</th><th scope="col">Evicts</th><th scope="col">Work on a hit</th><th scope="col">Belady's anomaly</th><th scope="col">Used as</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row"><a href="/memory/page-replacement/fifo/">FIFO</a></th><td>The page loaded first</td><td>None</td><td>Can happen</td><td>The simplest policy</td></tr>
+            <tr><th scope="row"><a href="/memory/page-replacement/lru/">LRU</a></th><td>The page unused for longest</td><td>Update the recency order</td><td>Cannot happen</td><td>A target that real systems approximate</td></tr>
+            <tr><th scope="row"><a href="/memory/page-replacement/optimal/">Optimal</a></th><td>The page needed furthest ahead</td><td>None, but needs the future</td><td>Cannot happen</td><td>A benchmark, not a real policy</td></tr>
+            <tr><th scope="row"><a href="/memory/page-replacement/clock/">Clock</a></th><td>The first page without its reference bit</td><td>Set one bit</td><td>Can happen</td><td>A cheap approximation of LRU</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="belady">More frames, more faults?</h2>
+      <p>Adding frames usually reduces faults, but not always. On the string 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5, FIFO has {{belady3_fifo}} faults with 3 frames and {{belady4_fifo}} with 4. This is Belady's anomaly. LRU and Optimal are stack algorithms, which means a run with more frames always keeps every page a run with fewer frames would keep, so they cannot show it: on the same string LRU goes from {{belady3_lru}} to {{belady4_lru}} and Optimal from {{belady3_opt}} to {{belady4_opt}}. Every simulator page has a "With one more frame" panel that checks this for whatever string you enter.</p>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Mixing up LRU and Optimal.</strong> LRU looks back (used longest ago). Optimal looks forward (needed furthest ahead).</li>
+        <li><strong>Not counting the first faults.</strong> Loading into an empty frame is a fault too, unless your course says to count only replacements.</li>
+        <li><strong>Updating FIFO on a hit.</strong> FIFO ignores hits. Only LRU and Clock react to them.</li>
+        <li><strong>Moving the Clock hand on a hit.</strong> A hit sets a bit; the hand only moves when it looks for a victim.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/memory/page-replacement/fifo/">FIFO page replacement</a></li>
+        <li><a href="/memory/page-replacement/lru/">LRU page replacement</a></li>
+        <li><a href="/memory/page-replacement/optimal/">Optimal page replacement</a></li>
+        <li><a href="/memory/page-replacement/clock/">Clock page replacement</a></li>
+        <li><a href="/memory/page-replacement/compare/">Compare all four algorithms</a></li>
+        <li><a href="/operating-systems/cpu-scheduling/">CPU scheduling simulator</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a number or a sentence on this page looks wrong, please say so. Include the reference string and frame count you used, or paste the link from "Copy link".</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

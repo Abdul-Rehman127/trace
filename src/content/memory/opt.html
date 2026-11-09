@@ -1,0 +1,66 @@
+    <article class="prose">
+      <h2 id="how">How Optimal page replacement works</h2>
+      <p>Optimal page replacement, also called MIN, evicts the page that will not be needed for the longest time. On a fault with full memory it looks ahead in the reference string, finds when each page in memory will be used next, and evicts the one whose next use is furthest away. A page that is never used again is the best possible victim.</p>
+      <p>No other algorithm can produce fewer page faults on the same reference string with the same number of frames, which is why it is called optimal. The catch is that it needs to know the future. A real operating system does not know which pages a program will ask for next, so Optimal cannot be built in practice. Its job is to be a yardstick: it shows the best result that is possible, so you can see how far FIFO, LRU or Clock are from it.</p>
+      <p>The side panel in the simulator lists the pages in memory with the step at which each is needed next, furthest first, so the first entry is the page Optimal would evict on the next fault.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>The reference string {{exRefs}} with {{exFrames}} frames gives {{exFaults}} faults and {{exHits}} hits in {{exRefCount}} references:</p>
+      {{{example}}}
+      <p>The first eviction happens at step {{exEvictStep}}. In Trace's words: "{{exEvictText}}"</p>
+      <p>On the classic 20-page string with 3 frames, Optimal has {{classic_opt}} faults. LRU has {{classic_lru}} and FIFO {{classic_fifo}} on the same string, so the gap to the best possible result is easy to see.</p>
+
+      <h2 id="rules">Rules Trace uses</h2>
+      <ul>
+        <li><strong>Tie rule.</strong> If several pages in memory are never used again, Trace evicts the one that has been in memory longest. Sources differ here; any choice among never-used pages gives the same number of faults, but the frame contents can differ, so check which rule your course uses.</li>
+        <li>Pages with a later use always have different next-use steps, so no other tie can happen.</li>
+        <li>Frames keep their position: the new page goes into the frame of the evicted page. While there are free frames, a fault fills the lowest-numbered one.</li>
+      </ul>
+
+      <h2 id="formulas">Formulas</h2>
+      <ul class="formula-list">
+        <li>Fault rate <code>= page faults / references</code></li>
+        <li>Hit rate <code>= hits / references = 1 - fault rate</code></li>
+      </ul>
+      <p>In the example: {{exFaults}} faults in {{exRefCount}} references is a fault rate of {{exRate}}, or {{exPercent}}.</p>
+
+      <h2 id="pros-cons">Strengths and weaknesses</h2>
+      <div class="pros-cons">
+        <div>
+          <h3>Strengths</h3>
+          <ul>
+            <li>The fewest faults of any algorithm on a given string and frame count.</li>
+            <li>A fixed point of comparison for every other algorithm.</li>
+            <li>No Belady's anomaly: more frames never cause more faults.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Weaknesses</h3>
+          <ul>
+            <li>Needs the whole future reference string, which a running system does not have.</li>
+            <li>So it cannot be used as a real page replacement policy, only to measure others.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Looking back instead of forward.</strong> "Used longest ago" is LRU. Optimal asks "needed furthest in the future".</li>
+        <li><strong>Counting from the wrong place.</strong> Look ahead from the step after the fault, not from the start of the string.</li>
+        <li><strong>Missing pages that are never used again.</strong> They are the first choice. If there are several, say which tie rule you used.</li>
+        <li><strong>Calling Optimal a real algorithm.</strong> It is a benchmark, because it needs future knowledge.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/memory/page-replacement/lru/">LRU page replacement</a>, which uses the past as a guess about the future</li>
+        <li><a href="/memory/page-replacement/fifo/">FIFO page replacement</a></li>
+        <li><a href="/memory/page-replacement/clock/">Clock page replacement</a></li>
+        <li><a href="/memory/page-replacement/compare/">Compare all four algorithms</a></li>
+        <li><a href="/memory/page-replacement/">Page replacement overview</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a number or a sentence on this page looks wrong, please say so. Include the reference string and frame count you used, or paste the link from "Copy link".</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

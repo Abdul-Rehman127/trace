@@ -1,0 +1,26 @@
+            <div class="bar" data-transport>
+              <div class="transport" role="group" aria-label="Playback">
+                <button type="button" class="tbtn" data-act="back" aria-label="Step back">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg>
+                </button>
+                <button type="button" class="tbtn play" data-act="play" aria-label="Play">
+                  <svg class="i-play" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M7 4.5v15l13-7.5z"/></svg>
+                  <svg class="i-pause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+                </button>
+                <button type="button" class="tbtn" data-act="fwd" aria-label="Step forward">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg>
+                </button>
+                <button type="button" class="tbtn" data-act="reset" aria-label="Reset">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>
+                </button>
+              </div>
+              <div class="speed" role="group" aria-label="Speed" data-speed>
+                <button type="button" data-value="0.5" aria-pressed="false">0.5x</button>
+                <button type="button" data-value="1" aria-pressed="true">1x</button>
+                <button type="button" data-value="2" aria-pressed="false">2x</button>
+                <button type="button" data-value="4" aria-pressed="false">4x</button>
+              </div>
+              <button type="button" class="tbtn speed-cycle" data-speed-cycle aria-label="Speed 1x, change speed"><span data-speed-cycle-label>1x</span></button>
+              <div class="clock" aria-hidden="true"><span>{{clockLabel}}</span><b data-clock>0</b><span class="clock-total">of <span data-clock-total>0</span></span></div>
+            </div>
+
