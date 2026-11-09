@@ -29,3 +29,4 @@ Read first after any break: this file, `ARCHITECTURE.md`, `DECISIONS.md`, `docs/
 - Lighthouse via pinned `npx` in verify: dependency or not?
 - `font-display` swap or optional for body text (from Checkpoint D).
 - Section landing pages (`/memory/`, `/networking/`) once there are two or more tool families?
+- Preview-only CSP console error from Cloudflare's own injected analytics snippet on `*.pages.dev`: leave it, or allow the host?

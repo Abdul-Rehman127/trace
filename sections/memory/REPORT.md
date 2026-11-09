@@ -39,7 +39,8 @@ Branch `next`. Calibration section: per the brief, work stops here until the own
 
 1. **Lighthouse via `npx -y lighthouse@12.8.2`.** It is pinned and not in any package.json, and is used only by `npm run verify`. Does this count as adding a dependency? If yes, the alternative is to keep it out of verify and run it by hand.
 2. **`font-display` for body text** (carried over from Checkpoint D): the 1.5 s late-font test still shows body text re-wrapping on the home page (`swap`). `optional` would remove that. The vertical shift is fixed either way.
-3. **No `/memory/` page:** same reasoning as `/operating-systems/` in v1. Say if you want section pages once Networking lands.
+3. **Console errors on preview deployments only.** On `next.trace-8mc.pages.dev`, Cloudflare Pages writes its own analytics snippet into every HTML file at deploy time (token `4eb98…`, marked "Cloudflare Pages Analytics"; `no-transform` cannot stop it because it is not an edge rewrite). It posts to `https://cloudflareinsights.com`, which `connect-src 'self'` blocks, so every preview page logs one CSP error. Production (trace.abmans.com) is not affected: it was checked clean at the last deploy, and our own beacon is now added only to `main` builds. I did not change the CSP (a STOP item). Options: leave it (preview only), or allow that host in `connect-src` again.
+4. **No `/memory/` page:** same reasoning as `/operating-systems/` in v1. Say if you want section pages once Networking lands.
 
 ## Needs verification
 
@@ -50,4 +51,4 @@ See the end of `sections/memory/content-review.md` (source: `src/content/memory/
 ## Review material
 
 - Screenshots: branch `review-shots`, folder `memory/`. That's 204 JPEGs: 6 pages, light and dark, 1440, 1024 and 390 px, in default, hover, selected, focus, mid-play and end (the compare page has no playback). `memory/index.md` lists them.
-- Preview deployment of `next`: https://next.trace-8mc.pages.dev (Cloudflare's branch alias for the Pages project).
+- Preview deployment of `next`: https://next.trace-8mc.pages.dev (Cloudflare's branch alias for the Pages project). Every page loads and works there; see open question 3 for the one console error per page.
