@@ -49,6 +49,12 @@ for (const [name, t] of [['light', light], ['dark', darkMedia]]) {
       }
     }
   });
+  test(`${name}: text on the current step column reaches 4.5:1`, () => {
+    for (const fg of ['ink', 'ink-2', 'muted']) {
+      const c = contrast(t[fg], t['pg-now']);
+      assert.ok(c >= 4.5, `--${fg} on --pg-now is ${c.toFixed(2)}:1`);
+    }
+  });
   test(`${name}: inverted primary button text reaches 4.5:1`, () => {
     assert.ok(contrast(t.bg, t.ink) >= 4.5);
   });

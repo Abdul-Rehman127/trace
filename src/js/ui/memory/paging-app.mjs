@@ -48,7 +48,26 @@ export function mountPaging(root) {
   let changedByUser = decoded.found;
   let current = null; // { input, result }
   let table = null;
+  let columns = []; // columns[c] = { head: [cells], body: [cells] }
+  let tableK = 0;
   let shownK = -1;
+
+  // Move the table's column state from tableK to k, touching only the columns that change.
+  function setTableK(k) {
+    const lo = Math.max(0, Math.min(tableK, k) - 1);
+    const hi = Math.min(columns.length - 1, Math.max(tableK, k));
+    for (let c = lo; c <= hi; c++) {
+      const col = columns[c];
+      const now = c === k - 1;
+      for (const cell of col.head) cell.classList.toggle('now', now);
+      for (const cell of col.body) {
+        cell.classList.toggle('now', now);
+        cell.classList.toggle('fut', c >= k);
+      }
+    }
+    tableK = k;
+    table.setAttribute('data-k', String(k));
+  }
 
   // Scroll position and width are tracked from events, so following the playhead never reads layout.
   let viewW = 0;
@@ -81,7 +100,7 @@ export function mountPaging(root) {
     if (!current || k === shownK) return;
     shownK = k;
     const r = current.result;
-    table.setAttribute('data-k', String(k));
+    setTableK(k);
     clock.textContent = String(k);
     whyTime.textContent = k === 0 ? '' : `at step ${k}`;
     const nodes = [];
@@ -125,6 +144,12 @@ export function mountPaging(root) {
     const result = simulatePaging(full);
     current = { input: full, result };
     table = fromTree(pagingTableTree(result, { k: 0, caption: 'Step table: frames after each page reference' }));
+    columns = result.steps.map(() => ({ head: [], body: [] }));
+    for (const row of table.rows) {
+      const body = row.parentElement.tagName === 'TBODY';
+      for (let c = 1; c < row.cells.length; c++) columns[c - 1][body ? 'body' : 'head'].push(row.cells[c]);
+    }
+    tableK = 0;
     scroller.replaceChildren(table);
     scroller.scrollLeft = 0;
     scrollX = 0;

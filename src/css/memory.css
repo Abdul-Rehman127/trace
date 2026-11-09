@@ -73,6 +73,13 @@
 .pg .pg-ptr td { color: var(--ink-2); font-size: .8rem; }
 .pg tr:last-child :is(th, td) { border-bottom: 0; }
 @keyframes pg-in { from { opacity: 0; transform: translateY(-4px); } }
+/* Column state, set per cell by the app (only the cells that change are touched).
+   Every cell's text sits in a child element, so a future cell hides it from screen readers too. */
+.pg td.fut { background: none; box-shadow: none; }
+.pg td.fut > * { visibility: hidden; }
+.pg .now:not(.new) { background-color: var(--pg-now); }
+.pg thead .now { color: var(--ink); font-weight: 600; }
+.pg td.new.now { animation: pg-in var(--t-chip) var(--ease-out); }
 
 /* The progress track under the table: the shared slider, drawn as a thin bar. */
 .pg-ruler { display: block; height: 28px; padding: 12px 16px; border-top: 1px solid var(--line); cursor: pointer; touch-action: none; }
@@ -132,7 +139,7 @@
 /* ---------- Compare page ---------- */
 .pg-cmp-wrap { min-height: calc(32px + 4 * 44px); }
 .pg-cmp th:first-child, .pg-cmp td:first-child { width: 34%; }
-.pg-cmp .best { color: var(--muted); font: 400 .74rem var(--font-sans); }
+.pg-cmp .pg-fewest { color: var(--muted); font: 500 .74rem var(--font-sans); }
 .pg-sub { margin-top: 28px; }
 .pg-strips { display: grid; gap: 10px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r-stage); background: var(--surface); }
 .pg-strip-row { display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: center; gap: 12px; }

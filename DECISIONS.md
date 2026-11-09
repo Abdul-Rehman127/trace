@@ -117,3 +117,35 @@ Judgment calls the brief did not specify, one line of reasoning each. Newest at 
 - **Chips, Add process and inputs get real edges (same follow-up):** preset and copy-link chips have a `--line-control` border, `--surface` fill and `--shadow-1`, with the same hover lift and .97 press as the selector. The active preset has an `--ink` border doubled by an inset ring, so it differs by more than color. Add process is now `.btn-line`, an outlined button; disabled, it drops to a `--line-strong` edge with no fill or shadow. `.btn-quiet` is gone. Number inputs and the copy-link fallback field use `--line-control`, so every input edge reaches 3:1. The row remove buttons stay plain icon buttons; the cross reads as a control on its own.
 - **Home and 404 tool links are cards:** each link in `.tool-links` is a bordered card (`--line-control`, `--surface`, `--shadow-1`, `--r-control-lg`) with an arrow on the right. Hover lifts it 1px, strengthens the border and nudges the arrow; press scales to .98 (cards are large, so less than the .97 for buttons). This was missed in the first audit of text-like controls.
 - **Home and 404 links are icon buttons (Abdul asked for buttons, not cards):** `src/templates/toolbuttons.mjs` builds each one: a tinted icon tile holding a tiny timeline that shows what the algorithm does (FCFS in order, SJF shortest first, SRTF interrupted, Priority by rank, Round Robin in slices, Compare as a bar chart, Home as a house), the title and line of text, and a round arrow button. The simulator link is the filled primary and spans two columns. Hover lifts the button 3px, fades in a deeper shadow, fills the arrow from the center, and draws the icon's bars in from the left one after another; keyboard focus fills the arrow too. Only transform and opacity animate, following brief section 10.4, and reduced motion turns all of it off. This departs from the brief's "hairline sections, not cards" for these links only, at Abdul's request; the simulator pages keep the quiet layout.
+
+## Next sections run (branch `next`, docs/NEXT_SECTIONS_BRIEF.md)
+
+### Memory: page replacement
+
+- **Frame model:** frames keep their position (the new page takes the evicted page's frame) and a fault with free frames fills the lowest free frame. Matches the usual exam table. Full rules and hand-derived Clock traces in `sections/memory/SPEC.md`.
+- **Clock with free frames:** the page goes where the hand points and the hand moves on. Frames only fill in order 0, 1, 2, so this equals "lowest free frame". The hand ends the fill phase back at frame 0.
+- **Optimal tie:** among pages never used again, evict the one loaded earliest (brief). Tested that any tie choice gives the same fault count; the page says the frame contents can differ.
+- **Reference string input:** one text field, commas or spaces, leading zeros accepted ("07" is page 7, page numbers are not addresses). 0 to 99, 1 to 40 references, 1 to 8 frames. Specific messages; the last valid run stays on screen while input is invalid.
+- **Belady feature, generalized:** instead of a one-off preset view, every algorithm page has a "With one more frame" panel that runs the same string with n and n+1 frames (7 and 8 at the top). The "Belady's anomaly" preset loads the brief's string, so on FIFO it shows 9 against 10. The compare page adds a 1 to 8 frames table that marks any rise in text and with a triangle.
+- **Side panel:** "what the algorithm looks at" (load order, recency, next use, or bits from the hand), one fixed slot per frame so its height never changes while playing.
+- **No `/memory/` page**, same reasoning as Operating systems in v1 (one tool family would make it thin). Breadcrumb "Memory" links to `/#memory`.
+- **Step table reveal:** classes on the cells that change (`fut`, `now`), not an attribute on the table matched by generated `nth-child` rules. The first version (one `data-k` write plus 160 generated rules) cost about 1 s of style recalculation per 3 s of play under 4x CPU throttle and failed the frame-time gate (p95 67 ms); per-cell classes brought it to 16.8 ms.
+- **Cell text in a child element** so a not-yet-reached cell hides its text from screen readers too (`visibility: hidden` on the child), instead of transparent text.
+- **New token `--pg-now`** for the current step column (light `#E1E9F3`, dark `#1E2A3B`), chosen so `--ink`, `--ink-2` and `--muted` all reach 4.5:1 on it; covered by `tests/tokens.test.mjs`. Static worked-example tables mark no current column.
+
+### Shared code extracted for every section
+
+- `src/templates/transport.html` (the transport bar, with the clock label as a parameter), `selector(page, links)`, `createLog(...).setMoments(...)`, and `fromTree`, `createToast`, `bindCopy` in `ui/dom.mjs`. The scheduling app still has its own toast and copy code; it works and is covered by tests, so it was left as is rather than rewired.
+- The home page sections come from `HUB_SECTIONS` in `toolbuttons.mjs`. The "Next: page replacement, AI search, networking" line is gone: the brief allows no text about unbuilt sections. The About page section list was updated the same way; its privacy and disclaimer copy was not touched.
+
+### Site-wide fixes found by the new gates
+
+- **Fallback font vertical metrics:** the CLS test under parallel load caught text moving 3 to 7 px when the web fonts arrived (wordmark, H1, lede). The fallback faces matched widths but not ascent and descent. They now carry `ascent-override` and `descent-override` measured from the real fonts (Big Shoulders 98/21, Plex 103/28 per 100 px), divided by each face's `size-adjust`. Measured afterwards: every fallback matches its web font exactly. The separate 1.5 s late-font test still shows body text re-wrapping on the home page; that is the open `font-display` question from Checkpoint D.
+- **Breadcrumb links are underlined** (muted underline, full color on hover). The new link-affordance test requires an underline or a border on every visible link; the wordmark is the one exception.
+
+### Gates and tooling
+
+- `npm run verify` runs every gate in order and stops at the first failure. Playwright runs through Node directly (no shell), because a Windows shell reads the `|` in the grep pattern as a pipe.
+- **Lighthouse is run through `npx -y lighthouse@12.8.2`, pinned, not added to any package.json.** It is a test tool fetched on demand like Playwright's browsers, not a site dependency. Open question for the owner in the memory report: whether this counts as adding a dependency.
+- The content lint (`scripts/content-lint.mjs`) checks the built pages; title 20 to 65 characters, description 110 to 160 (the existing pages were 141 to 153).
+- Section content reviews are generated by `scripts/section-review.mjs <name>` into `sections/<name>/content-review.md`.

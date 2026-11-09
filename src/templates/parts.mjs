@@ -50,14 +50,14 @@ export function selector(page, links = ALG_LINKS) {
       (a) =>
         `<button type="button" class="alg" data-alg-choice="${a.alg}" aria-pressed="${a.alg === page.algorithm}">${algInner(a.label)}</button>`,
     ).join('');
-    return `<div class="algs-wrap"><div class="algs" role="group" aria-label="Algorithm">${items}</div></div>`;
+    return `<div class="algs-wrap"><div class="algs" data-n="${links.length}" role="group" aria-label="Algorithm">${items}</div></div>`;
   }
   const items = links.map((a) =>
     a.alg === page.algorithm
       ? `<a class="alg" href="${a.path}" data-alg-link="${a.alg}" aria-current="page">${algInner(a.label)}</a>`
       : `<a class="alg" href="${a.path}" data-alg-link="${a.alg}">${algInner(a.label)}</a>`,
   ).join('');
-  return `<div class="algs-wrap"><nav class="algs" aria-label="Algorithm">${items}</nav></div>`;
+  return `<div class="algs-wrap"><nav class="algs" data-n="${links.length}" aria-label="Algorithm">${items}</nav></div>`;
 }
 
 function segmented(name, labelId, choices, current) {

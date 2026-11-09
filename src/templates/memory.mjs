@@ -106,15 +106,3 @@ export function pagingExampleHtml(algorithm, refs, frames, newBit = 1) {
     result: r,
   };
 }
-
-/** Column rules for the step table: future columns hide their contents, the current one is marked. */
-export function pagingUtilityCss() {
-  const rules = [];
-  for (let k = 0; k <= 40; k++) {
-    rules.push(`.pg[data-k="${k}"] tbody td:nth-child(n+${k + 2}){color:transparent;background:none;box-shadow:none}`);
-    rules.push(`.pg[data-k="${k}"] tbody td:nth-child(n+${k + 2}) > *{visibility:hidden}`);
-    if (k >= 1) rules.push(`.pg[data-k="${k}"] :is(th,td):nth-child(${k + 1}):not(.new){background-color:var(--pg-now)}`);
-    if (k >= 1) rules.push(`.pg[data-k="${k}"] tbody td.new:nth-child(${k + 1}){animation:pg-in var(--t-chip) var(--ease-out)}`);
-  }
-  return rules.join('\n');
-}

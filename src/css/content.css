@@ -97,7 +97,9 @@
 }
 .mb::after { content: attr(data-label); color: var(--ink-2); }
 .mf { position: absolute; inset: 0; z-index: 1; overflow: hidden; background: var(--c); }
-.mfl { color: var(--on); }
+/* The label repeats the fill color behind itself: no visible change (the fill clips it), but
+   contrast checkers measure it against the bar color while the fill is still sweeping in. */
+.mfl { background: var(--c); color: var(--on); }
 .mb.narrow::after, .mb.narrow .mfl { display: none; }
 .mt { position: absolute; top: 0; bottom: 0; z-index: 2; left: calc(var(--b) / var(--len) * 100%); width: 1px; background: color-mix(in srgb, var(--surface) 85%, transparent); }
 .mi {

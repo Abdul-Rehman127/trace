@@ -92,7 +92,7 @@ export function cmpRowsTree(input, results = compareResults(input)) {
       'tr',
       null,
       N('th', { scope: 'row' }, N('a', { class: 'cmp-open', href: `${link.path}?${encodePaging({ ...input, algorithm: r.algorithm })}`, 'aria-label': `${name}, open in the simulator` }, N('span', null, name), ARROW)),
-      N('td', null, String(r.faults), r.faults === best ? N('span', { class: 'best' }, ' fewest') : null),
+      N('td', null, String(r.faults), r.faults === best ? N('span', { class: 'pg-fewest' }, ' fewest') : null),
       N('td', null, String(r.hits)),
       N('td', null, rateText(r.faults, r.references)),
     );

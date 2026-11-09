@@ -15,12 +15,20 @@ export function pagingTableTree(result, { id = '', k, caption } = {}) {
   const steps = result.steps;
   const clock = result.algorithm === 'clock';
   const shown = k === undefined ? steps.length : k;
+  // Column state classes: "fut" hides a body cell not yet reached, "now" marks the current step.
+  // A static table (k omitted, as in worked examples) shows every column and marks none as current.
+  const live = k !== undefined;
+  const state = (col, body) => [body && col >= shown ? 'fut' : '', live && col === shown - 1 ? 'now' : ''].filter(Boolean);
+  const withState = (col, body, extra) => {
+    const cls = [...(extra ? [extra] : []), ...state(col, body)].join(' ');
+    return cls ? { class: cls } : null;
+  };
 
   const head = N(
     'thead',
     null,
-    N('tr', { class: 'pg-step' }, N('th', { scope: 'row' }, 'Step'), steps.map((s) => N('th', { scope: 'col' }, String(s.i + 1)))),
-    N('tr', { class: 'pg-ref' }, N('th', { scope: 'row' }, 'Page'), steps.map((s) => N('td', null, String(s.page)))),
+    N('tr', { class: 'pg-step' }, N('th', { scope: 'row' }, 'Step'), steps.map((s, c) => N('th', { scope: 'col', ...withState(c, false) }, String(s.i + 1)))),
+    N('tr', { class: 'pg-ref' }, N('th', { scope: 'row' }, 'Page'), steps.map((s, c) => N('td', withState(c, false), String(s.page)))),
   );
 
   const frameRows = [];
@@ -30,16 +38,16 @@ export function pagingTableTree(result, { id = '', k, caption } = {}) {
         'tr',
         { class: 'pg-frame' },
         N('th', { scope: 'row' }, `Frame ${f}`),
-        steps.map((s) => {
+        steps.map((s, c) => {
           const page = s.frames[f];
-          if (page === null) return N('td', null);
+          if (page === null) return N('td', withState(c, true));
           const loaded = !s.hit && s.slot === f;
           const hit = s.hit && s.slot === f;
           const cls = loaded ? 'new' : hit ? 'hit' : null;
           return N(
             'td',
-            cls ? { class: cls } : null,
-            String(page),
+            withState(c, true, cls),
+            N('span', null, String(page)),
             clock ? N('span', { class: 'bit' }, SR(', bit '), String(s.bits[f])) : null,
             loaded ? SR(', loaded') : hit ? SR(', hit') : null,
           );
@@ -52,17 +60,17 @@ export function pagingTableTree(result, { id = '', k, caption } = {}) {
     'tr',
     { class: 'pg-res' },
     N('th', { scope: 'row' }, 'Result'),
-    steps.map((s) => N('td', { class: s.hit ? 'h' : 'f' }, N('span', { 'aria-hidden': 'true' }, s.hit ? 'H' : 'F'), SR(s.hit ? 'Hit' : 'Fault'))),
+    steps.map((s, c) => N('td', withState(c, true, s.hit ? 'h' : 'f'), N('span', { 'aria-hidden': 'true' }, s.hit ? 'H' : 'F'), SR(s.hit ? 'Hit' : 'Fault'))),
   );
   const evicted = N(
     'tr',
     { class: 'pg-ev' },
     N('th', { scope: 'row' }, 'Evicted'),
-    steps.map((s) => N('td', null, s.evicted === null ? '' : String(s.evicted))),
+    steps.map((s, c) => N('td', withState(c, true), s.evicted === null ? null : N('span', null, String(s.evicted)))),
   );
   const rows = [...frameRows, result_, evicted];
   if (clock) {
-    rows.push(N('tr', { class: 'pg-ptr' }, N('th', { scope: 'row' }, 'Pointer'), steps.map((s) => N('td', null, String(s.pointer)))));
+    rows.push(N('tr', { class: 'pg-ptr' }, N('th', { scope: 'row' }, 'Pointer'), steps.map((s, c) => N('td', withState(c, true), N('span', null, String(s.pointer))))));
   }
 
   const attrs = { class: `pg${clock ? ' pg-clock' : ''}`, 'data-k': String(shown), 'data-cols': String(steps.length) };
