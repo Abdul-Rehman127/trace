@@ -1,0 +1,57 @@
+    <section class="intro intro-tool">
+      <div class="intro-text">
+        <h1>{{h1}}</h1>
+        <p class="lede">{{lede}}</p>
+      </div>
+      {{{selector}}}
+    </section>
+
+    <noscript><p class="noscript">The circuit needs JavaScript. The explanation and the worked example below work without it.</p></noscript>
+
+    <div class="tool lg-tool" data-tool="lg-circuit">
+      <div class="tool-grid">
+        <section class="inputs" aria-labelledby="h-lg-in">
+          <h2 id="h-lg-in" class="label">Expression</h2>
+{{{fields}}}
+          <p class="lg-prec">Precedence: NOT, then AND, then XOR, then OR.</p>
+          <div class="field field-stack">
+            <div><span class="flabel" id="lg-inputs-label">Inputs</span><small>Switch an input and watch the change travel through the gates</small></div>
+            <div class="lg-switches" role="group" aria-labelledby="lg-inputs-label" data-lg-switches>{{{switches}}}</div>
+          </div>
+          <div class="presets" role="group" aria-label="Examples">
+            {{{examples}}}
+            {{{copyChip}}}
+          </div>
+          {{{copyFallback}}}
+        </section>
+        <section class="stage-col" aria-label="Circuit">
+          <div class="stage" data-stage>
+{{{transport}}}
+            <div class="lg-circuit-scroll" data-lg-scroll>{{{circuit}}}</div>
+            <div class="decide">
+              <div class="why-box">
+                <div class="label">What changed <span class="why-time" data-why-time></span></div>
+                <div class="why" data-why><p class="why-text" data-why-text>{{{whyText}}}</p><div class="why-sizers" aria-hidden="true">{{{whySizers}}}</div></div>
+              </div>
+              <div class="queue-box">
+                <div class="label">Output</div>
+                <p class="lg-q" data-lg-q>{{q}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="sr-only" aria-live="polite" data-live></div>
+          <details class="log" data-log>
+            <summary>Decision log</summary>
+            <p class="log-hint">One line per level of gates. Choose a line to move there.</p>
+            <ol class="log-list" data-log-list></ol>
+          </details>
+        </section>
+      </div>
+      <section class="results" aria-labelledby="h-gates">
+        <h2 id="h-gates" class="label">The circuit in words</h2>
+        <ol class="lg-gates" data-lg-gates>{{{gates}}}</ol>
+        <div class="table-scroll" data-lg-gate-table>{{{gateTable}}}</div>
+      </section>
+      <div class="toast" data-toast role="status" aria-live="polite"></div>
+    </div>
+{{{content}}}

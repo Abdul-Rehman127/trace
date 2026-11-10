@@ -1,0 +1,60 @@
+    <section class="intro intro-tool">
+      <div class="intro-text">
+        <h1>{{h1}}</h1>
+        <p class="lede">{{lede}}</p>
+      </div>
+      {{{selector}}}
+    </section>
+
+    <noscript><p class="noscript">The explorer needs JavaScript. The explanation below works without it.</p></noscript>
+
+    <div class="tool ai-tool" data-tool="ai-tree">
+      <div class="tool-grid">
+        <section class="inputs" aria-labelledby="h-ai-in">
+          <h2 id="h-ai-in" class="label">Position</h2>
+          <p class="ai-hint">Click an empty square to play the next move, or pick a starting position. Positions with up to 7 empty squares can be stepped through.</p>
+          <div data-ai-board>{{{board}}}</div>
+          <div class="field field-stack">
+            <div><span class="flabel" id="ai-alg-label">Search</span><small data-ai-alg-hint>Minimax looks at every move to the end of the game.</small></div>
+            <div class="seg seg-sm" role="group" aria-labelledby="ai-alg-label" data-ai-alg><button type="button" data-value="minimax" aria-pressed="true">Minimax</button><button type="button" data-value="alphabeta" aria-pressed="false">Alpha-beta</button></div>
+          </div>
+          <div class="presets" role="group" aria-label="Starting positions">
+            {{{positions}}}
+            {{{copyChip}}}
+          </div>
+          {{{copyFallback}}}
+        </section>
+        <section class="stage-col" aria-label="Search">
+          <div class="stage" data-stage>
+{{{transport}}}
+            <div class="ai-tree-view">
+              <div class="ai-now">
+                <div class="label">Position being looked at</div>
+                <div data-ai-now>{{{nowBoard}}}</div>
+              </div>
+              <div class="ai-counts">
+                <dl class="net-rows"><div><dt>Positions examined</dt><dd><span class="mono" data-ai-nodes>0</span></dd></div><div><dt>Branches cut</dt><dd><span class="mono" data-ai-pruned>0</span></dd></div></dl>
+                <div class="label">First moves and their values</div>
+                <ol class="ai-children" data-ai-children>{{{children}}}</ol>
+              </div>
+            </div>
+            <div class="ruler pg-ruler" data-ruler role="slider" tabindex="0" aria-label="Search step" aria-valuemin="0" aria-valuemax="{{steps}}" aria-valuenow="0" aria-valuetext="Step 0">
+              <div class="pg-track" aria-hidden="true"><div class="pg-fill" data-pg-fill></div></div>
+            </div>
+            <div class="decide decide-one">
+              <div class="why-box">
+                <div class="label">What the search is doing <span class="why-time" data-why-time></span></div>
+                <div class="why" data-why><p class="why-text" data-why-text>{{{whyText}}}</p><div class="why-sizers" aria-hidden="true">{{{whySizers}}}</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="sr-only" aria-live="polite" data-live></div>
+        </section>
+      </div>
+      <section class="results" aria-labelledby="h-ai-res">
+        <h2 id="h-ai-res" class="label">Both searches on this position</h2>
+        <dl class="net-rows" data-ai-summary>{{{summary}}}</dl>
+      </section>
+      <div class="toast" data-toast role="status" aria-live="polite"></div>
+    </div>
+{{{content}}}

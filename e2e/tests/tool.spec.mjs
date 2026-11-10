@@ -260,14 +260,16 @@ test('priority page: priority column and preemptive switch', async ({ page }) =>
 
 test.describe('mobile 390 px', () => {
   test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-  test('no horizontal page scroll, dock fixed at the bottom, timeline scrolls inside', async ({ page }) => {
+  test('no horizontal page scroll, dock at the bottom over the stage, timeline scrolls inside', async ({ page }) => {
     const done = await open(page, `${RR}?alg=rr&q=1&p=0:99,1:99,2:99,3:99,4:99,5:99,6:99,7:99`);
     const widths = await page.evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]);
     expect(widths[0]).toBeLessThanOrEqual(widths[1]);
     // A mobile browser widens the layout viewport when anything overflows; it must stay 390.
     expect(widths[1]).toBe(390);
     const bar = page.locator('[data-transport]');
-    expect(await bar.evaluate((el) => getComputedStyle(el).position)).toBe('fixed');
+    // The bar docks to the bottom once the stage fills the bottom of the screen.
+    await page.locator('[data-stage]').evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 200));
+    await expect.poll(() => bar.evaluate((el) => getComputedStyle(el).position)).toBe('fixed');
     const box = await bar.boundingBox();
     expect(Math.round(box.y + box.height)).toBe(844);
     for (const b of await page.locator('[data-transport] button:visible').all()) {

@@ -55,3 +55,9 @@ npm run shots    # screenshots of the Round Robin page into shots/
 ## License
 
 MIT, see [LICENSE](LICENSE). Fonts are under their own licenses in `src/fonts/`.
+
+## Known: one console error on preview deployments
+
+Preview deployments (any branch other than `main`, served on `*.trace-8mc.pages.dev`) log one Content Security Policy error per page: `Connecting to 'https://cloudflareinsights.com/cdn-cgi/rum' violates ... connect-src 'self'`. Cloudflare Pages writes its own analytics snippet into the HTML of preview builds at deploy time, and the CSP correctly blocks where it reports to. This is expected and harmless; do not change the CSP for it. Production (trace.abmans.com) does not have it.
+
+For that reason the CSP and console checks run only against the local build (`e2e/`, through `npm run verify:quick` or `verify:full`) and against production (`node scripts/live-browser.mjs`, which defaults to https://trace.abmans.com and warns if pointed at a preview).

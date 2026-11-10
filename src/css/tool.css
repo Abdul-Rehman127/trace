@@ -462,7 +462,9 @@ html:not(.js) .tool { display: none; }
 /* ---------- Results ---------- */
 
 .results { padding: 48px 0 0; }
-.table-scroll { overflow-x: auto; min-height: calc(32px + 44px + var(--rows, 3) * 44px); }
+.table-scroll { overflow-x: auto; }
+/* Only the scheduling results table reserves its height (it fills in after the script runs). */
+.table-scroll[data-rows] { min-height: calc(32px + 44px + var(--rows, 3) * 44px); }
 .table-scroll[data-rows="1"] { --rows: 1; }
 .table-scroll[data-rows="2"] { --rows: 2; }
 .table-scroll[data-rows="3"] { --rows: 3; }
@@ -506,19 +508,26 @@ html:not(.js) .tool { display: none; }
 @media (max-width: 640px) {
   .scroller { --name-w: 64px; }
   .lane-name { padding-left: 12px; }
+  /* The transport docks to the bottom edge only while the stage fills the bottom of the
+     screen (controls.mjs sets .docked), so the dock only ever sits over the stage and never
+     over the inputs, presets or anything below. The slot keeps its height either way. */
+  .bar-slot { height: 65px; }
   .bar {
+    gap: 8px;
+    height: 64px;
+    padding: 0 16px;
+  }
+  .stage.docked .bar {
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 50;
-    gap: 8px;
     height: auto;
     padding: 10px max(16px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
     border-top: 1px solid var(--line);
     border-bottom: 0;
   }
-  .tool { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
   .transport { gap: 6px; }
   .tbtn { width: 44px; height: 44px; }
   .tbtn.play { width: 52px; }

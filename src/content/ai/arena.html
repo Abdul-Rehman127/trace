@@ -1,0 +1,38 @@
+    <article class="prose">
+      <h2 id="how">Five ways to choose a move</h2>
+      <p>Connect Four is far too big to search to the end the way the Tic-tac-toe explorer does, so every agent here takes a shortcut. They form a ladder, each one using more information than the last:</p>
+      <ol>
+        <li><strong>Random</strong> picks any legal column. It is the baseline.</li>
+        <li><strong>Greedy</strong> looks one move ahead: it wins at once if it can, and otherwise picks the move whose resulting position scores best on a simple heuristic.</li>
+        <li><strong>Minimax</strong> searches a fixed number of moves ahead (the depth), assumes both sides choose their best moves by the same heuristic, and backs the values up the tree.</li>
+        <li><strong>Alpha-beta</strong> runs the same search to the same depth with the same move order and gets the same answer, while skipping branches that cannot change it, so it can look at fewer positions.</li>
+        <li><strong>Monte Carlo tree search</strong> does not use the heuristic at all. It plays many quick random games from the current position, steering more of them toward moves that keep winning, and plays the move it tried most.</li>
+      </ol>
+
+      <h2 id="heuristic">The heuristic, and its limits</h2>
+      <p>These agents use a deliberately simple evaluation. For every line of four cells it adds a point when one side has two pieces and two empty cells, five when it has three and one empty, and takes away the same for the opponent; each piece in the centre column adds three. A real Connect Four program would use a much stronger evaluation and deeper search. The point here is to see how the methods differ, not to build the strongest player.</p>
+
+      <h2 id="reading">Reading a game</h2>
+      <ul>
+        <li>After "Play the game", step through the moves with the usual controls. Each move shows why it was chosen: the value of every column for the searching agents, or how often each column was tried and how often it won for MCTS.</li>
+        <li>The seed fixes every random choice, so the same agents, seed, depth and iterations always replay the same game. Change the seed to see another game.</li>
+        <li>The round robin plays every pair of agents twice, swapping colours, and lists every game with its seed. Its table shows what happened with these settings; with other depths, iteration counts or seeds the results can differ.</li>
+      </ul>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Saying a deeper search always plays better.</strong> It sees more, but with a weak heuristic it can still misjudge positions.</li>
+        <li><strong>Treating MCTS win rates as probabilities of winning the real game.</strong> They come from random playouts, which play much worse than either player.</li>
+        <li><strong>Expecting alpha-beta to choose differently from minimax.</strong> At the same depth with the same move order it chooses the same move.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/ai/game-tree/">Game tree explorer</a>, minimax and alpha-beta step by step on Tic-tac-toe</li>
+        <li><a href="/ai/compare/">Compare agents</a> on one position</li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a move explanation or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes the agents and the seed.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

@@ -12,12 +12,15 @@ import { PAGES, SITE } from './src/pages.mjs';
 import { toolData } from './src/templates/parts.mjs';
 import { miniUtilityCss } from './src/templates/mini.mjs';
 import { pageData } from './src/templates/pagedata.mjs';
-import { pagingData } from './src/templates/memory.mjs';
+import { pagingData, pagingTableCss } from './src/templates/memory.mjs';
+import { networkingData, networkingUtilityCss } from './src/templates/networking.mjs';
+import { logicData } from './src/templates/logic.mjs';
+import { aiData } from './src/templates/ai.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const SRC = join(ROOT, 'src');
 const DIST = join(ROOT, 'dist');
-const CSS_ORDER = ['tokens.css', 'base.css', 'components.css', 'tool.css', 'content.css', 'memory.css'];
+const CSS_ORDER = ['tokens.css', 'base.css', 'components.css', 'tool.css', 'content.css', 'memory.css', 'networking.css', 'logic.css', 'ai.css'];
 const THEME_BUDGET = 300;
 // Cloudflare Web Analytics, added by hand so Cloudflare's automatic injection (blocked by
 // Cache-Control: no-transform) cannot add a second snippet. It reports to the same-origin
@@ -55,7 +58,7 @@ const absolute = (path) => SITE.origin + path;
 
 function jsonLd(page) {
   const blocks = [];
-  if (['tool', 'compare', 'paging', 'paging-compare'].includes(page.template)) {
+  if (['tool', 'compare', 'paging', 'paging-compare'].includes(page.template) || page.template.startsWith('net-') || page.template.startsWith('lg-') || page.template.startsWith('ai-')) {
     blocks.push({
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
@@ -109,6 +112,8 @@ async function buildCss() {
     if (existsSync(p)) parts.push(await readFile(p, 'utf8'));
   }
   parts.push(miniUtilityCss());
+  parts.push(pagingTableCss());
+  parts.push(networkingUtilityCss());
   const result = await esbuild.transform(parts.join('\n'), {
     loader: 'css',
     minify: true,
@@ -119,8 +124,28 @@ async function buildCss() {
   return name;
 }
 
-async function buildJs() {
+/** The AI search worker, bundled on its own as a classic script. Returns its file name. */
+async function buildWorker() {
   const result = await esbuild.build({
+    entryPoints: [join(SRC, 'js', 'ai-worker.mjs')],
+    bundle: true,
+    minify: true,
+    format: 'iife',
+    target: ['es2020'],
+    write: false,
+    legalComments: 'none',
+  });
+  const code = result.outputFiles[0].contents;
+  const name = `app.worker.${hash(code)}.js`;
+  await writeFile(join(DIST, name), code);
+  return name;
+}
+
+async function buildJs() {
+  const worker = await buildWorker();
+  const result = await esbuild.build({
+    // The main bundle learns the worker's hashed path at build time.
+    define: { __AI_WORKER_URL__: JSON.stringify(`/${worker}`) },
     entryPoints: [join(SRC, 'js', 'main.mjs')],
     bundle: true,
     minify: true,
@@ -212,6 +237,9 @@ async function main() {
     data.content = await loadContent(page.key, data);
     if (page.template === 'tool' || page.template === 'compare') Object.assign(data, toolData(page));
     if (page.template === 'paging' || page.template === 'paging-compare') Object.assign(data, pagingData(page));
+    if (page.template.startsWith('net-')) Object.assign(data, networkingData(page));
+    if (page.template.startsWith('lg-')) Object.assign(data, logicData(page));
+    if (page.template.startsWith('ai-')) Object.assign(data, aiData(page));
     const body = render(await loadTemplate(page.template), data);
     const html = render(layout, {
       title: page.title,

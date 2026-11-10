@@ -1,0 +1,79 @@
+    <section class="intro intro-tool">
+      <div class="intro-text">
+        <h1>{{h1}}</h1>
+        <p class="lede">{{lede}}</p>
+      </div>
+      {{{selector}}}
+    </section>
+
+    <noscript><p class="noscript">The arena needs JavaScript. The explanation below works without it.</p></noscript>
+
+    <div class="tool ai-tool" data-tool="ai-arena">
+      <div class="tool-grid">
+        <section class="inputs" aria-labelledby="h-arena-in">
+          <h2 id="h-arena-in" class="label">Players</h2>
+          <div class="field field-stack">
+            <div><span class="flabel" id="red-label">Red (moves first)</span></div>
+            <div class="presets ai-pick" role="group" aria-labelledby="red-label" data-pick="red">{{{redChips}}}</div>
+          </div>
+          <div class="field field-stack">
+            <div><span class="flabel" id="yellow-label">Yellow</span></div>
+            <div class="presets ai-pick" role="group" aria-labelledby="yellow-label" data-pick="yellow">{{{yellowChips}}}</div>
+          </div>
+          <div class="field">
+            <div><label for="ai-seed">Seed</label><small id="ai-seed-hint">Any whole number; the same seed replays the same game</small></div>
+            <input class="num num-wide" id="ai-seed" data-ai-opt="seed" type="text" inputmode="numeric" value="1" aria-describedby="ai-seed-hint">
+          </div>
+          <p class="err" id="ai-seed-err" hidden></p>
+          <div class="field">
+            <div><label for="ai-depth">Search depth</label><small id="ai-depth-hint">Minimax and alpha-beta, 1 to 6 moves ahead</small></div>
+            <input class="num" id="ai-depth" data-ai-opt="depth" type="text" inputmode="numeric" value="4" aria-describedby="ai-depth-hint">
+          </div>
+          <p class="err" id="ai-depth-err" hidden></p>
+          <div class="field">
+            <div><label for="ai-it">MCTS iterations</label><small id="ai-it-hint">50 to 20,000 random games per move</small></div>
+            <input class="num num-wide" id="ai-it" data-ai-opt="iterations" type="text" inputmode="numeric" value="1000" aria-describedby="ai-it-hint">
+          </div>
+          <p class="err" id="ai-it-err" hidden></p>
+          <div class="pr-actions">
+            <button type="button" class="btn-solid" data-ai-run>Play the game</button>
+            <button type="button" class="btn-line" data-ai-cancel hidden>Stop</button>
+          </div>
+          <div class="presets">
+            {{{copyChip}}}
+          </div>
+          {{{copyFallback}}}
+          <p class="ai-status" data-ai-status aria-live="polite">{{status}}</p>
+        </section>
+        <section class="stage-col" aria-label="Game">
+          <div class="stage" data-stage>
+{{{transport}}}
+            <div class="c4-stage" data-c4>{{{board}}}</div>
+            <div class="ruler pg-ruler" data-ruler role="slider" tabindex="0" aria-label="Move" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-valuetext="Before the first move">
+              <div class="pg-track" aria-hidden="true"><div class="pg-fill" data-pg-fill></div></div>
+            </div>
+            <div class="decide decide-one">
+              <div class="why-box">
+                <div class="label">Why this move <span class="why-time" data-why-time></span></div>
+                <div class="why ai-why" data-why-explain>{{{explain}}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="sr-only" aria-live="polite" data-live></div>
+          <details class="ai-human" data-ai-human>
+            <summary>Play against an agent yourself</summary>
+            <p class="ai-hint">You play Red against the Yellow agent above. Press start, then drop pieces with the buttons over the board.</p>
+            <button type="button" class="btn-line" data-ai-human-start>Start a game against Yellow</button>
+          </details>
+        </section>
+      </div>
+      <section class="results" aria-labelledby="h-rr">
+        <h2 id="h-rr" class="label">Round robin</h2>
+        <p class="ai-hint">Every agent plays every other agent twice, once as Red and once as Yellow, with the seeds shown. These are measured results for these settings, not a general ranking.</p>
+        <div class="pr-actions"><button type="button" class="btn-line" data-rr-run>Run the round robin</button><button type="button" class="btn-line" data-rr-cancel hidden>Stop</button></div>
+        <p class="ai-status" data-rr-status aria-live="polite"></p>
+        <div class="table-scroll" data-rr-out></div>
+      </section>
+      <div class="toast" data-toast role="status" aria-live="polite"></div>
+    </div>
+{{{content}}}

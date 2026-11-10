@@ -51,6 +51,40 @@ How an operating system chooses which page leaves memory when a new one has to c
 
 - [Compare page replacement algorithms: All four on the same pages, and faults with 1 to 8 frames](/memory/page-replacement/compare/)
 
+#### Networking
+
+How addresses are split into networks and hosts, and how two computers open and close a connection. Type an address or press play and see every step.
+
+- [IPv4 subnet calculator: Network, broadcast, host range and mask, with every bit labelled](/networking/subnet-calculator/)
+
+- [Subnetting practice: Generated questions at three levels, with worked steps](/networking/subnetting-practice/)
+
+- [VLSM subnet planner: Fit subnets of different sizes into one network, largest first](/networking/vlsm-calculator/)
+
+- [TCP handshake and teardown: SYN, SYN-ACK, ACK and FIN, with every state and sequence number](/networking/tcp-handshake/)
+
+#### Logic
+
+How Boolean expressions become truth tables, circuits and their shortest equivalent forms. Type an expression and see every row, gate and step.
+
+- [Truth table generator: Any expression, every row, every subexpression and the canonical forms](/logic/truth-table/)
+
+- [Logic circuit simulator: Draw the gates, switch inputs, watch the change travel](/logic/circuit/)
+
+- [Boolean simplifier: Karnaugh map, Quine-McCluskey and every minimal answer](/logic/simplifier/)
+
+- [Equivalence checker: Two expressions, the same function or the first row that differs](/logic/equivalence/)
+
+#### AI
+
+How a program chooses a move in a game: from a random pick to minimax, alpha-beta and Monte Carlo tree search. Step through a search or watch the agents play.
+
+- [Game tree explorer: Minimax and alpha-beta on Tic-tac-toe, step by step](/ai/game-tree/)
+
+- [Connect Four AI arena: Five agents, every move explained; play one yourself](/ai/connect-four/)
+
+- [Compare game AI agents: One position, every agent: move, time and work](/ai/compare/)
+
 ---
 
 ## Page: /operating-systems/cpu-scheduling/
@@ -1227,6 +1261,7 @@ Run all four algorithms on the same pages and compare their faults side by side.
 #### Pages
 
 Reference stringPage numbers from 0 to 99, separated by commas or spaces. Up to 40.
+7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1
 
 FramesHow many pages fit in memory, 1 to 8
 
@@ -1246,10 +1281,10 @@ Copy this link
 
 | Algorithm | Faults | Hits | Fault rate |
 
-| FIFO | 15 | 5 | 3/4 (75%) |
-| LRU | 12 | 8 | 3/5 (60%) |
-| Optimal | 9 fewest | 11 | 9/20 (45%) |
-| Clock | 14 | 6 | 7/10 (70%) |
+| FIFO | 15 | 5 | 15 of 20 (75%) |
+| LRU | 12 | 8 | 12 of 20 (60%) |
+| Optimal | 9 fewest | 11 | 9 of 20 (45%) |
+| Clock | 14 | 6 | 14 of 20 (70%) |
 
 #### Fault or hit at each step
 
@@ -1298,11 +1333,1214 @@ Email: abdul at abmans dot com
 
 ---
 
+## Page: /networking/subnet-calculator/
+
+- Title: IPv4 Subnet Calculator with Binary View | Trace
+- Description (144 characters): Enter an IPv4 address with a prefix or mask and see the network, broadcast, usable host range and mask, with every bit labelled in binary. Free.
+- Written content: 618 words
+
+### H1: IPv4 subnet calculator
+
+Enter an address with a prefix or a mask. Every value updates as you type, and the binary view shows which bits are network and which are host.
+
+[Subnet calculator](/networking/subnet-calculator/) / [Practice](/networking/subnetting-practice/) / [VLSM](/networking/vlsm-calculator/) / [TCP handshake](/networking/tcp-handshake/)
+
+#### Address
+
+IPv4 address with prefix or maskFor example 192.168.1.130/26 or 192.168.1.130 255.255.255.192
+192.168.1.130/26
+
+192.168.1.130/26
+172.16.5.10/20
+10.0.0.1/8
+Point-to-point /31
+Single host /32
+
+Copy link
+
+Copy this link
+
+#### Subnet
+
+Network address192.168.1.128Broadcast address192.168.1.191First usable host192.168.1.129Last usable host192.168.1.190Usable hosts6264 addresses in the blockSubnet mask255.255.255.192/26Wildcard mask0.0.0.63
+
+#### In binary
+
+| Address | 11000000 | 10101000 | 00000001 | 10000010 |
+| Mask | 11111111 | 11111111 | 11111111 | 11000000 |
+| Bit is | NNNNNNNN | NNNNNNNN | NNNNNNNN | NNHHHHHH |
+
+- 192.168.1.130 has host bits set, so it is a host inside the network 192.168.1.128/26.
+- Private address (192.168.0.0/16, RFC 1918): used inside networks, not routed on the public internet.
+- Class C under the old class system (history only: prefixes replaced classes, so the class does not decide the mask).
+
+#### How subnetting an IPv4 address works
+
+An IPv4 address is 32 bits, written as four numbers from 0 to 255. A prefix such as /26 splits those bits in two: the first 26 bits name the network, the remaining 6 name a host inside it. Every device on the same network shares the network bits. The subnet mask is the same split written as an address: 26 ones followed by 6 zeros, which is 255.255.255.192.
+
+Two addresses in every block are special. The **network address** has all host bits set to 0 and names the block itself. The **broadcast address** has all host bits set to 1 and reaches every host in the block. Everything between them is a usable host address. The calculator above works this out as you type, and the binary view marks each bit as N (network) or H (host).
+
+#### Worked example
+
+Take 192.168.1.130/26. The mask is 255.255.255.192, so the last octet has 2 network bits and 6 host bits:
+
+| Address | 11000000 | 10101000 | 00000001 | 10000010 |
+| Mask | 11111111 | 11111111 | 11111111 | 11000000 |
+| Bit is | NNNNNNNN | NNNNNNNN | NNNNNNNN | NNHHHHHH |
+
+Setting the 6 host bits to 0 gives the network address 192.168.1.128. Setting them to 1 gives the broadcast address 192.168.1.191. The usable hosts run from 192.168.1.129 to 192.168.1.190: 62 addresses. The wildcard mask, the inverse of the subnet mask, is 0.0.0.63.
+
+The same method works on any octet. For 172.16.5.10/20 the boundary falls inside the third octet, so the block runs from 172.16.0.0 to 172.16.15.255, with 4,094 usable hosts. A /8 such as 10.0.0.0/8 has 16,777,214.
+
+#### Rules this calculator uses
+
+- **/31:** a block of two addresses used for a point-to-point link between two routers. Both addresses are usable hosts; there is no network or broadcast address in use.
+
+- **/32:** a single host. The block is one address.
+
+- **Host bits set:** 192.168.1.130/26 has host bits set (130 is not the start of a block). That is accepted: the calculator shows the network the address belongs to and says so.
+
+- **Strict input:** each part must be 0 to 255, without leading zeros. Some systems read "010" as octal (8), so Trace rejects it instead of guessing.
+
+- **Classes are history:** class A, B and C told you the mask from the first octet. Prefixes (CIDR) replaced that, so the class is shown only as a note.
+
+#### Formulas
+
+- Addresses in a block `= 2^(32 - prefix)`
+
+- Usable hosts `= 2^(32 - prefix) - 2` for prefixes up to /30; 2 for /31; 1 for /32
+
+- Network `= address AND mask`; broadcast `= network OR wildcard`
+
+- Wildcard `= 255.255.255.255 - mask`, octet by octet
+
+#### Special ranges
+
+Some addresses are set aside. 10.0.0.0/8, 172.16.0.0/12 and 192.168.0.0/16 are private (RFC 1918): used inside home and office networks and not routed on the public internet. 127.0.0.0/8 is loopback, and 169.254.0.0/16 is link-local, the range a device can give itself when nothing else assigns an address. The calculator notes these when the address you enter falls in one.
+
+#### Common exam mistakes
+
+- **Forgetting the two reserved addresses.** A /26 has 64 addresses but 62 usable hosts.
+
+- **Using the wrong octet.** For a /20 the interesting octet is the third, not the fourth.
+
+- **Treating the given address as the network.** 192.168.1.130/26 belongs to 192.168.1.128/26.
+
+- **Applying "minus 2" to /31 and /32.** Those two follow their own rules above.
+
+#### Related
+
+- [Subnetting practice](/networking/subnetting-practice/), generated questions with worked steps
+
+- [VLSM subnet planner](/networking/vlsm-calculator/), for subnets of different sizes
+
+- [TCP handshake and teardown](/networking/tcp-handshake/)
+
+#### Spotted a mistake?
+
+If a number or a sentence on this page looks wrong, please say so. Include the address you entered, or paste the link from "Copy link".
+
+Email: abdul at abmans dot com
+
+---
+
+## Page: /networking/subnetting-practice/
+
+- Title: Subnetting Practice Questions with Solutions | Trace
+- Description (149 characters): Generated subnetting questions at three levels: network, broadcast, host range, masks and more. Check your answer and see the steps. Free, no signup.
+- Written content: 511 words
+
+### H1: Subnetting practice
+
+Answer a generated question, check it, and read the worked steps. Every question has its own link, so you can share the exact one.
+
+[Subnet calculator](/networking/subnet-calculator/) / [Practice](/networking/subnetting-practice/) / [VLSM](/networking/vlsm-calculator/) / [TCP handshake](/networking/tcp-handshake/)
+
+#### Questions
+
+LevelLevel 1 uses familiar prefixes; level 3 uses any prefix and dotted masks
+Level 1 / Level 2 / Level 3
+
+Kind of question
+Any
+Network address
+Broadcast address
+Usable host range
+Number of hosts
+Subnet mask
+Same subnet?
+How many subnets
+
+Copy link
+
+Copy this link
+
+#### Question
+
+What is the usable host range of 10.202.164.136/30? Give the first and last usable address.
+
+Your answer
+
+Write two addresses, such as 10.0.0.1 - 10.0.0.62.
+
+Check
+Show the solution
+Next question
+
+#### How the practice questions work
+
+Each question is generated from a number called a seed. The same seed, level and kind of question always give the same question, so the link in the address bar points at exactly the question on screen. "Next question" picks a new seed. Nothing is stored and nothing is sent anywhere: the answer is checked in your browser.
+
+Level 1 uses familiar private addresses and the prefixes that come up most: /8, /16, /24 and /25 to /30. Level 2 uses any prefix from /16 to /30. Level 3 uses any prefix from /8 to /30, any ordinary address, and sometimes asks you to turn a dotted mask back into a prefix.
+
+#### Worked example
+
+"What is the broadcast address of 172.31.133.104/8?" The answer is 172.255.255.255, and these are the steps Trace shows after you check:
+
+- /8 means 8 network bits, so the mask is 255.0.0.0 and the wildcard (the host bits) is 0.255.255.255.
+- Network = address AND mask, octet by octet: 172 AND 255 = 172; 31 AND 0 = 0; 133 AND 0 = 0; 104 AND 0 = 0. So the network is 172.0.0.0.
+- Broadcast = network OR wildcard: 172 OR 0 = 172; 0 OR 255 = 255; 0 OR 255 = 255; 0 OR 255 = 255. So the broadcast is 172.255.255.255.
+
+#### The kinds of question
+
+- **Network and broadcast address:** AND the address with the mask; then OR the network with the wildcard.
+
+- **Usable host range:** one after the network to one before the broadcast. Answer with two addresses, such as 10.0.0.1 - 10.0.0.62.
+
+- **Number of hosts:** 2 to the power of the host bits, minus 2.
+
+- **Subnet mask:** the prefix as ones followed by zeros, written as four numbers; or the other way round.
+
+- **Same subnet:** two addresses are in the same subnet when their network addresses match. Answer yes or no.
+
+- **How many subnets:** borrowing bits from the host part gives 2 to the power of the borrowed bits.
+
+#### Formulas
+
+- Usable hosts `= 2^(32 - prefix) - 2`
+
+- Subnets from borrowing `= 2^(new prefix - old prefix)`
+
+- Network `= address AND mask`; broadcast `= network OR wildcard`
+
+#### How answers are read
+
+Spaces are ignored. Addresses must be four numbers from 0 to 255 without leading zeros. Prefixes can be written with or without the slash. Host counts can include commas, such as 1,022. If an answer cannot be read, the message says what form is expected instead of marking it wrong.
+
+#### Common exam mistakes
+
+- **Off by one in the range.** The first usable host is network plus one, not the network itself.
+
+- **Counting subnets from the wrong prefix.** Borrowed bits are new prefix minus old prefix.
+
+- **Mixing up mask and wildcard.** The wildcard is the mask with every bit flipped.
+
+#### Related
+
+- [IPv4 subnet calculator](/networking/subnet-calculator/), to check any answer bit by bit
+
+- [VLSM subnet planner](/networking/vlsm-calculator/)
+
+#### Spotted a mistake?
+
+If a question or a step looks wrong, please say so. Paste the link from "Copy link", which points at the exact question.
+
+Email: abdul at abmans dot com
+
+---
+
+## Page: /networking/vlsm-calculator/
+
+- Title: VLSM Calculator and Subnet Planner | Trace
+- Description (151 characters): Enter a network and the hosts each subnet needs. The planner allocates largest first, shows every range and spare space, and says when it will not fit.
+- Written content: 503 words
+
+### H1: VLSM subnet planner
+
+Enter a network and how many hosts each subnet needs. The plan gives each one the smallest block that fits, largest first.
+
+[Subnet calculator](/networking/subnet-calculator/) / [Practice](/networking/subnetting-practice/) / [VLSM](/networking/vlsm-calculator/) / [TCP handshake](/networking/tcp-handshake/)
+
+#### Requirements
+
+Network to divideAddress with prefix, for example 192.168.10.0/24
+192.168.10.0/24
+
+Hosts needed per subnetSeparated by commas, optionally named: Sales 100, Lab 50. Up to 12.
+Sales 100, Office 50, Lab 25, Servers 10, Link 2
+
+Five subnets in a /24
+Does not fit
+Links and a LAN
+
+Copy link
+
+Copy this link
+
+#### Plan, largest first
+
+| Subnet | Hosts | Prefix | Network | Usable range | Broadcast | Spare |
+
+| Sales | 100 | /25 | 192.168.10.0 | 192.168.10.1 to 192.168.10.126 | 192.168.10.127 | 26 |
+| Office | 50 | /26 | 192.168.10.128 | 192.168.10.129 to 192.168.10.190 | 192.168.10.191 | 12 |
+| Lab | 25 | /27 | 192.168.10.192 | 192.168.10.193 to 192.168.10.222 | 192.168.10.223 | 5 |
+| Servers | 10 | /28 | 192.168.10.224 | 192.168.10.225 to 192.168.10.238 | 192.168.10.239 | 4 |
+| Link | 2 | /30 | 192.168.10.240 | 192.168.10.241 to 192.168.10.242 | 192.168.10.243 | 0 |
+
+SalesOfficeLabServersLinkFree
+
+244 of 256 addresses allocated, 12 free.
+
+#### How VLSM works
+
+Variable Length Subnet Masking (VLSM) divides one network into subnets of different sizes, so each part of a network gets roughly what it needs instead of every subnet being as large as the biggest. A department of 100 hosts needs a /25; a link between two routers needs only a /30.
+
+The planner above follows the usual method. It sorts the requirements from largest to smallest, gives each one the smallest block that holds its hosts plus the two reserved addresses (network and broadcast), and places the blocks one after another from the start of the network. Going largest first keeps every block aligned to its own size, so no space is wasted between blocks and every block starts on a valid boundary.
+
+#### Worked example
+
+Divide 192.168.10.0/24 into subnets for 100, 50, 25, 10 and 2 hosts:
+
+| Subnet | Hosts | Prefix | Network | Usable range | Broadcast | Spare |
+| Subnet A | 100 | /25 | 192.168.10.0 | 192.168.10.1 to 192.168.10.126 | 192.168.10.127 | 26 |
+| Subnet B | 50 | /26 | 192.168.10.128 | 192.168.10.129 to 192.168.10.190 | 192.168.10.191 | 12 |
+| Subnet C | 25 | /27 | 192.168.10.192 | 192.168.10.193 to 192.168.10.222 | 192.168.10.223 | 5 |
+| Subnet D | 10 | /28 | 192.168.10.224 | 192.168.10.225 to 192.168.10.238 | 192.168.10.239 | 4 |
+| Subnet E | 2 | /30 | 192.168.10.240 | 192.168.10.241 to 192.168.10.242 | 192.168.10.243 | 0 |
+
+100 hosts need 102 addresses, so the smallest block is 128 (/25). 50 hosts need 52 addresses, so 64 (/26). 25 need 27, so 32 (/27). 10 need 12, so 16 (/28). 2 need 4, so 4 (/30). The blocks fill the network in that order and 12 addresses are left, starting at 192.168.10.244.
+
+#### Rules this planner uses
+
+- Each subnet needs `hosts + 2` addresses; the block is the next power of two.
+
+- Largest first; requirements of the same size keep the order you typed them in.
+
+- Blocks are placed from the start of the network with no gaps.
+
+- /31 and /32 are not used, even for a two-host link, so every subnet keeps a network and a broadcast address. Some designs use /31 for router links; this planner does not.
+
+- If a block does not fit in what is left, the planner says which requirement failed and how many addresses were missing; the subnets that did fit are still shown.
+
+#### Formulas
+
+- Block size `= smallest power of 2 at least hosts + 2`
+
+- Prefix `= 32 - log2(block size)`
+
+- Spare hosts in a block `= block size - 2 - hosts needed`
+
+#### Common exam mistakes
+
+- **Forgetting the two reserved addresses.** 62 hosts fit a /26 exactly; 63 do not.
+
+- **Allocating in the order given.** Placing a small subnet first can push a large one onto a boundary it cannot start on.
+
+- **Overlapping ranges.** Each block starts right after the previous block's broadcast address.
+
+#### Related
+
+- [IPv4 subnet calculator](/networking/subnet-calculator/), to look at any one block bit by bit
+
+- [Subnetting practice](/networking/subnetting-practice/)
+
+#### Spotted a mistake?
+
+If a number or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes your network and host counts.
+
+Email: abdul at abmans dot com
+
+---
+
+## Page: /networking/tcp-handshake/
+
+- Title: TCP Three-Way Handshake and Teardown Simulator | Trace
+- Description (140 characters): Watch a TCP connection open and close step by step: SYN, SYN-ACK, ACK, FIN, every state, and the sequence and acknowledgement numbers. Free.
+- Written content: 632 words
+
+### H1: TCP handshake and teardown
+
+Press play and watch a connection open, carry data and close, with the state of each side and every sequence number explained.
+
+[Subnet calculator](/networking/subnet-calculator/) / [Practice](/networking/subnetting-practice/) / [VLSM](/networking/vlsm-calculator/) / [TCP handshake](/networking/tcp-handshake/)
+
+#### Connection
+
+Client initial sequence number0 to 4,294,967,295
+
+Server initial sequence number0 to 4,294,967,295
+
+Data the client sendsBytes, 0 to 1,460 (0 for none)
+
+Normal open and close
+Simultaneous close
+Lost SYN
+
+Copy link
+
+Copy this link
+
+0.5x
+1x
+2x
+4x
+
+1x
+time0of 10
+
+Why this happened
+
+The server is listening. The client sends **SYN** with its initial sequence number 1000 and moves to **SYN_SENT**.
+
+The client receives a FIN and moves to **CLOSING**. The server receives a FIN and moves to **CLOSING**. The client acknowledges that FIN with an **ACK** (seq 1456, ack 4294967292); a FIN, like a SYN, uses up one sequence number. The server acknowledges that FIN with an **ACK** (seq 4294967292, ack 1456); a FIN, like a SYN, uses up one sequence number.
+
+The client receives that ACK. All its data has been acknowledged. The client sends **FIN** (seq 1455, ack 4294967291) to close its direction and moves to **FIN_WAIT_1**. At the same moment the server also sends **FIN** and moves to **FIN_WAIT_1**. Both sides are closing at once.
+
+The server receives the SYN and moves to **SYN_RECEIVED**. It answers with **SYN, ACK**: its own initial sequence number 4294967290, and ack 4294967291, the client's sequence number plus 1, because a SYN uses up one sequence number.
+
+States now
+ClientSYN_SENTServerLISTEN
+
+Decision log
+
+One line per moment. Choose a line to move there.
+
+#### Segments
+
+| Time | Direction | Flags | Seq | Ack | Data | Delivery |
+
+| 0 | Client to server | SYN | 1000 | | | Arrives at 1 |
+| 1 | Server to client | SYN, ACK | 5000 | 1001 | | Arrives at 2 |
+| 2 | Client to server | ACK | 1001 | 5001 | | Arrives at 3 |
+| 3 | Client to server | FIN, ACK | 1001 | 5001 | | Arrives at 4 |
+| 4 | Server to client | ACK | 5001 | 1002 | | Arrives at 5 |
+| 5 | Server to client | FIN, ACK | 5001 | 1002 | | Arrives at 6 |
+| 6 | Client to server | ACK | 1002 | 5002 | | Arrives at 7 |
+
+Model: every segment takes 1 time unit one way; the retransmission timeout is a fixed 3 units and TIME_WAIT a fixed 4 units. Real systems measure and vary these.
+
+#### How TCP opens and closes a connection
+
+TCP gives two programs a reliable stream of bytes. Before any data flows, both sides agree on where their byte numbering starts, which is what the three-way handshake does. The client sends **SYN** with its initial sequence number (ISN). The server answers **SYN, ACK** with its own ISN and acknowledges the client's ISN plus one. The client sends **ACK** for the server's ISN plus one. Both sides are then ESTABLISHED.
+
+Closing is done one direction at a time. The side that closes first sends **FIN**; the other acknowledges it and, when it is done too, sends its own FIN, which the first side acknowledges. The side that closed first then waits in TIME_WAIT before the connection is fully gone. The simulator above shows each segment as an arrow from sender to receiver, with each side's state as it changes.
+
+#### Worked example
+
+With a client ISN of 1000, a server ISN of 5000 and 100 bytes of data from the client, the exchange takes 12 time units in this model:
+
+| Time | Direction | Flags | Seq | Ack | Data | Delivery |
+| 0 | Client to server | SYN | 1000 | | | Arrives at 1 |
+| 1 | Server to client | SYN, ACK | 5000 | 1001 | | Arrives at 2 |
+| 2 | Client to server | ACK | 1001 | 5001 | | Arrives at 3 |
+| 3 | Client to server | PSH, ACK | 1001 | 5001 | 100 | Arrives at 4 |
+| 4 | Server to client | ACK | 5001 | 1101 | | Arrives at 5 |
+| 5 | Client to server | FIN, ACK | 1101 | 5001 | | Arrives at 6 |
+| 6 | Server to client | ACK | 5001 | 1102 | | Arrives at 7 |
+| 7 | Server to client | FIN, ACK | 5001 | 1102 | | Arrives at 8 |
+| 8 | Client to server | ACK | 1102 | 5002 | | Arrives at 9 |
+
+The SYN and each FIN use up one sequence number even though they carry no data, which is why the server acknowledges 1001 after a SYN with sequence number 1000, and why the acknowledgement for the client's FIN at 1101 is 1102.
+
+#### The model, and what it leaves out
+
+- Every segment takes exactly 1 time unit from sender to receiver.
+
+- The retransmission timeout is a fixed 3 units and TIME_WAIT is a fixed 4 units. Real systems measure the round trip time to set the timeout and use a longer TIME_WAIT; the fixed values here only keep the timeline readable.
+
+- There is no window, no congestion control and no options. Data is one segment from the client.
+
+- Sequence numbers wrap around after 4,294,967,295, as in the real protocol; try an ISN near the top to see it.
+
+#### The three scenarios
+
+- **Normal open and close:** the client opens, optionally sends data, and closes first. The server passes through CLOSE_WAIT and LAST_ACK; the client through FIN_WAIT_1, FIN_WAIT_2 and TIME_WAIT.
+
+- **Simultaneous close:** both sides send FIN at the same moment. Each receives the other's FIN while in FIN_WAIT_1, moves to CLOSING, and both end in TIME_WAIT.
+
+- **Lost SYN:** the client's first SYN never arrives. After the timeout the client sends it again, and the handshake then goes ahead as normal.
+
+#### Sequence and acknowledgement numbers
+
+- Ack for a SYN or FIN `= its sequence number + 1`
+
+- Ack for data `= sequence number + bytes`
+
+- All arithmetic is `mod 2^32`
+
+#### Common exam mistakes
+
+- **Acknowledging the same number that was sent.** The ack is the next byte expected, so it is one more after a SYN or FIN.
+
+- **Mixing up which side goes to TIME_WAIT.** It is the side that closed first.
+
+- **Forgetting CLOSE_WAIT.** After acknowledging the other side's FIN, a side can keep sending until it closes too.
+
+#### Related
+
+- [IPv4 subnet calculator](/networking/subnet-calculator/)
+
+- [VLSM subnet planner](/networking/vlsm-calculator/)
+
+#### Spotted a mistake?
+
+If a number or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes the scenario and numbers you used.
+
+Email: abdul at abmans dot com
+
+---
+
+## Page: /logic/truth-table/
+
+- Title: Truth Table Generator for Boolean Expressions | Trace
+- Description (149 characters): Type a Boolean expression with AND, OR, NOT, XOR, NAND, NOR or XNOR and get its full truth table, every subexpression, and its canonical forms. Free.
+- Written content: 513 words
+
+### H1: Truth table generator
+
+Type an expression and get its truth table as you type, with a column for every part of the expression.
+
+[Truth table](/logic/truth-table/) / [Circuit](/logic/circuit/) / [Simplifier](/logic/simplifier/) / [Equivalence](/logic/equivalence/)
+
+#### Expression
+
+Boolean expressionFor example (A AND B) OR NOT C, or AB + C'
+(A AND B) OR NOT C
+
+Precedence: NOT, then AND, then XOR, then OR. Write AND as AND, &, * or two letters side by side; OR as OR, | or +; NOT as NOT, !, ~ or a trailing '.
+
+De Morgan
+Full adder sum
+Majority
+Implication
+
+Copy link
+
+Copy this link
+
+#### Truth table
+
+Read asA AND B OR NOT CVariablesA, B, C
+| A | B | C | Row | A AND B | NOT C | A AND B OR NOT C |
+| 0 | 0 | 0 | 0 | 0 | 1 | 1 |
+| 0 | 0 | 1 | 1 | 0 | 0 | 0 |
+| 0 | 1 | 0 | 2 | 0 | 1 | 1 |
+| 0 | 1 | 1 | 3 | 0 | 0 | 0 |
+| 1 | 0 | 0 | 4 | 0 | 1 | 1 |
+| 1 | 0 | 1 | 5 | 0 | 0 | 0 |
+| 1 | 1 | 0 | 6 | 1 | 1 | 1 |
+| 1 | 1 | 1 | 7 | 1 | 0 | 1 |Sum of mintermsΣm(0, 2, 4, 6, 7)Product of maxtermsΠM(1, 3, 5)
+
+#### How a truth table works
+
+A Boolean expression combines inputs that are either 0 (false) or 1 (true) with operators such as AND, OR and NOT. A truth table lists every possible combination of the inputs and the value of the expression for each one. With n variables there are 2n rows, so 3 variables give 8 rows and 6 give 64.
+
+The table above lists the variables in alphabetical order, with the first one as the most significant bit, so the row number is the inputs read as a binary number. Between the inputs and the result it adds a column for every part of the expression, innermost first, so you can follow how the answer is built up.
+
+#### Worked example
+
+For `A XOR B` the output is 1 exactly when the inputs differ:
+
+| A | B | Row | A XOR B |
+| 0 | 0 | 0 | 0 |
+| 0 | 1 | 1 | 1 |
+| 1 | 0 | 2 | 1 |
+| 1 | 1 | 3 | 0 |
+
+The rows with output 1 are rows 1 and 2, so the sum of minterms is `Σm(1, 2)`. The rows with output 0 are rows 0 and 3, giving the product of maxterms `ΠM(0, 3)`.
+
+#### How Trace reads an expression
+
+- **Precedence:** NOT first, then AND (and NAND), then XOR (and XNOR), then OR (and NOR). Operators of the same level are applied left to right. Use parentheses whenever you want a different order.
+
+- **AND** can be written AND, &, *, · or by putting two operands side by side: `AB` and `A(B + C)` both mean AND.
+
+- **OR** can be written OR, |, + or ∨; **NOT** as NOT, !, ~, ¬ or a trailing apostrophe (`A'`).
+
+- Variables are single letters A to Z (lowercase letters are read as capitals), up to 6 in one expression. 0, 1, TRUE and FALSE are constants.
+
+- An error message gives the position where reading stopped and what was expected there.
+
+Not every source uses this precedence: some give XOR the same level as OR, and some do not allow AND to be implied. When in doubt, add parentheses; the "Read as" line shows exactly how the expression was understood.
+
+#### Canonical forms
+
+- Sum of minterms `Σm(...)`: the rows where the output is 1
+
+- Product of maxterms `ΠM(...)`: the rows where the output is 0
+
+- Rows `= 2^n` for n variables
+
+#### Common exam mistakes
+
+- **Reading A + B C as (A + B)C.** AND comes first, so it is A + (BC).
+
+- **Getting the row order wrong.** Count in binary with the first variable as the most significant bit.
+
+- **Confusing XOR and OR.** They differ only when both inputs are 1: OR gives 1, XOR gives 0.
+
+#### Related
+
+- [Logic circuit simulator](/logic/circuit/), the same expression as gates
+
+- [Boolean simplifier](/logic/simplifier/), the shortest form of the same function
+
+- [Equivalence checker](/logic/equivalence/)
+
+#### Spotted a mistake?
+
+If a row or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes your expression.
+
+Email: abdul at abmans dot com
+
+---
+
+## Page: /logic/circuit/
+
+- Title: Logic Circuit Simulator from a Boolean Expression | Trace
+- Description (151 characters): Type a Boolean expression and get its logic gate circuit. Switch the inputs and watch each change travel gate by gate, with every step explained. Free.
+- Written content: 494 words
+
+### H1: Logic circuit simulator
+
+Type an expression to draw its circuit, then switch an input and watch the change travel through the gates one level at a time.
+
+[Truth table](/logic/truth-table/) / [Circuit](/logic/circuit/) / [Simplifier](/logic/simplifier/) / [Equivalence](/logic/equivalence/)
+
+#### Expression
+
+Boolean expressionFor example (A AND B) OR NOT C, or AB + C'
+A XOR B XOR C
+
+Precedence: NOT, then AND, then XOR, then OR.
+
+InputsSwitch an input and watch the change travel through the gates
+A0 / B0 / C0
+
+Full adder sum
+Carry
+NAND only
+Multiplexer
+
+Copy link
+
+Copy this link
+
+0.5x
+1x
+2x
+4x
+
+1x
+level0of 2
+
+What changed
+
+Switch an input to send a change through the circuit.
+
+**G1** (NAND) now gets A = 1 and A = 1, so its output changes from 1 to 0. **G2** (NAND) now gets B = 1 and B = 1, so its output changes from 1 to 0.
+
+**G1** (NOT) now gets S = 1, so its output changes from 1 to 0. **G3** (AND) now gets S = 1 and B = 1, so its output changes from 0 to 1.
+
+**G3** (NAND) now gets G1 = 0 and G2 = 0, so its output changes from 0 to 1. The output Q is 1, changed from 0.
+
+Output
+
+Q = 0
+
+Decision log
+
+One line per level of gates. Choose a line to move there.
+
+#### The circuit in words
+
+- G1 = A XOR B
+- G2 = G1 XOR C
+
+| Gate | Kind | Inputs | Output |
+| G1 | XOR | A = 0, B = 0 | 0 |
+| G2 | XOR | G1 = 0, C = 0 | 0 |
+
+#### How the circuit is built
+
+Every operator in the expression becomes one logic gate, and every variable becomes an input on the left. Gates are placed in columns by how far they are from the inputs, so signals flow from left to right and the last gate on the right drives the output Q. A wire carrying 1 is drawn thicker and in color, a wire carrying 0 is thin and grey, and every gate shows its current output value next to it.
+
+When you switch an input, the change does not reach the output at once: it passes through the gates one level at a time. The simulator steps through those levels with the same play, step and speed controls as the other simulators, and says which gates change at each level and why.
+
+#### Worked example
+
+The default circuit is the sum bit of a full adder, `A XOR B XOR C`. Read left to right it has two gates:
+
+- `G1 = A XOR B`
+- `G2 = G1 XOR C`
+
+Switch A from 0 to 1 with B and C at 0. At level 1, G1 sees A = 1 and B = 0, so its output changes to 1. At level 2, G2 sees G1 = 1 and C = 0, so the output Q changes to 1.
+
+#### The gates
+
+- **AND** (flat back, round front): 1 only when both inputs are 1. **NAND** adds a small circle on the output, which inverts it.
+
+- **OR** (curved back, pointed front): 1 when at least one input is 1. **NOR** adds the inverting circle.
+
+- **XOR** (an OR with an extra curve at the back): 1 when the inputs differ. **XNOR** adds the circle: 1 when they are equal.
+
+- **NOT** (a triangle with a circle): inverts its single input.
+
+#### How the drawing is made
+
+- The circuit follows the expression exactly as written, one gate per operator; it is not simplified first. Use the [simplifier](/logic/simplifier/) to find a smaller circuit.
+
+- A variable used more than once gets its own input terminal each time, so the drawing stays a tree with no crossing wires. In real hardware those would be the same wire.
+
+- Gate delays are shown as equal steps, one per level. Real gates have different, small delays.
+
+#### Common exam mistakes
+
+- **Drawing NAND as AND followed by a separate NOT gate.** That is correct logic but counts as two gates; NAND is one.
+
+- **Missing the inverting circle.** The small circle is what turns AND into NAND and OR into NOR.
+
+- **Reading the output before the change has passed through every level.** On paper this is instant; in hardware it takes one delay per level.
+
+#### Related
+
+- [Truth table generator](/logic/truth-table/)
+
+- [Boolean simplifier](/logic/simplifier/)
+
+- [Equivalence checker](/logic/equivalence/)
+
+#### Spotted a mistake?
+
+If a gate or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes your expression and inputs.
+
+Email: abdul at abmans dot com
+
+---
+
+## Page: /logic/simplifier/
+
+- Title: Boolean Simplifier with K-Map and Quine-McCluskey | Trace
+- Description (148 characters): Simplify a Boolean expression or a list of minterms. See every minimal sum of products, the Karnaugh map groups and the Quine-McCluskey steps. Free.
+- Written content: 550 words
+
+### H1: Boolean expression simplifier
+
+Enter an expression or minterms and get every shortest sum of products, the product of sums, the Karnaugh map and the steps.
+
+[Truth table](/logic/truth-table/) / [Circuit](/logic/circuit/) / [Simplifier](/logic/simplifier/) / [Equivalence](/logic/equivalence/)
+
+#### Function
+
+Expression to simplifyFor example (A AND B) OR NOT C, or AB + C'
+A'B'C' + A'B'C + A'BC' + AB'C + ABC' + ABC
+
+Or enter minterms instead
+Variables1 to 6, named A, B, C, ...
+MintermsRow numbers where the output is 1, such as 0, 2, 5, 7
+Don't-caresOptional rows that may be 0 or 1
+Simplify these minterms
+
+Precedence: NOT, then AND, then XOR, then OR. Write AND as AND, &, * or two letters side by side; OR as OR, | or +; NOT as NOT, !, ~ or a trailing '.
+
+Two answers
+BD + B’D’
+Majority
+Full adder sum
+
+Copy link
+
+Copy this link
+
+#### Simplified
+
+VariablesA, B, CSum of mintermsΣm(0, 1, 2, 5, 6, 7)Product of maxtermsΠM(3, 4)
+##### 2 minimal sums of products (all equally short)
+
+- AC + A'B' + BC'
+- AB + A'C' + B'C
+There is more than one minimal answer: each uses 3 terms and 6 literals. Any of them is correct.
+
+##### Minimal product of sums
+
+- (A' + B + C)(A + B' + C')
+##### Karnaugh map
+
+| A \ BC | 00 | 01 | 11 | 10 |
+| 0 | 10 | 11 | 03 | 12 |
+| 1 | 04 | 15 | 17 | 16 |
+- Group 1: AC covers cells 5, 7
+- Group 2: A'B' covers cells 0, 1
+- Group 3: BC' covers cells 2, 6
+##### Prime implicants
+
+- 11- AB
+- 1-1 AC
+- 00- A'B'
+- 0-0 A'C'
+- -10 BC'
+- -01 B'CQuine-McCluskey steps
+##### Round 1: minterms grouped by number of ones
+
+| Ones | Term | Covers | Combined |
+| 0 | 000 | 0 | yes |
+| 1 | 001 | 1 | yes |
+| | 010 | 2 | yes |
+| 2 | 101 | 5 | yes |
+| | 110 | 6 | yes |
+| 3 | 111 | 7 | yes |
+##### Round 2: pairs from round 1 that differ in one bit
+
+| Ones | Term | Covers | Combined |
+| 0 | 00- | 0, 1 | no, a prime implicant |
+| | 0-0 | 0, 2 | no, a prime implicant |
+| 1 | -01 | 1, 5 | no, a prime implicant |
+| | -10 | 2, 6 | no, a prime implicant |
+| 2 | 1-1 | 5, 7 | no, a prime implicant |
+| | 11- | 6, 7 | no, a prime implicant |
+
+#### How Boolean simplification works
+
+Many different expressions describe the same function. Simplifying means finding one that uses as few terms and literals as possible, which in hardware means fewer gates and fewer gate inputs. The simplifier above works on sums of products (terms ANDed together, then ORed), and also gives the matching product of sums.
+
+It uses the Quine-McCluskey method. First it lists the minterms, the rows where the function is 1. It groups them by how many ones they have, and combines any two terms that differ in exactly one bit, replacing that bit with a dash. It repeats this round after round. Terms that never combine further are the **prime implicants**. Finally it picks a set of prime implicants that covers every minterm: the **essential** ones first (the only prime implicant covering some minterm), then the cheapest way to cover the rest.
+
+#### Worked example
+
+The function Σm(0, 2, 5, 7, 8, 10, 13, 15) over A, B, C and D has 2 prime implicants, and the minimal sum of products is `BD + B'D'`. On the Karnaugh map, one group is the four corners (B'D': B = 0 and D = 0), which wrap around both edges; the other is the middle square (BD).
+
+Some functions have more than one minimal answer. Σm(0, 1, 2, 5, 6, 7) over A, B and C has 6 prime implicants arranged in a cycle, and two different covers are equally short: `AC + A'B' + BC'` and `AB + A'C' + B'C`. The simplifier lists every minimal answer and says so when there is more than one, because a marking scheme might expect either.
+
+#### Rules Trace uses
+
+- **Minimal** means the fewest terms first, then the fewest literals.
+
+- Don't-cares (rows that may be either value) are used when they help a group grow, and never have to be covered.
+
+- The Karnaugh map is drawn for 2 to 4 variables, in Gray code order (00, 01, 11, 10), so neighbouring cells differ in one variable. Groups can wrap from one edge to the opposite edge. The map shows the first minimal answer.
+
+- Up to 6 variables are simplified; above 4 the map is left out and the Quine-McCluskey steps carry the explanation.
+
+#### Notation
+
+- `A'` means NOT A; `AB` means A AND B; `+` means OR
+
+- A term like `1-0-` means A = 1 and C = 0, with B and D free
+
+- A group of 2k cells removes k variables from its term
+
+#### Common exam mistakes
+
+- **Missing wrap-around groups.** The left and right edges are neighbours, and so are the top and bottom.
+
+- **Making groups that are not a power of two.** Groups have 1, 2, 4, 8 or 16 cells.
+
+- **Stopping at a cover that is not minimal.** A prime implicant whose cells are all covered by essential ones can be dropped.
+
+- **Thinking there is one right answer.** Some functions have several equally short forms.
+
+#### Related
+
+- [Truth table generator](/logic/truth-table/)
+
+- [Equivalence checker](/logic/equivalence/), to check your own simplification
+
+- [Logic circuit simulator](/logic/circuit/)
+
+#### Spotted a mistake?
+
+If an answer or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes your function.
+
+Email: abdul at abmans dot com
+
+---
+
+## Page: /logic/equivalence/
+
+- Title: Boolean Expression Equivalence Checker | Trace
+- Description (146 characters): Check whether two Boolean expressions are equivalent. If they are not, see the first input row where they give different outputs. Free, no signup.
+- Written content: 394 words
+
+### H1: Boolean equivalence checker
+
+Type two expressions. Trace compares them on every row and shows the first row where they differ.
+
+[Truth table](/logic/truth-table/) / [Circuit](/logic/circuit/) / [Simplifier](/logic/simplifier/) / [Equivalence](/logic/equivalence/)
+
+#### Expressions
+
+First expressionFor example NOT (A AND B)
+NOT (A AND B)
+
+Second expressionFor example NOT A OR NOT B
+NOT A OR NOT B
+
+Precedence: NOT, then AND, then XOR, then OR. Write AND as AND, &, * or two letters side by side; OR as OR, | or +; NOT as NOT, !, ~ or a trailing '.
+
+De Morgan
+Absorption
+XOR as AND-OR
+Not equal
+
+Copy link
+
+Copy this link
+
+#### Result
+
+Equivalent: the two expressions agree on all 4 rows.
+
+| A | B | First | Second | Same? |
+| 0 | 0 | 1 | 1 | yes |
+| 0 | 1 | 1 | 1 | yes |
+| 1 | 0 | 1 | 1 | yes |
+| 1 | 1 | 0 | 0 | yes |
+
+#### How the equivalence check works
+
+Two Boolean expressions are equivalent when they give the same output for every possible input. The checker takes all the variables used in either expression, works out both outputs on every row of the combined truth table, and compares them. With at most 6 variables that is at most 64 rows, so the answer is exact, not a guess from a few samples.
+
+If any row differs, the first such row is shown with the input values and both outputs. That row is a counterexample: a concrete input that proves the two expressions are different.
+
+#### Worked example
+
+Are `A OR B` and `A XOR B` the same? No. Not equivalent. The first row where they differ is row 3: A = 1, B = 1, where the first gives 1 and the second gives 0. Every other row agrees, which is why the two are easy to confuse.
+
+The default example checks De Morgan's law: `NOT (A AND B)` and `NOT A OR NOT B` agree on all 4 rows, so they are equivalent.
+
+#### Identities worth checking
+
+- De Morgan: `NOT (A AND B) = NOT A OR NOT B` and `NOT (A OR B) = NOT A AND NOT B`
+
+- Absorption: `A OR (A AND B) = A` and `A AND (A OR B) = A`
+
+- XOR as AND and OR: `A XOR B = AB' + A'B`
+
+- Distribution: `A AND (B OR C) = AB + AC`, and also `A OR BC = (A + B)(A + C)`
+
+#### Rules Trace uses
+
+- An expression that does not use a variable simply ignores it: `A` and `A OR (B AND NOT B)` are compared over A and B, and are equivalent.
+
+- Both expressions are read with the same precedence: NOT, then AND, then XOR, then OR.
+
+#### Common exam mistakes
+
+- **Checking only a few rows.** Two expressions can agree on most rows and still differ, as OR and XOR do.
+
+- **Applying De Morgan without flipping the operator.** NOT (A AND B) is NOT A OR NOT B, not NOT A AND NOT B.
+
+#### Related
+
+- [Boolean simplifier](/logic/simplifier/)
+
+- [Truth table generator](/logic/truth-table/)
+
+- [Logic circuit simulator](/logic/circuit/)
+
+#### Spotted a mistake?
+
+If a result or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes both expressions.
+
+Email: abdul at abmans dot com
+
+---
+
+## Page: /ai/game-tree/
+
+- Title: Minimax and Alpha-Beta Game Tree Explorer | Trace
+- Description (156 characters): Step through minimax and alpha-beta on Tic-tac-toe: the position being searched, every value, the branches cut and a live count of positions examined. Free.
+- Written content: 523 words
+
+### H1: Game tree explorer
+
+Pick a Tic-tac-toe position and step through minimax or alpha-beta: every position examined, every value, every branch cut.
+
+[Game tree](/ai/game-tree/) / [Connect Four](/ai/connect-four/) / [Compare agents](/ai/compare/)
+
+#### Position
+
+Click an empty square to play the next move, or pick a starting position. Positions with up to 7 empty squares can be stepped through.
+
+X / / / / O / / X / /
+
+SearchMinimax looks at every move to the end of the game.
+Minimax / Alpha-beta
+
+X to win
+Block or lose
+Opening reply
+Late game
+
+Copy link
+
+Copy this link
+
+0.5x
+1x
+2x
+4x
+
+1x
+step0of 1854
+
+Position being looked at
+XOX
+
+Positions examined0Branches cut0
+First moves and their values
+
+- Square 2not settled yet
+- Square 3not settled yet
+- Square 4not settled yet
+- Square 6not settled yet
+- Square 8not settled yet
+- Square 9not settled yet
+
+What the search is doing
+
+Start at the position on the board. **O** is to move and wants the best value for itself.
+
+Alpha-beta cuts this branch: the value found so far already makes this position no better for the player choosing above it than an option checked earlier (alpha 0 ≥ beta 0). Skipped: square 5, square 7, square 8, square 9.
+
+Alpha-beta cuts this branch: the value found so far already makes this position no better for the player choosing above it than an option checked earlier (alpha -1 ≥ beta -1). Skipped: square 6, square 8, square 9.
+
+Alpha-beta cuts this branch: the value found so far already makes this position no better for the player choosing above it than an option checked earlier (alpha 1 ≥ beta -1). Skipped: square 6, square 8, square 9.
+
+#### Both searches on this position
+
+Value with best play0 (draw)Best movesquare 4Minimax examined927 positionsAlpha-beta examined189 positions
+
+#### How minimax searches a game tree
+
+A game like Tic-tac-toe can be drawn as a tree: the current position at the root, one branch for every legal move, and so on until each line of play ends in a win, a loss or a draw. Minimax gives every finished game a value (here +1 when X wins, 0 for a draw, &minus;1 when O wins) and works backwards. At a position where X is to move, the value is the highest value among its moves; where O is to move, it is the lowest. The value at the root says what happens if both players play perfectly, and the move that achieves it is the best move.
+
+Counting every position in the full tree from the empty board, with play stopping at a win or a full board, gives 549,946 positions including the root. That number is computed by Trace's engine when the site is built, not copied from anywhere. Minimax from the empty board examines all of them (549,946), and finds that perfect play is a draw.
+
+#### How alpha-beta pruning saves work
+
+Alpha-beta finds exactly the same value and, when moves are tried in the same order, the same best move, but it stops looking at a branch as soon as it is clear the branch cannot change the decision above it. It keeps two numbers while it searches: alpha, the best value the maximizing player (X) is already sure of, and beta, the best value the minimizing player (O) is already sure of. When alpha reaches beta at some position, the remaining moves there are skipped; the explorer shows them as cut.
+
+From the empty board alpha-beta examines 18,297 positions instead of 549,946. On the default position in the explorer, minimax examines 927 positions and alpha-beta 189. How much is saved depends on the order moves are tried in: good moves first lets alpha-beta cut more. Here moves are tried in square order, 1 to 9.
+
+#### Reading the explorer
+
+- The small board shows the position the search is looking at right now; highlighted squares are the moves that led there from the starting position.
+
+- "First moves and their values" fills in as the search finishes each move from the starting position. With alpha-beta, some first moves are marked cut.
+
+- Positions examined counts every position visited, the starting one included. Branches cut counts every move that alpha-beta skipped.
+
+#### Common exam mistakes
+
+- **Taking the maximum at every level.** The players alternate: maximize on your move, minimize on the opponent's.
+
+- **Thinking alpha-beta can give a different answer.** It returns the same value as minimax; it only skips work.
+
+- **Cutting too early.** A branch is cut only when alpha is at least beta, not when a value merely looks bad.
+
+#### Related
+
+- [Connect Four arena](/ai/connect-four/), where depth-limited search meets a real game
+
+- [Compare agents](/ai/compare/) on one position
+
+#### Spotted a mistake?
+
+If a value or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes the position.
+
+Email: abdul at abmans dot com
+
+---
+
+## Page: /ai/connect-four/
+
+- Title: Connect Four AI Arena: Minimax, Alpha-Beta, MCTS | Trace
+- Description (147 characters): Watch random, greedy, minimax, alpha-beta and Monte Carlo tree search agents play Connect Four, with every move explained. Play one yourself. Free.
+- Written content: 502 words
+
+### H1: Connect Four AI arena
+
+Choose two agents and a seed and watch them play, with the reason for every move. Or play against one yourself.
+
+[Game tree](/ai/game-tree/) / [Connect Four](/ai/connect-four/) / [Compare agents](/ai/compare/)
+
+#### Players
+
+Red (moves first)
+Random / Greedy / Minimax / Alpha-beta / MCTS
+
+Yellow
+Random / Greedy / Minimax / Alpha-beta / MCTS
+
+SeedAny whole number; the same seed replays the same game
+
+Search depthMinimax and alpha-beta, 1 to 6 moves ahead
+
+MCTS iterations50 to 20,000 random games per move
+
+Play the game
+Stop
+
+Copy link
+
+Copy this link
+
+0.5x
+1x
+2x
+4x
+
+1x
+move0of 0
+
+1234567
+
+Why this move
+
+Choose two agents and press "Play the game". Then step through the moves; each one comes with the reason it was chosen.
+
+Play against an agent yourself
+
+You play Red against the Yellow agent above. Press start, then drop pieces with the buttons over the board.
+
+Start a game against Yellow
+
+#### Round robin
+
+Every agent plays every other agent twice, once as Red and once as Yellow, with the seeds shown. These are measured results for these settings, not a general ranking.
+
+Run the round robin / Stop
+
+#### Five ways to choose a move
+
+Connect Four is far too big to search to the end the way the Tic-tac-toe explorer does, so every agent here takes a shortcut. They form a ladder, each one using more information than the last:
+
+- **Random** picks any legal column. It is the baseline.
+
+- **Greedy** looks one move ahead: it wins at once if it can, and otherwise picks the move whose resulting position scores best on a simple heuristic.
+
+- **Minimax** searches a fixed number of moves ahead (the depth), assumes both sides choose their best moves by the same heuristic, and backs the values up the tree.
+
+- **Alpha-beta** runs the same search to the same depth with the same move order and gets the same answer, while skipping branches that cannot change it, so it can look at fewer positions.
+
+- **Monte Carlo tree search** does not use the heuristic at all. It plays many quick random games from the current position, steering more of them toward moves that keep winning, and plays the move it tried most.
+
+#### The heuristic, and its limits
+
+These agents use a deliberately simple evaluation. For every line of four cells it adds a point when one side has two pieces and two empty cells, five when it has three and one empty, and takes away the same for the opponent; each piece in the centre column adds three. A real Connect Four program would use a much stronger evaluation and deeper search. The point here is to see how the methods differ, not to build the strongest player.
+
+#### Reading a game
+
+- After "Play the game", step through the moves with the usual controls. Each move shows why it was chosen: the value of every column for the searching agents, or how often each column was tried and how often it won for MCTS.
+
+- The seed fixes every random choice, so the same agents, seed, depth and iterations always replay the same game. Change the seed to see another game.
+
+- The round robin plays every pair of agents twice, swapping colours, and lists every game with its seed. Its table shows what happened with these settings; with other depths, iteration counts or seeds the results can differ.
+
+#### Common exam mistakes
+
+- **Saying a deeper search always plays better.** It sees more, but with a weak heuristic it can still misjudge positions.
+
+- **Treating MCTS win rates as probabilities of winning the real game.** They come from random playouts, which play much worse than either player.
+
+- **Expecting alpha-beta to choose differently from minimax.** At the same depth with the same move order it chooses the same move.
+
+#### Related
+
+- [Game tree explorer](/ai/game-tree/), minimax and alpha-beta step by step on Tic-tac-toe
+
+- [Compare agents](/ai/compare/) on one position
+
+#### Spotted a mistake?
+
+If a move explanation or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes the agents and the seed.
+
+Email: abdul at abmans dot com
+
+---
+
+## Page: /ai/compare/
+
+- Title: Compare Game AI Agents on One Position | Trace
+- Description (154 characters): Give one Connect Four position to random, greedy, minimax, alpha-beta and MCTS agents and compare their moves, times and how much work each one did. Free.
+- Written content: 259 words
+
+### H1: Compare game AI agents
+
+Give one position to every agent and see what each one chooses, how long it takes and how much it looks at.
+
+[Game tree](/ai/game-tree/) / [Connect Four](/ai/connect-four/) / [Compare agents](/ai/compare/)
+
+#### Position
+
+Moves so farColumn numbers 1 to 7 in the order played, Red first, such as 4435
+44433523
+
+Search depth1 to 6
+
+MCTS iterations50 to 20,000
+
+Opening
+Threat to block
+Midgame
+Win available
+
+Copy link
+
+Copy this link
+
+Ask every agent / Stop
+
+#### The position
+
+1234567YellowRedRedYellowRedYellowRedYellow
+
+#### What each agent chooses
+
+| Agent | Column | Time | Work |
+
+| Random | | | |
+| Greedy | | | |
+| Minimax | | | |
+| Alpha-beta | | | |
+| MCTS | | | |
+
+#### One position, five agents
+
+This page gives the same Connect Four position to every agent and shows what each one chooses, how long it took in your browser, and how much work it did: the number of positions examined for the searching agents, or the number of random games for Monte Carlo tree search. The agents run one after another without freezing the page, and you can stop them at any time.
+
+#### What to look for
+
+On the default position, at depth 4, minimax examines 2,798 positions and alpha-beta 225, and they choose the same column. That is the point of alpha-beta: the same answer for less work. Raise the depth and both counts grow quickly, which is why real programs combine pruning with good move ordering and a strong evaluation.
+
+Times depend on your device and on what else it is doing, so they vary between runs. The work counts do not: they are the same every time for the same position and settings.
+
+#### Limits
+
+- Depth is capped at 6 and MCTS at 20,000 iterations so a search always finishes in reasonable time on a phone.
+
+- The agents use a simple evaluation function. Their choices show how the methods work, not how strong a carefully built player could be.
+
+#### Related
+
+- [Connect Four arena](/ai/connect-four/)
+
+- [Game tree explorer](/ai/game-tree/)
+
+#### Spotted a mistake?
+
+If a result or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes the position and the settings.
+
+Email: abdul at abmans dot com
+
+---
+
 ## Page: /about/
 
 - Title: About Trace and privacy
 - Description (153 characters): What Trace is, how every simulator is checked for accuracy, what happens to the data you type (nothing leaves your browser), and how to report a mistake.
-- Written content: 474 words
+- Written content: 532 words
 
 ### H1: About Trace
 
@@ -1310,7 +2548,7 @@ Email: abdul at abmans dot com
 
 Trace is a free website of step-by-step simulators that show how computers make decisions. You enter your own inputs, press play, and watch each decision happen with a plain-English reason attached to the exact moment it was made. Every simulator page also explains the idea in writing, with a worked example you can open in the simulator.
 
-Trace has two sections so far. Operating systems covers CPU scheduling: First Come First Served, Shortest Job First, Shortest Remaining Time First, Priority and Round Robin, plus a page that compares them. Memory covers page replacement: FIFO, LRU, Optimal and Clock, also with a compare page.
+Trace has five sections so far. Operating systems covers CPU scheduling: First Come First Served, Shortest Job First, Shortest Remaining Time First, Priority and Round Robin, plus a page that compares them. Memory covers page replacement: FIFO, LRU, Optimal and Clock, also with a compare page. Networking has an IPv4 subnet calculator, subnetting practice questions, a VLSM planner and a TCP handshake and teardown simulator. Logic turns Boolean expressions into truth tables, circuits and their shortest forms, and checks two expressions for equivalence. AI shows how game-playing programs choose moves, from a random pick to minimax, alpha-beta and Monte Carlo tree search.
 
 #### Accuracy
 
@@ -1385,7 +2623,7 @@ Copy this link
 4x
 
 1x
-time0of 0
+time0of 13
 
 0
 

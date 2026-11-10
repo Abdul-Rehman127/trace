@@ -4,29 +4,24 @@ Read first after any break: this file, `ARCHITECTURE.md`, `DECISIONS.md`, `docs/
 
 ## Now
 
-- Branch: `next` (never push unreviewed sections to `main`).
-- Current section: **1. Memory (page replacement), done, waiting for the owner's review.** The brief says to stop after this calibration section until the review result comes back.
-- Report: `sections/memory/REPORT.md`. Screenshots: branch `review-shots`, folder `memory/`.
+- Branch: `next-2` (from `main` after section 1 was merged). Never push to `main`.
+- Sections 2 (Networking), 3 (Logic) and 4 (AI) are built and pass `npm run verify:full`. Waiting for the owner's batch review.
+- Reports: `sections/networking/REPORT.md`, `sections/logic/REPORT.md`, `sections/ai/REPORT.md`, and `RELEASE_NOTES_NEXT.md` at the top level.
+- Screenshots: branch `review-shots`, folders `memory/`, `networking/`, `logic/`, `ai/`.
 
-## Gates for the memory section (last full `npm run verify`: all 6 passed, 8.1 min)
+## To do on the next quiet machine
 
-- [x] Engine tests (golden, oracle, properties, validation, share fuzz, narration, copy claims)
-- [x] Content lint
-- [x] Contrast (tokens test, both themes, every state)
-- [x] Browser tests, Chromium and WebKit (246 pass)
-- [x] Lighthouse mobile, 15 of 15 pages
-- [x] Frame time (memory heavy p95 16.8 ms)
+- Rerun `npm run verify:full`: the frame-time gate after the worker change was blocked by machine load (see RELEASE_NOTES_NEXT.md).
 
-## Next steps
+## Waiting on the owner
 
-1. Wait for the review of the memory section. Fix blocking issues on `next`.
-2. If there is nothing blocking: Networking (5.2). Write `sections/networking/SPEC.md` first, with the subnet goldens from the brief and a hand-verified VLSM case.
-3. Then Logic (5.3), then AI (5.4). AI needs `worker-src 'self'`: STOP and ask with the exact CSP change before using a worker; build behind a time-sliced main-thread loop until then.
-4. At the end: `RELEASE_NOTES_NEXT.md`, one short message to the owner.
+- Batch review of sections 2 to 4, then the owner merges `next-2` into `main`.
+- The AI worker CSP changes (`worker-src 'self'`, `trusted-types trace-worker`) were approved and are in.
 
-## Open questions (owner)
+## Section 1 review fixes (done on `next-2`)
 
-- Lighthouse via pinned `npx` in verify: dependency or not?
-- `font-display` swap or optional for body text (from Checkpoint D).
-- Section landing pages (`/memory/`, `/networking/`) once there are two or more tool families?
-- Preview-only CSP console error from Cloudflare's own injected analytics snippet on `*.pages.dev`: leave it, or allow the host?
+Wrapping, auto-growing reference field; step columns that fit 20 references at 1440 px with a scroll cue beyond; the small-screen dock only over the stage; "14 of 20 (70%)"; `verify:quick` and `verify:full`; the preview-only analytics note in the README.
+
+## Next steps after the review
+
+Fix anything blocking on `next-2`.

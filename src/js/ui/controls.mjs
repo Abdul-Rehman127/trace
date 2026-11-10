@@ -212,6 +212,8 @@ export function bindTransport(stage, player, { onUserStep }) {
     player.setSpeed(SPEEDS[(i + 1) % SPEEDS.length]);
   });
 
+  dockOnSmallScreens(stage);
+
   return function showState({ playing, speed }) {
     play.toggleAttribute('data-playing', playing);
     play.setAttribute('aria-label', playing ? 'Pause' : 'Play');
@@ -219,4 +221,35 @@ export function bindTransport(stage, player, { onUserStep }) {
     cycleLabel.textContent = `${speed}x`;
     cycle.setAttribute('aria-label', `Speed ${speed}x, change speed`);
   };
+}
+
+/**
+ * Small screens: dock the transport bar to the bottom edge while the stage fills the bottom
+ * strip of the viewport (its top above the strip, its bottom below the screen). The dock can
+ * then only cover the stage itself, never the inputs above it or the content below it.
+ * Checked once per frame at most, on scroll and resize.
+ */
+const DOCK_H = 72;
+function dockOnSmallScreens(stage) {
+  const small = window.matchMedia('(max-width: 640px)');
+  let queued = false;
+  const check = () => {
+    queued = false;
+    if (!small.matches) {
+      stage.classList.remove('docked');
+      return;
+    }
+    const r = stage.getBoundingClientRect();
+    const h = window.innerHeight;
+    stage.classList.toggle('docked', r.top < h - DOCK_H - 65 && r.bottom > h);
+  };
+  const queue = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(check);
+  };
+  window.addEventListener('scroll', queue, { passive: true });
+  window.addEventListener('resize', queue, { passive: true });
+  small.addEventListener('change', queue);
+  queue();
 }

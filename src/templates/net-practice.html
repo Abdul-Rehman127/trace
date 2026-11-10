@@ -1,0 +1,47 @@
+    <section class="intro intro-tool">
+      <div class="intro-text">
+        <h1>{{h1}}</h1>
+        <p class="lede">{{lede}}</p>
+      </div>
+      {{{selector}}}
+    </section>
+
+    <noscript><p class="noscript">The practice questions need JavaScript. The explanation below works without it.</p></noscript>
+
+    <div class="tool net-tool" data-tool="net-practice">
+      <div class="tool-grid">
+        <section class="inputs" aria-labelledby="h-pr-set">
+          <h2 id="h-pr-set" class="label">Questions</h2>
+          <div class="field field-stack">
+            <div><span class="flabel" id="lvl-label">Level</span><small>Level 1 uses familiar prefixes; level 3 uses any prefix and dotted masks</small></div>
+            <div class="seg seg-sm" role="group" aria-labelledby="lvl-label" data-level><button type="button" data-value="1" aria-pressed="true">Level 1</button><button type="button" data-value="2" aria-pressed="false">Level 2</button><button type="button" data-value="3" aria-pressed="false">Level 3</button></div>
+          </div>
+          <div class="field field-stack">
+            <div><span class="flabel" id="type-label">Kind of question</span></div>
+            <div class="presets pr-types" role="group" aria-labelledby="type-label" data-types>{{{types}}}</div>
+          </div>
+          <div class="presets">
+            {{{copyChip}}}
+          </div>
+          {{{copyFallback}}}
+        </section>
+        <section class="net-out pr-card" aria-labelledby="h-pr-q">
+          <h2 id="h-pr-q" class="label">Question <span class="pr-meta" data-pr-meta></span></h2>
+          <p class="pr-prompt" data-pr-prompt>{{prompt}}</p>
+          <form class="pr-form" data-pr-form>
+            <label for="pr-answer" class="flabel">Your answer</label>
+            <textarea class="text-in" id="pr-answer" data-pr-answer rows="1" autocomplete="off" spellcheck="false" aria-describedby="pr-hint"></textarea>
+            <small id="pr-hint" data-pr-hint>{{hint}}</small>
+            <div class="pr-actions">
+              <button type="submit" class="btn-solid">Check</button>
+              <button type="button" class="btn-line" data-pr-show>Show the solution</button>
+              <button type="button" class="btn-line" data-pr-next>Next question</button>
+            </div>
+          </form>
+          <div class="pr-result" data-pr-result aria-live="polite"></div>
+          <ol class="pr-steps" data-pr-steps hidden></ol>
+          <div class="toast" data-toast role="status" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+{{{content}}}

@@ -1,0 +1,43 @@
+    <article class="prose">
+      <h2 id="how">How the circuit is built</h2>
+      <p>Every operator in the expression becomes one logic gate, and every variable becomes an input on the left. Gates are placed in columns by how far they are from the inputs, so signals flow from left to right and the last gate on the right drives the output Q. A wire carrying 1 is drawn thicker and in color, a wire carrying 0 is thin and grey, and every gate shows its current output value next to it.</p>
+      <p>When you switch an input, the change does not reach the output at once: it passes through the gates one level at a time. The simulator steps through those levels with the same play, step and speed controls as the other simulators, and says which gates change at each level and why.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>The default circuit is the sum bit of a full adder, <code>{{exText}}</code>. Read left to right it has two gates:</p>
+      <ol>{{{exGates}}}</ol>
+      <p>Switch A from 0 to 1 with B and C at 0. At level 1, G1 sees A = 1 and B = 0, so its output changes to 1. At level 2, G2 sees G1 = 1 and C = 0, so the output Q changes to 1.</p>
+
+      <h2 id="gates">The gates</h2>
+      <ul>
+        <li><strong>AND</strong> (flat back, round front): 1 only when both inputs are 1. <strong>NAND</strong> adds a small circle on the output, which inverts it.</li>
+        <li><strong>OR</strong> (curved back, pointed front): 1 when at least one input is 1. <strong>NOR</strong> adds the inverting circle.</li>
+        <li><strong>XOR</strong> (an OR with an extra curve at the back): 1 when the inputs differ. <strong>XNOR</strong> adds the circle: 1 when they are equal.</li>
+        <li><strong>NOT</strong> (a triangle with a circle): inverts its single input.</li>
+      </ul>
+
+      <h2 id="rules">How the drawing is made</h2>
+      <ul>
+        <li>The circuit follows the expression exactly as written, one gate per operator; it is not simplified first. Use the <a href="/logic/simplifier/">simplifier</a> to find a smaller circuit.</li>
+        <li>A variable used more than once gets its own input terminal each time, so the drawing stays a tree with no crossing wires. In real hardware those would be the same wire.</li>
+        <li>Gate delays are shown as equal steps, one per level. Real gates have different, small delays.</li>
+      </ul>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Drawing NAND as AND followed by a separate NOT gate.</strong> That is correct logic but counts as two gates; NAND is one.</li>
+        <li><strong>Missing the inverting circle.</strong> The small circle is what turns AND into NAND and OR into NOR.</li>
+        <li><strong>Reading the output before the change has passed through every level.</strong> On paper this is instant; in hardware it takes one delay per level.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/logic/truth-table/">Truth table generator</a></li>
+        <li><a href="/logic/simplifier/">Boolean simplifier</a></li>
+        <li><a href="/logic/equivalence/">Equivalence checker</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a gate or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes your expression and inputs.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

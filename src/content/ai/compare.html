@@ -1,0 +1,24 @@
+    <article class="prose">
+      <h2 id="how">One position, five agents</h2>
+      <p>This page gives the same Connect Four position to every agent and shows what each one chooses, how long it took in your browser, and how much work it did: the number of positions examined for the searching agents, or the number of random games for Monte Carlo tree search. The agents run one after another without freezing the page, and you can stop them at any time.</p>
+
+      <h2 id="example">What to look for</h2>
+      <p>On the default position, at depth 4, minimax examines {{cmpMinimax}} positions and alpha-beta {{cmpAlphabeta}}, and they choose {{cmpSame}}. That is the point of alpha-beta: the same answer for less work. Raise the depth and both counts grow quickly, which is why real programs combine pruning with good move ordering and a strong evaluation.</p>
+      <p>Times depend on your device and on what else it is doing, so they vary between runs. The work counts do not: they are the same every time for the same position and settings.</p>
+
+      <h2 id="limits">Limits</h2>
+      <ul>
+        <li>Depth is capped at 6 and MCTS at 20,000 iterations so a search always finishes in reasonable time on a phone.</li>
+        <li>The agents use a simple evaluation function. Their choices show how the methods work, not how strong a carefully built player could be.</li>
+      </ul>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/ai/connect-four/">Connect Four arena</a></li>
+        <li><a href="/ai/game-tree/">Game tree explorer</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a result or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes the position and the settings.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

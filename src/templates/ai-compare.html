@@ -1,0 +1,50 @@
+    <section class="intro intro-tool">
+      <div class="intro-text">
+        <h1>{{h1}}</h1>
+        <p class="lede">{{lede}}</p>
+      </div>
+      {{{selector}}}
+    </section>
+
+    <noscript><p class="noscript">The comparison needs JavaScript. The explanation below works without it.</p></noscript>
+
+    <div class="tool ai-tool" data-tool="ai-compare">
+      <div class="tool-grid">
+        <section class="inputs" aria-labelledby="h-cmp-in">
+          <h2 id="h-cmp-in" class="label">Position</h2>
+          <div class="field field-stack">
+            <div><label for="ai-moves">Moves so far</label><small id="ai-moves-hint">Column numbers 1 to 7 in the order played, Red first, such as 4435</small></div>
+            <textarea class="text-in" id="ai-moves" data-ai-moves rows="1" autocomplete="off" spellcheck="false" aria-describedby="ai-moves-hint">{{moves}}</textarea>
+          </div>
+          <p class="err" id="ai-moves-err" hidden></p>
+          <div class="field">
+            <div><label for="ai-depth">Search depth</label><small id="ai-depth-hint">1 to 6</small></div>
+            <input class="num" id="ai-depth" data-ai-opt="depth" type="text" inputmode="numeric" value="4" aria-describedby="ai-depth-hint">
+          </div>
+          <div class="field">
+            <div><label for="ai-it">MCTS iterations</label><small id="ai-it-hint">50 to 20,000</small></div>
+            <input class="num num-wide" id="ai-it" data-ai-opt="iterations" type="text" inputmode="numeric" value="1000" aria-describedby="ai-it-hint">
+          </div>
+          <div class="presets" role="group" aria-label="Positions">
+            {{{positions}}}
+            {{{copyChip}}}
+          </div>
+          {{{copyFallback}}}
+          <div class="pr-actions"><button type="button" class="btn-solid" data-cmp-run>Ask every agent</button><button type="button" class="btn-line" data-cmp-cancel hidden>Stop</button></div>
+        </section>
+        <section class="net-out" aria-labelledby="h-cmp-out">
+          <h2 id="h-cmp-out" class="label">The position</h2>
+          <div class="c4-stage" data-c4>{{{board}}}</div>
+          <h2 class="label net-sub" id="h-cmp-t">What each agent chooses</h2>
+          <div class="table-scroll">
+            <table class="data net-table ai-cmp">
+              <thead><tr><th scope="col">Agent</th><th scope="col">Column</th><th scope="col">Time</th><th scope="col">Work</th></tr></thead>
+              <tbody data-cmp-rows>{{{rows}}}</tbody>
+            </table>
+          </div>
+          <p class="ai-status" data-cmp-status aria-live="polite"></p>
+          <div class="toast" data-toast role="status" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+{{{content}}}

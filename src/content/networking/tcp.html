@@ -1,0 +1,49 @@
+    <article class="prose">
+      <h2 id="how">How TCP opens and closes a connection</h2>
+      <p>TCP gives two programs a reliable stream of bytes. Before any data flows, both sides agree on where their byte numbering starts, which is what the three-way handshake does. The client sends <strong>SYN</strong> with its initial sequence number (ISN). The server answers <strong>SYN, ACK</strong> with its own ISN and acknowledges the client's ISN plus one. The client sends <strong>ACK</strong> for the server's ISN plus one. Both sides are then ESTABLISHED.</p>
+      <p>Closing is done one direction at a time. The side that closes first sends <strong>FIN</strong>; the other acknowledges it and, when it is done too, sends its own FIN, which the first side acknowledges. The side that closed first then waits in TIME_WAIT before the connection is fully gone. The simulator above shows each segment as an arrow from sender to receiver, with each side's state as it changes.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>With a client ISN of 1000, a server ISN of 5000 and 100 bytes of data from the client, the exchange takes {{exEnd}} time units in this model:</p>
+      {{{example}}}
+      <p>The SYN and each FIN use up one sequence number even though they carry no data, which is why the server acknowledges 1001 after a SYN with sequence number 1000, and why the acknowledgement for the client's FIN at 1101 is 1102.</p>
+
+      <h2 id="model">The model, and what it leaves out</h2>
+      <ul>
+        <li>Every segment takes exactly 1 time unit from sender to receiver.</li>
+        <li>The retransmission timeout is a fixed 3 units and TIME_WAIT is a fixed 4 units. Real systems measure the round trip time to set the timeout and use a longer TIME_WAIT; the fixed values here only keep the timeline readable.</li>
+        <li>There is no window, no congestion control and no options. Data is one segment from the client.</li>
+        <li>Sequence numbers wrap around after 4,294,967,295, as in the real protocol; try an ISN near the top to see it.</li>
+      </ul>
+
+      <h2 id="scenarios">The three scenarios</h2>
+      <ul>
+        <li><strong>Normal open and close:</strong> the client opens, optionally sends data, and closes first. The server passes through CLOSE_WAIT and LAST_ACK; the client through FIN_WAIT_1, FIN_WAIT_2 and TIME_WAIT.</li>
+        <li><strong>Simultaneous close:</strong> both sides send FIN at the same moment. Each receives the other's FIN while in FIN_WAIT_1, moves to CLOSING, and both end in TIME_WAIT.</li>
+        <li><strong>Lost SYN:</strong> the client's first SYN never arrives. After the timeout the client sends it again, and the handshake then goes ahead as normal.</li>
+      </ul>
+
+      <h2 id="formulas">Sequence and acknowledgement numbers</h2>
+      <ul class="formula-list">
+        <li>Ack for a SYN or FIN <code>= its sequence number + 1</code></li>
+        <li>Ack for data <code>= sequence number + bytes</code></li>
+        <li>All arithmetic is <code>mod 2^32</code></li>
+      </ul>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Acknowledging the same number that was sent.</strong> The ack is the next byte expected, so it is one more after a SYN or FIN.</li>
+        <li><strong>Mixing up which side goes to TIME_WAIT.</strong> It is the side that closed first.</li>
+        <li><strong>Forgetting CLOSE_WAIT.</strong> After acknowledging the other side's FIN, a side can keep sending until it closes too.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/networking/subnet-calculator/">IPv4 subnet calculator</a></li>
+        <li><a href="/networking/vlsm-calculator/">VLSM subnet planner</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a number or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes the scenario and numbers you used.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

@@ -1,0 +1,76 @@
+    <section class="intro intro-tool">
+      <div class="intro-text">
+        <h1>{{h1}}</h1>
+        <p class="lede">{{lede}}</p>
+      </div>
+      {{{selector}}}
+    </section>
+
+    <noscript><p class="noscript">The simulator needs JavaScript. The explanation and the worked example below work without it.</p></noscript>
+
+    <div class="tool net-tool" data-tool="net-tcp">
+      <div class="tool-grid">
+        <section class="inputs" aria-labelledby="h-tcp-in">
+          <h2 id="h-tcp-in" class="label">Connection</h2>
+          <div class="field">
+            <div><label for="tcp-c">Client initial sequence number</label><small id="tcp-c-hint">0 to 4,294,967,295</small></div>
+            <input class="num num-wide" id="tcp-c" data-tcp="isnClient" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="{{isnClient}}" aria-describedby="tcp-c-hint">
+          </div>
+          <p class="err" id="tcp-c-err" hidden></p>
+          <div class="field">
+            <div><label for="tcp-s">Server initial sequence number</label><small id="tcp-s-hint">0 to 4,294,967,295</small></div>
+            <input class="num num-wide" id="tcp-s" data-tcp="isnServer" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="{{isnServer}}" aria-describedby="tcp-s-hint">
+          </div>
+          <p class="err" id="tcp-s-err" hidden></p>
+          <div class="field">
+            <div><label for="tcp-d">Data the client sends</label><small id="tcp-d-hint">Bytes, 0 to 1,460 (0 for none)</small></div>
+            <input class="num num-wide" id="tcp-d" data-tcp="data" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="{{data}}" aria-describedby="tcp-d-hint">
+          </div>
+          <p class="err" id="tcp-d-err" hidden></p>
+          <div class="presets" role="group" aria-label="Scenarios">
+            <button type="button" class="chip" data-scenario="normal" aria-pressed="true">Normal open and close</button>
+            <button type="button" class="chip" data-scenario="simultaneous" aria-pressed="false">Simultaneous close</button>
+            <button type="button" class="chip" data-scenario="lost" aria-pressed="false">Lost SYN</button>
+            {{{copyChip}}}
+          </div>
+          {{{copyFallback}}}
+        </section>
+        <section class="stage-col" aria-label="Simulation">
+          <div class="stage" data-stage>
+{{{transport}}}
+            <div class="tcp-scroll" data-tcp-scroll>{{{diagram}}}</div>
+            <div class="ruler pg-ruler" data-ruler role="slider" tabindex="0" aria-label="Time" aria-valuemin="0" aria-valuemax="{{end}}" aria-valuenow="0" aria-valuetext="Time 0">
+              <div class="pg-track" aria-hidden="true"><div class="pg-fill" data-pg-fill></div></div>
+            </div>
+            <div class="decide">
+              <div class="why-box">
+                <div class="label">Why this happened <span class="why-time" data-why-time></span></div>
+                <div class="why" data-why><p class="why-text" data-why-text>{{{whyText}}}</p><div class="why-sizers" aria-hidden="true">{{{whySizers}}}</div></div>
+              </div>
+              <div class="queue-box">
+                <div class="label" id="tcp-states-label">States now</div>
+                <dl class="tcp-states" data-tcp-states aria-labelledby="tcp-states-label"><div><dt>Client</dt><dd data-state="client">{{clientState}}</dd></div><div><dt>Server</dt><dd data-state="server">{{serverState}}</dd></div></dl>
+              </div>
+            </div>
+          </div>
+          <div class="sr-only" aria-live="polite" data-live></div>
+          <details class="log" data-log>
+            <summary>Decision log</summary>
+            <p class="log-hint">One line per moment. Choose a line to move there.</p>
+            <ol class="log-list" data-log-list></ol>
+          </details>
+        </section>
+      </div>
+      <section class="results" aria-labelledby="h-tcp-segs">
+        <h2 id="h-tcp-segs" class="label">Segments</h2>
+        <div class="table-scroll">
+          <table class="data net-table tcp-table">
+            <thead><tr><th scope="col">Time</th><th scope="col">Direction</th><th scope="col">Flags</th><th scope="col">Seq</th><th scope="col">Ack</th><th scope="col">Data</th><th scope="col">Delivery</th></tr></thead>
+            <tbody data-tcp-rows>{{{rows}}}</tbody>
+          </table>
+        </div>
+        <p class="formula">Model: every segment takes 1 time unit one way; the retransmission timeout is a fixed 3 units and TIME_WAIT a fixed 4 units. Real systems measure and vary these.</p>
+      </section>
+      <div class="toast" data-toast role="status" aria-live="polite"></div>
+    </div>
+{{{content}}}

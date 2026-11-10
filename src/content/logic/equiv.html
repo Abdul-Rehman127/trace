@@ -1,0 +1,40 @@
+    <article class="prose">
+      <h2 id="how">How the equivalence check works</h2>
+      <p>Two Boolean expressions are equivalent when they give the same output for every possible input. The checker takes all the variables used in either expression, works out both outputs on every row of the combined truth table, and compares them. With at most 6 variables that is at most 64 rows, so the answer is exact, not a guess from a few samples.</p>
+      <p>If any row differs, the first such row is shown with the input values and both outputs. That row is a counterexample: a concrete input that proves the two expressions are different.</p>
+
+      <h2 id="example">Worked example</h2>
+      <p>Are <code>A OR B</code> and <code>A XOR B</code> the same? No. {{exDiff}} Every other row agrees, which is why the two are easy to confuse.</p>
+      <p>The default example checks De Morgan's law: <code>NOT (A AND B)</code> and <code>NOT A OR NOT B</code> agree on all 4 rows, so they are equivalent.</p>
+
+      <h2 id="identities">Identities worth checking</h2>
+      <ul>
+        <li>De Morgan: <code>NOT (A AND B) = NOT A OR NOT B</code> and <code>NOT (A OR B) = NOT A AND NOT B</code></li>
+        <li>Absorption: <code>A OR (A AND B) = A</code> and <code>A AND (A OR B) = A</code></li>
+        <li>XOR as AND and OR: <code>A XOR B = AB' + A'B</code></li>
+        <li>Distribution: <code>A AND (B OR C) = AB + AC</code>, and also <code>A OR BC = (A + B)(A + C)</code></li>
+      </ul>
+
+      <h2 id="rules">Rules Trace uses</h2>
+      <ul>
+        <li>An expression that does not use a variable simply ignores it: <code>A</code> and <code>A OR (B AND NOT B)</code> are compared over A and B, and are equivalent.</li>
+        <li>Both expressions are read with the same precedence: NOT, then AND, then XOR, then OR.</li>
+      </ul>
+
+      <h2 id="mistakes">Common exam mistakes</h2>
+      <ol>
+        <li><strong>Checking only a few rows.</strong> Two expressions can agree on most rows and still differ, as OR and XOR do.</li>
+        <li><strong>Applying De Morgan without flipping the operator.</strong> NOT (A AND B) is NOT A OR NOT B, not NOT A AND NOT B.</li>
+      </ol>
+
+      <h2 id="related">Related</h2>
+      <ul class="related">
+        <li><a href="/logic/simplifier/">Boolean simplifier</a></li>
+        <li><a href="/logic/truth-table/">Truth table generator</a></li>
+        <li><a href="/logic/circuit/">Logic circuit simulator</a></li>
+      </ul>
+
+      <h2 id="mistake">Spotted a mistake?</h2>
+      <p>If a result or a sentence on this page looks wrong, please say so. Paste the link from "Copy link", which includes both expressions.</p>
+      <p class="report-line" data-email data-email-subject="{{emailSubject}}">Email: abdul at abmans dot com</p>
+    </article>

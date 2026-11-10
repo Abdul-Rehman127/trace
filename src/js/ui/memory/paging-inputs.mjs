@@ -2,6 +2,7 @@
 // Validates as the visitor types and reports a valid input (or null) through onChange.
 import { parseRefs, parseFrames } from '../../engine/memory/validate.mjs';
 import { PAGING_PRESETS } from '../../engine/memory/presets.mjs';
+import { autoGrow } from '../dom.mjs';
 
 const BIT_HINT = {
   1: 'A page gets bit 1 when it is loaded, so it starts with a second chance. Some courses start it at 0.',
@@ -22,6 +23,8 @@ export function createPagingInputs(root, { initial, onChange }) {
   const presetChips = [...root.querySelectorAll('[data-preset]')];
 
   let newBit = initial.options?.newBit === 0 ? 0 : 1;
+
+  const grow = autoGrow(refsEl);
   let last = null;
 
   function showError(el, errEl, message) {
@@ -80,6 +83,7 @@ export function createPagingInputs(root, { initial, onChange }) {
     c.addEventListener('click', () => {
       const p = PAGING_PRESETS.find((x) => x.key === c.dataset.preset);
       set(p.refs, p.frames);
+      grow();
       onChange(read(), 'preset');
     });
   }

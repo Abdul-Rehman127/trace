@@ -51,8 +51,14 @@ main:focus { outline: none; }
 }
 .brand { display: flex; align-items: baseline; gap: 14px; min-width: 0; }
 .mark {
+  /* A fixed box (wider than the word in both the web font and its fallback), so the
+     breadcrumb beside it never slides when the web font arrives. */
+  display: inline-block;
+  flex: none;
+  width: 1.92em;
   font: 700 1.9rem/1 var(--font-display);
   letter-spacing: .01em;
+  white-space: nowrap;
   text-decoration: none;
 }
 .crumbs { min-width: 0; font-size: .85rem; color: var(--muted); }

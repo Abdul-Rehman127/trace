@@ -6,6 +6,9 @@ import { workedExampleHtml } from './examples.mjs';
 import { miniHtml } from './mini.mjs';
 import { toolButtons, hubSectionsHtml } from './toolbuttons.mjs';
 import { pagingExampleHtml } from './memory.mjs';
+import { networkingContentData } from './networking.mjs';
+import { logicContentData } from './logic.mjs';
+import { aiContentData } from './ai.mjs';
 import { simulatePaging, faultRate, faultsByFrames } from '../js/engine/memory/paging.mjs';
 import { narratePagingStep, pagingSentenceText } from '../js/engine/memory/narrate.mjs';
 
@@ -24,6 +27,17 @@ const SUBJECT = {
   'memory/opt': 'Mistake on the Optimal page replacement page',
   'memory/clock': 'Mistake on the Clock page replacement page',
   'memory/compare': 'Mistake on the page replacement compare page',
+  'networking/subnet': 'Mistake on the subnet calculator page',
+  'networking/practice': 'Mistake on the subnetting practice page',
+  'networking/vlsm': 'Mistake on the VLSM page',
+  'networking/tcp': 'Mistake on the TCP handshake page',
+  'logic/table': 'Mistake on the truth table page',
+  'logic/circuit': 'Mistake on the logic circuit page',
+  'logic/simplify': 'Mistake on the Boolean simplifier page',
+  'logic/equiv': 'Mistake on the equivalence checker page',
+  'ai/tree': 'Mistake on the game tree page',
+  'ai/arena': 'Mistake on the Connect Four arena page',
+  'ai/compare': 'Mistake on the compare agents page',
 };
 
 // Worked examples for the page replacement pages. Every number the prose quotes is computed here.
@@ -83,6 +97,9 @@ export function pageData(page) {
   };
   if (ALGS.includes(page.key)) data.example = workedExampleHtml(page.key);
   if (page.key.startsWith('memory/')) Object.assign(data, memoryData(page.key.slice(7)));
+  if (page.key.startsWith('networking/')) Object.assign(data, networkingContentData(page.key));
+  if (page.key.startsWith('logic/')) Object.assign(data, logicContentData(page.key));
+  if (page.key.startsWith('ai/')) Object.assign(data, aiContentData(page.key));
   if (page.key === 'home') {
     data.hero = heroHtml();
     data.hubSections = hubSectionsHtml();

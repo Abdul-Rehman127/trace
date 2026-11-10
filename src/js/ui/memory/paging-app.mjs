@@ -21,14 +21,16 @@ import { h, fromTree, sentenceNodes, createToast, bindCopy, prefersReducedMotion
 import { createPagingInputs } from './paging-inputs.mjs';
 
 const URL_DEBOUNCE = 400;
-const LABEL_W = 96; // step table label column, px (see .pg in tool.css)
-const COL_W = 44; // one step column, px
+const LABEL_W = 96; // step table label column, px (see .pg in memory.css)
+const COL_MIN = 36; // step columns share the width between these bounds (memory.mjs pagingTableCss)
+const COL_MAX = 44;
 
 export function mountPaging(root) {
   const stage = root.querySelector('[data-stage]');
   const pageAlg = root.dataset.alg;
   const selectable = root.dataset.selectable === '1';
   const scroller = stage.querySelector('[data-pg-scroll]');
+  const cue = stage.querySelector('[data-pg-cue]');
   const ruler = stage.querySelector('[data-ruler]');
   const fill = stage.querySelector('[data-pg-fill]');
   const clock = stage.querySelector('[data-clock]');
@@ -70,10 +72,28 @@ export function mountPaging(root) {
   }
 
   // Scroll position and width are tracked from events, so following the playhead never reads layout.
+  // The table's width follows from the same bounds as the CSS, so nothing is measured.
   let viewW = 0;
   let scrollX = 0;
-  scroller.addEventListener('scroll', () => (scrollX = scroller.scrollLeft), { passive: true });
-  new ResizeObserver((entries) => (viewW = entries[0].contentRect.width)).observe(scroller);
+  const cols = () => (current ? current.result.references : 0);
+  const tableW = () => Math.max(LABEL_W + cols() * COL_MIN, Math.min(viewW, LABEL_W + cols() * COL_MAX));
+  const colW = () => (tableW() - LABEL_W) / Math.max(1, cols());
+  function updateCue() {
+    cue.hidden = !(viewW && tableW() - viewW > 1 && scrollX + viewW < tableW() - 1);
+  }
+  scroller.addEventListener(
+    'scroll',
+    () => {
+      scrollX = scroller.scrollLeft;
+      updateCue();
+    },
+    { passive: true },
+  );
+  new ResizeObserver((entries) => {
+    viewW = entries[0].contentRect.width;
+    updateCue();
+    if (current) follow(shownK);
+  }).observe(scroller);
 
   // ---------- screen reader announcements (steps, pauses and jumps only) ----------
   let announceTimer = 0;
@@ -87,12 +107,18 @@ export function mountPaging(root) {
     }, 300);
   }
 
+  // Keep the current step's column in view. When it reaches the right edge the table jumps
+  // so the column sits a third of the way in, rather than scrolling one column every step:
+  // fewer scrolls while playing, and always at least one column of room on the right.
   function follow(k) {
     if (!viewW || k < 1) return;
-    const left = LABEL_W + (k - 1) * COL_W;
-    const right = left + COL_W;
-    if (left < scrollX + LABEL_W || right > scrollX + viewW) {
-      scroller.scrollLeft = Math.max(0, right - viewW + COL_W);
+    const w = colW();
+    const left = LABEL_W + (k - 1) * w;
+    const right = left + w;
+    const room = viewW - LABEL_W;
+    if (left < scrollX + LABEL_W || right + w > scrollX + viewW) {
+      const target = left - LABEL_W - Math.floor(room / 3);
+      scroller.scrollLeft = Math.max(0, Math.min(tableW() - viewW, target));
     }
   }
 
@@ -153,6 +179,7 @@ export function mountPaging(root) {
     scroller.replaceChildren(table);
     scroller.scrollLeft = 0;
     scrollX = 0;
+    updateCue();
     totals.replaceChildren(...totalsTree(result).map(fromTree));
     more.replaceChildren(...moreTree(full).map(fromTree));
     viewLabel.textContent = pagingView(result, 0).label;
