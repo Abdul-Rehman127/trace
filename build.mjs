@@ -63,13 +63,14 @@ function jsonLd(page) {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
       name: page.h1,
+      description: page.description,
       url: absolute(page.slug),
       applicationCategory: 'EducationalApplication',
       operatingSystem: 'Any',
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       inLanguage: 'en',
       isAccessibleForFree: true,
-      author: { '@type': 'Person', name: SITE.author.name, url: SITE.author.url },
+      author: { '@type': 'Person', '@id': SITE.author.id, name: SITE.author.name, url: SITE.author.url },
     });
   }
   if (page.slug !== '/' && !page.noindex) {
