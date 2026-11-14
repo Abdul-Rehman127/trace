@@ -51,15 +51,23 @@ main:focus { outline: none; }
 }
 .brand { display: flex; align-items: baseline; gap: 14px; min-width: 0; }
 .mark {
-  /* A fixed box (wider than the word in both the web font and its fallback), so the
-     breadcrumb beside it never slides when the web font arrives. */
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   flex: none;
-  width: 1.92em;
   font: 700 1.9rem/1 var(--font-display);
   letter-spacing: .01em;
   white-space: nowrap;
   text-decoration: none;
+}
+/* The T tile: drawn on whole pixels at 28px, so it stays sharp at 1x and 2x. */
+.mark-tile { flex: none; width: 28px; height: 28px; }
+.mark-word {
+  /* A fixed box (wider than the word in both the web font and its fallback), so the
+     breadcrumb beside it never slides when the web font arrives. The word sets the
+     baseline the breadcrumb lines up with. */
+  align-self: baseline;
+  width: 1.92em;
 }
 .crumbs { min-width: 0; font-size: .85rem; color: var(--muted); }
 .crumbs ol { display: flex; flex-wrap: nowrap; margin: 0; padding: 0; list-style: none; overflow: hidden; white-space: nowrap; }

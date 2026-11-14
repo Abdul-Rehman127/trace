@@ -1,7 +1,6 @@
-// Generates src/static/og.png (1200 x 630) and src/static/apple-touch-icon.png (180 x 180)
-// once, with Playwright, from small HTML pages in the design system. Run: node scripts/og.mjs
+// Generates src/static/og.png (1200 x 630), the share preview, once, with Playwright, from small HTML pages in the design system. Run: node scripts/og.mjs
 import { createRequire } from 'node:module';
-import { readFileSync, writeFileSync, mkdtempSync, copyFileSync } from 'node:fs';
+import { writeFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -17,8 +16,9 @@ const css = `
 @font-face{font-family:Sans;src:url(${font('ibm-plex-sans-latin-400-normal.woff2')})}
 *{box-sizing:border-box;margin:0}
 body{width:1200px;height:630px;background:#EDF1F6;color:#111826;font-family:Sans;padding:84px 88px;position:relative;overflow:hidden}
-h1{font:700 172px/.9 BS;letter-spacing:.005em}
-p{margin-top:22px;font-size:34px;color:#4C5767;max-width:860px;line-height:1.3}
+h1{display:flex;align-items:center;gap:36px;font:700 172px/.9 BS;letter-spacing:.005em}
+h1 svg{width:136px;height:136px;flex:none}
+p{margin-top:22px;font-size:34px;color:#4C5767;max-width:1024px;line-height:1.3}
 .stage{position:absolute;left:88px;right:88px;bottom:80px;height:96px;background:#FBFCFD;border:2px solid #D8DFE8;border-radius:22px;padding:26px 28px}
 .lane{position:relative;height:42px}
 .b{position:absolute;top:0;height:42px;border-radius:9px;font:500 20px/42px Mono;padding-left:14px}
@@ -39,27 +39,16 @@ const bars = segs.map(([id, s, e, c, on]) => {
   return ghost + `<div class="b f" style="left:${left}px;width:${(cut - s) * u - 2}px;background:${c};color:${on}">${id}</div>`;
 }).join('');
 const og = `<!doctype html><html><head><style>${css}</style></head><body>
-<h1>Trace</h1><p>Step-by-step simulators that show how computers decide, and why.</p>
+<h1><svg viewBox="0 0 28 28"><rect width="28" height="28" rx="7" fill="#2a78d6"/><rect x="6" y="7" width="16" height="4" rx="2" fill="#fff"/><rect x="12" y="7" width="4" height="14" rx="2" fill="#fff"/></svg>Trace</h1><p>Step-by-step simulators that show how computers decide.</p>
 <div class="stage"><div class="lane">${bars}</div>
 <div class="head" style="left:${28 + cut * u}px"></div></div></body></html>`;
 
-const icon = `<!doctype html><html><head><style>*{margin:0}body{width:180px;height:180px;background:#111826;position:relative}
-.b{position:absolute;height:28px;border-radius:9px}</style></head><body>
-<div class="b" style="left:28px;top:50px;width:68px;background:#2a78d6"></div>
-<div class="b" style="left:96px;top:102px;width:56px;background:#eb6834"></div>
-<div style="position:absolute;left:62px;top:30px;width:11px;height:120px;border-radius:6px;background:#E9EEF4"></div>
-</body></html>`;
-
 const dir = mkdtempSync(join(tmpdir(), 'trace-og-'));
 writeFileSync(join(dir, 'og.html'), og);
-writeFileSync(join(dir, 'icon.html'), icon);
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });
 await page.goto(pathToFileURL(join(dir, 'og.html')).href);
 await page.evaluate(() => document.fonts.ready);
 await page.screenshot({ path: join(ROOT, 'src', 'static', 'og.png') });
-await page.setViewportSize({ width: 180, height: 180 });
-await page.goto(pathToFileURL(join(dir, 'icon.html')).href);
-await page.screenshot({ path: join(ROOT, 'src', 'static', 'apple-touch-icon.png') });
 await browser.close();
-console.log('Wrote src/static/og.png and src/static/apple-touch-icon.png');
+console.log('Wrote src/static/og.png');
