@@ -113,5 +113,8 @@ test('sitemap, robots, 404 noindex, icons', async ({ request }) => {
   const nf = await (await request.get('/404.html')).text();
   expect(nf).toContain('<meta name="robots" content="noindex">');
   expect(nf).not.toContain('rel="canonical"');
-  for (const icon of ['/favicon.svg', '/apple-touch-icon.png', '/og.png']) expect((await request.get(icon)).status(), icon).toBe(200);
+  for (const icon of ['/favicon.svg', '/apple-touch-icon.png', '/og.png', '/icon-192.png', '/icon-512.png']) expect((await request.get(icon)).status(), icon).toBe(200);
+  const manifest = await (await request.get('/manifest.webmanifest')).json();
+  expect(manifest.name).toBe('Trace');
+  for (const { src } of manifest.icons) expect((await request.get(src)).status(), src).toBe(200);
 });

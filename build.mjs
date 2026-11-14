@@ -210,7 +210,7 @@ async function main() {
 
   const [css, js, theme] = await Promise.all([buildCss(), buildJs(), buildThemeInit()]);
   await copyDir(join(SRC, 'fonts'), join(DIST, 'fonts'), (n) => n.endsWith('.woff2') || n.endsWith('.txt'));
-  for (const f of ['favicon.svg', 'og.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png']) {
+  for (const f of ['favicon.svg', 'og.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest']) {
     const p = join(SRC, 'static', f);
     if (existsSync(p)) await copyFile(p, join(DIST, f));
   }

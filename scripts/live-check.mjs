@@ -34,7 +34,7 @@ const js = /src="\/(app\.[0-9a-f]{10}\.js)"/.exec(home)[1];
 const paths = [
   '/', '/operating-systems/cpu-scheduling/round-robin/', `/${css}`, `/${js}`,
   '/fonts/ibm-plex-sans-latin-400-normal.woff2', '/fonts/big-shoulders-display.woff2',
-  '/sitemap.xml', '/robots.txt', '/og.png', '/favicon.svg', '/apple-touch-icon.png', '/no-such-page/',
+  '/sitemap.xml', '/robots.txt', '/og.png', '/favicon.svg', '/apple-touch-icon.png', '/manifest.webmanifest', '/no-such-page/',
 ];
 let failures = 0;
 for (const p of paths) {
