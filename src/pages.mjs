@@ -4,7 +4,7 @@
 export const SITE = {
   name: 'Trace',
   origin: 'https://trace.abmans.com',
-  author: { name: 'Abdul Rehman', url: 'https://abmans.com' },
+  author: { name: 'Abdul Rehman', url: 'https://abmans.com', id: 'https://abmans.com/#person' },
 };
 
 const CPU = '/operating-systems/cpu-scheduling/';
